@@ -1,0 +1,1472 @@
+<!doctype html>
+<html lang="ru" data-style="library">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Пространство</title>
+<meta name="description" content="Книжные клубы, кинопоказы, лекции, тренинги и тематические встречи. Разовые визиты и абонементы.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Onest:wght@400;500;600;700&family=Oranienbaum&family=Unbounded:wght@500;700;800&display=swap">
+<style>
+/* ============================================================
+   Три стиля одного сайта. Все цвета, шрифты и формы — токены.
+   data-style="library" | "evening" | "club" на <html>.
+   ============================================================ */
+
+/* --- Библиотека (светлый, по умолчанию) --- */
+:root {
+  color-scheme: light;
+  --bg: #ECEDE7;
+  --bg-2: #E2E4DB;
+  --surface: #FBFBF7;
+  --ink: #17191F;
+  --muted: #595F69;
+  --line: #C6CAC0;
+  --accent: #2743C4;
+  --accent-ink: #FFFFFF;
+  --accent-2: #BF343A;
+  --glow: none;
+
+  --c-book: #2743C4;
+  --c-film: #BF343A;
+  --c-talk: #3C6B47;
+  --c-train: #B07A1F;
+  --c-meet: #6A4A8E;
+  --c-craft: #2A7880;
+
+  --f-display: "Old Standard TT", "Times New Roman", Georgia, serif;
+  --f-body: "Golos Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --display-weight: 700;
+  --h2-weight: 700;
+  --word-fill: .8;
+
+  --radius: 3px;
+  --radius-lg: 4px;
+  --btn-radius: 2px;
+  --bw: 1px;
+  --card-shadow: 0 1px 0 rgba(23, 25, 31, .05), 0 14px 30px -18px rgba(23, 25, 31, .35);
+
+  --maxw: 1180px;
+  --gutter: clamp(16px, 4vw, 40px);
+}
+
+/* --- Вечерний сеанс (тёмный, кино) --- */
+html[data-style="evening"] {
+  color-scheme: dark;
+  --bg: #120E0C;
+  --bg-2: #1A1411;
+  --surface: #221A16;
+  --ink: #F3EADD;
+  --muted: #A99B8C;
+  --line: #3A2F29;
+  --accent: #F2B443;
+  --accent-ink: #1B1307;
+  --accent-2: #E0606E;
+  --glow: 0 0 48px rgba(242, 180, 67, .28);
+
+  --c-book: #D98E5B;
+  --c-film: #F2B443;
+  --c-talk: #D7776A;
+  --c-train: #8FB9A8;
+  --c-meet: #B79BD6;
+  --c-craft: #E3C9A4;
+
+  --f-display: "Oranienbaum", "Bodoni 72", Didot, Georgia, serif;
+  --f-body: "Onest", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --display-weight: 400;
+  --h2-weight: 400;
+  --word-fill: .82;
+
+  --radius: 2px;
+  --radius-lg: 2px;
+  --btn-radius: 999px;
+  --bw: 1px;
+  --card-shadow: none;
+}
+
+/* --- Клуб (яркий, ризограф) --- */
+html[data-style="club"] {
+  color-scheme: light;
+  --bg: #FBFAF4;
+  --bg-2: #EFEBFF;
+  --surface: #FFFFFF;
+  --ink: #121212;
+  --muted: #4B4B52;
+  --line: #121212;
+  --accent: #FF4FA3;
+  --accent-ink: #121212;
+  --accent-2: #E5372B;
+  --glow: none;
+
+  --c-book: #1A6DFF;
+  --c-film: #FF4FA3;
+  --c-talk: #FFC928;
+  --c-train: #16A864;
+  --c-meet: #FF7A1A;
+  --c-craft: #8A5CF6;
+
+  --f-display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --f-body: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --display-weight: 800;
+  --h2-weight: 700;
+  --word-fill: .86;
+
+  --radius: 16px;
+  --radius-lg: 26px;
+  --btn-radius: 999px;
+  --bw: 2px;
+  --card-shadow: 5px 5px 0 #121212;
+}
+
+/* ============ База ============ */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 96px; /* место под переключатель стилей */
+  transition: background-color .35s ease, color .35s ease;
+}
+img, svg { max-width: 100%; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.wrap { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+
+.label {
+  font-family: var(--f-mono);
+  font-size: 12.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--f-body); font-weight: 600; font-size: 16px; line-height: 1;
+  padding: 15px 22px;
+  border-radius: var(--btn-radius);
+  border: var(--bw) solid transparent;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+  transition: transform .15s ease, background-color .2s ease, box-shadow .15s ease, color .2s ease;
+}
+.btn--primary { background: var(--accent); color: var(--accent-ink); }
+.btn--primary:hover { filter: brightness(1.06); }
+.btn--ghost { border-color: var(--ink); background: transparent; color: var(--ink); }
+.btn--ghost:hover { background: var(--ink); color: var(--bg); }
+.btn--sm { padding: 11px 16px; font-size: 15px; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+
+html[data-style="club"] .btn { border-color: var(--ink); }
+html[data-style="club"] .btn--primary { box-shadow: 3px 3px 0 var(--ink); }
+html[data-style="club"] .btn--primary:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); filter: none; }
+html[data-style="evening"] .btn--primary:hover { box-shadow: 0 0 28px rgba(242, 180, 67, .35); filter: none; }
+
+/* ============ Шапка ============ */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: var(--bw) solid color-mix(in srgb, var(--line) 70%, transparent);
+}
+.top__in { display: flex; align-items: center; gap: 24px; min-height: 64px; }
+.logo {
+  font-family: var(--f-display); font-weight: var(--display-weight);
+  font-size: 23px; text-decoration: none; letter-spacing: .01em;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.logo__mark {
+  width: 26px; height: 26px; flex: none;
+  border: 2px solid var(--ink); border-radius: var(--radius);
+  position: relative;
+}
+.logo__mark::after {
+  content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); right: 3px; bottom: 3px;
+}
+html[data-style="club"] .logo { font-size: 18px; }
+html[data-style="club"] .logo__mark { border-radius: 8px; background: var(--c-talk); }
+.show-sm { display: none; }
+.nav { display: flex; gap: 22px; margin-left: auto; font-size: 15px; }
+.nav a { text-decoration: none; color: var(--muted); transition: color .2s; }
+.nav a:hover { color: var(--ink); }
+@media (max-width: 860px) {
+  .nav { display: none; }
+  .top__in .btn { margin-left: auto; }
+}
+@media (max-width: 480px) {
+  .top__in { gap: 12px; }
+  .logo { font-size: 20px; }
+  html[data-style="club"] .logo { font-size: 15px; }
+  .hide-sm { display: none; }
+  .show-sm { display: inline; }
+}
+
+/* ============ Первый экран ============ */
+.hero { position: relative; overflow: hidden; padding-block: clamp(28px, 5vw, 64px) clamp(48px, 7vw, 96px); }
+.hero__beam { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; display: none; }
+html[data-style="evening"] .hero__beam { display: block; }
+.hero .wrap { position: relative; container-type: inline-size; }
+
+.titlepage {
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding-bottom: 14px; border-bottom: var(--bw) solid var(--line);
+}
+.word {
+  font-family: var(--f-display); font-weight: var(--display-weight);
+  font-size: 8.4cqi; line-height: 1;
+  text-transform: uppercase;
+  display: flex; justify-content: space-between;
+  padding-block: .16em .1em; margin: 0;
+  text-shadow: var(--glow);
+  white-space: nowrap;
+}
+.word span { display: inline-block; }
+.js .word { justify-content: center; gap: var(--g, 0px); transition: gap 1.5s cubic-bezier(.2, .75, .15, 1); }
+.word--instant { transition: none !important; }
+html[data-style="club"] .word span:nth-child(6n+1) { color: var(--c-book); }
+html[data-style="club"] .word span:nth-child(6n+2) { color: var(--c-film); transform: rotate(-4deg); }
+html[data-style="club"] .word span:nth-child(6n+3) { color: var(--ink); }
+html[data-style="club"] .word span:nth-child(6n+4) { color: var(--c-train); transform: rotate(5deg) translateY(-.04em); }
+html[data-style="club"] .word span:nth-child(6n+5) { color: var(--c-meet); }
+html[data-style="club"] .word span:nth-child(6n) { color: var(--c-craft); transform: rotate(-3deg); }
+html[data-style="evening"] .word { color: #F8EDDF; }
+
+.hero__grid {
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 72px); align-items: start;
+  padding-top: clamp(24px, 3.4vw, 44px);
+  border-top: var(--bw) solid var(--line);
+}
+.tagline {
+  font-family: var(--f-display); font-weight: var(--h2-weight);
+  font-size: clamp(30px, 3.9vw, 50px); line-height: 1.08; letter-spacing: -.005em;
+}
+html[data-style="club"] .tagline { font-size: clamp(26px, 3.2vw, 40px); line-height: 1.12; letter-spacing: -.02em; }
+html[data-style="library"] .tagline em, html:not([data-style]) .tagline em { font-style: italic; font-weight: 400; }
+html[data-style="evening"] .tagline em { font-style: normal; color: var(--accent); }
+html[data-style="club"] .tagline em { font-style: normal; background: var(--c-talk); padding: 0 .12em; border-radius: 6px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.lead { margin-top: 20px; font-size: 19px; color: var(--muted); max-width: 36em; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+.facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; padding: 0; list-style: none; }
+.facts li { font-size: 14px; }
+html[data-style="library"] .facts li {
+  font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--accent); border: 3px double var(--accent); padding: 6px 10px; border-radius: 3px;
+}
+html[data-style="library"] .facts li:nth-child(odd) { transform: rotate(-1.2deg); }
+html[data-style="library"] .facts li:nth-child(even) { transform: rotate(.9deg); }
+html[data-style="evening"] .facts li { color: var(--muted); display: inline-flex; align-items: center; gap: 8px; margin-right: 10px; }
+html[data-style="evening"] .facts li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+html[data-style="club"] .facts li { font-weight: 700; border: 2px solid var(--ink); border-radius: 999px; padding: 6px 14px; }
+html[data-style="club"] .facts li:nth-child(1) { background: var(--c-talk); transform: rotate(-3deg); }
+html[data-style="club"] .facts li:nth-child(2) { background: #B9F3D4; transform: rotate(2deg); }
+html[data-style="club"] .facts li:nth-child(3) { background: #CFE0FF; transform: rotate(-1deg); }
+html[data-style="club"] .facts li:nth-child(4) { background: #FFD0E6; transform: rotate(3deg); }
+
+/* Карточка «сегодня вечером» */
+.tonight {
+  position: relative; background: var(--surface); color: var(--ink);
+  border: var(--bw) solid var(--line); border-radius: var(--radius-lg);
+  padding: 26px 26px 24px; box-shadow: var(--card-shadow);
+}
+.tonight__when { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.tonight__title { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: 32px; line-height: 1.08; margin-top: 14px; }
+html[data-style="club"] .tonight__title { font-size: 26px; }
+.tonight__text { margin-top: 10px; color: var(--muted); font-size: 16px; }
+.tonight__seats { margin-top: 20px; display: grid; gap: 8px; }
+.tonight__row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+.price { font-family: var(--f-mono); font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.price b { color: var(--ink); font-weight: 500; }
+
+/* Библиотека: каталожная карточка — красная линия, линовка, отверстие */
+html[data-style="library"] .tonight {
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(var(--accent-2), var(--accent-2)),
+    repeating-linear-gradient(to bottom, transparent 0 31px, rgba(39, 67, 196, .13) 31px 32px);
+  background-size: 100% 2px, 100% 100%;
+  background-position: 0 58px, 0 70px;
+  background-repeat: no-repeat, repeat;
+  padding-bottom: 44px;
+}
+html[data-style="library"] .tonight::after {
+  content: ""; position: absolute; left: 50%; bottom: 14px; width: 16px; height: 16px; margin-left: -8px;
+  border-radius: 50%; background: var(--bg); box-shadow: inset 0 1px 2px rgba(0,0,0,.25);
+}
+/* Вечер: билет с вырезами */
+html[data-style="evening"] .tonight { background: linear-gradient(160deg, #2B211C, #1E1714); border-color: #4A3B32; }
+html[data-style="evening"] .tonight::before,
+html[data-style="evening"] .tonight::after {
+  content: ""; position: absolute; top: 64px; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg); border: 1px solid #4A3B32;
+}
+html[data-style="evening"] .tonight::before { left: -12px; clip-path: inset(0 0 0 50%); }
+html[data-style="evening"] .tonight::after { right: -12px; clip-path: inset(0 50% 0 0); }
+html[data-style="evening"] .tonight__title { margin-top: 30px; padding-top: 22px; border-top: 1px dashed #5A4839; }
+/* Клуб: жёлтая наклейка */
+html[data-style="club"] .tonight { background: #FFE27A; transform: rotate(-1.4deg); border-color: var(--ink); }
+html[data-style="club"] .tonight__text, html[data-style="club"] .tonight .price, html[data-style="club"] .tonight .label { color: #2A2A2A; }
+
+.meter { height: 6px; background: color-mix(in srgb, var(--ink) 12%, transparent); border-radius: 99px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+.meter--low i { background: var(--accent-2); }
+html[data-style="club"] .meter { height: 10px; border: 2px solid var(--ink); background: #fff; }
+html[data-style="club"] .meter i { background: var(--ink); border-radius: 0; }
+.seats { font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.seats b { color: var(--ink); font-weight: 600; }
+.seats--low b { color: var(--accent-2); }
+
+@media (max-width: 860px) {
+  .hero__grid { grid-template-columns: 1fr; }
+}
+
+/* ============ Секции ============ */
+.section { padding-block: clamp(64px, 9vw, 120px); }
+.section--alt { background: var(--bg-2); }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px 48px; align-items: end; margin-bottom: clamp(32px, 4vw, 52px); }
+.sec-head .label { grid-column: 1 / -1; }
+.sec-head h2 {
+  font-family: var(--f-display); font-weight: var(--h2-weight);
+  font-size: clamp(34px, 4.6vw, 60px); line-height: 1.03; letter-spacing: -.01em;
+}
+html[data-style="club"] .sec-head h2 { font-size: clamp(28px, 3.6vw, 46px); letter-spacing: -.03em; line-height: 1.08; }
+.sec-head p { color: var(--muted); max-width: 30em; }
+@media (max-width: 760px) { .sec-head { grid-template-columns: 1fr; } }
+
+/* ============ Форматы ============ */
+.formats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 980px) { .formats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .formats { grid-template-columns: 1fr; } }
+.fmt {
+  --cover-bg: color-mix(in srgb, var(--fc) 13%, var(--surface));
+  display: flex; flex-direction: column; text-align: left; cursor: pointer;
+  background: var(--surface); border: var(--bw) solid var(--line); border-radius: var(--radius-lg);
+  padding: 0; overflow: hidden; box-shadow: var(--card-shadow);
+  transition: transform .2s ease, border-color .2s ease;
+}
+.fmt:hover { transform: translateY(-3px); border-color: var(--fc); }
+html[data-style="club"] .fmt { border-color: var(--ink); }
+html[data-style="club"] .fmt:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--ink); border-color: var(--ink); }
+.fmt__cover { display: block; aspect-ratio: 16 / 9; background: var(--cover-bg); border-bottom: var(--bw) solid var(--line); }
+html[data-style="club"] .fmt__cover { border-color: var(--ink); background: color-mix(in srgb, var(--fc) 22%, #fff); }
+.fmt__cover svg { display: block; width: 100%; height: 100%; }
+.fmt__body { display: grid; gap: 10px; padding: 22px 22px 24px; flex: 1; align-content: start; }
+.fmt__title { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: 26px; line-height: 1.1; }
+html[data-style="club"] .fmt__title { font-size: 21px; }
+.fmt__text { color: var(--muted); font-size: 15.5px; }
+.fmt__meta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; font-family: var(--f-mono); font-size: 12.5px; color: var(--ink); }
+.fmt__meta span { display: inline-flex; gap: 6px; align-items: center; }
+.fmt__meta span::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--fc); }
+.fmt__go { margin-top: auto; padding-top: 8px; font-weight: 600; font-size: 15px; color: var(--ink); }
+.fmt__go::after { content: " →"; }
+
+.f-book { --fc: var(--c-book); }
+.f-film { --fc: var(--c-film); }
+.f-talk { --fc: var(--c-talk); }
+.f-train { --fc: var(--c-train); }
+.f-meet { --fc: var(--c-meet); }
+.f-craft { --fc: var(--c-craft); }
+
+.cv-p { fill: var(--fc); }
+.cv-p2 { fill: color-mix(in srgb, var(--fc) 45%, var(--surface)); }
+.cv-ink { fill: var(--ink); }
+.cv-bg { fill: var(--cover-bg); }
+.cv-s { fill: none; stroke: var(--fc); stroke-width: 7; stroke-linecap: round; }
+.cv-s2 { fill: none; stroke: color-mix(in srgb, var(--fc) 45%, var(--surface)); stroke-width: 7; stroke-linecap: round; }
+.cv-line { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+html[data-style="club"] .cv-ink { fill: #121212; }
+
+/* ============ Афиша ============ */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: var(--bw) solid var(--line); background: transparent; color: var(--ink);
+  padding: 9px 14px; border-radius: 999px; font-size: 15px; cursor: pointer;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.chip:hover { border-color: var(--ink); }
+.chip small { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] small { color: inherit; opacity: .7; }
+html[data-style="club"] .chip { border-color: var(--ink); font-weight: 600; }
+html[data-style="club"] .chip[aria-pressed="true"] { background: var(--accent); color: var(--ink); }
+html[data-style="library"] .chip { border-radius: 2px; }
+
+.events { display: grid; border-top: var(--bw) solid var(--line); }
+.ev {
+  display: grid; grid-template-columns: 92px minmax(0, 1fr) 210px 172px;
+  gap: 18px 28px; align-items: center;
+  padding: 24px 0; border-bottom: var(--bw) solid var(--line);
+}
+.ev__date { display: grid; line-height: 1; gap: 6px; }
+.ev__date b { font-family: var(--f-display); font-weight: var(--display-weight); font-size: 46px; font-variant-numeric: tabular-nums; }
+html[data-style="club"] .ev__date b { font-size: 34px; }
+.ev__date span { font-family: var(--f-mono); font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.ev__main { display: grid; gap: 6px; }
+.ev__tag { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.ev__tag::before { content: ""; width: 9px; height: 9px; border-radius: 2px; background: var(--fc); }
+.ev__tag i { font-style: normal; font-family: var(--f-mono); font-size: 12.5px; }
+.ev__title { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: 26px; line-height: 1.12; }
+html[data-style="club"] .ev__title { font-size: 20px; }
+.ev__text { color: var(--muted); font-size: 15.5px; max-width: 40em; }
+.ev__host { font-size: 14px; color: var(--ink); }
+.ev__meta { display: grid; gap: 10px; }
+.ev__time { font-family: var(--f-mono); font-size: 15px; font-variant-numeric: tabular-nums; }
+.ev__act { display: grid; gap: 8px; justify-items: stretch; }
+.ev__act .btn { width: 100%; }
+.ev--today .ev__date span::after { content: " · сегодня"; color: var(--accent-2); }
+html[data-style="evening"] .ev { transition: background-color .2s; }
+html[data-style="evening"] .ev:hover { background: rgba(242, 180, 67, .04); }
+html[data-style="club"] .events { border: 0; gap: 14px; }
+html[data-style="club"] .ev { border: 2px solid var(--ink); border-radius: var(--radius); padding: 20px 22px; background: var(--surface); }
+html[data-style="club"] .ev__tag { font-weight: 700; color: var(--ink); background: color-mix(in srgb, var(--fc) 30%, #fff); border: 2px solid var(--ink); border-radius: 999px; padding: 2px 10px 2px 8px; justify-self: start; }
+html[data-style="club"] .ev__tag::before { border-radius: 50%; border: 1.5px solid var(--ink); }
+.events__empty { padding: 32px 0; color: var(--muted); }
+@media (max-width: 1040px) {
+  .ev { grid-template-columns: 76px minmax(0, 1fr) 190px; }
+  .ev__act { grid-column: 2 / -1; justify-items: start; }
+  .ev__act .btn { width: auto; }
+}
+@media (max-width: 680px) {
+  .ev { grid-template-columns: 58px minmax(0, 1fr); gap: 14px 16px; }
+  .ev__date b { font-size: 34px; }
+  .ev__meta, .ev__act { grid-column: 2 / -1; }
+}
+
+/* ============ Первый визит ============ */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding: 0; margin: 0; list-style: none; counter-reset: step; }
+@media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
+.step { counter-increment: step; display: grid; gap: 10px; padding-top: 22px; border-top: 2px solid var(--ink); }
+.step::before {
+  content: counter(step); font-family: var(--f-display); font-weight: var(--display-weight);
+  font-size: 54px; line-height: 1; color: var(--accent);
+}
+html[data-style="evening"] .step::before { text-shadow: var(--glow); }
+html[data-style="club"] .step { border: 2px solid var(--ink); border-radius: var(--radius-lg); padding: 24px; background: var(--surface); box-shadow: var(--card-shadow); }
+html[data-style="club"] .step:nth-child(1)::before { color: var(--c-book); }
+html[data-style="club"] .step:nth-child(2)::before { color: var(--c-film); }
+html[data-style="club"] .step:nth-child(3)::before { color: var(--c-train); }
+.step h3 { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: 26px; line-height: 1.15; }
+html[data-style="club"] .step h3 { font-size: 20px; }
+.step p { color: var(--muted); font-size: 16px; }
+
+/* ============ Абонементы ============ */
+.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: stretch; }
+@media (max-width: 980px) { .plans { grid-template-columns: 1fr; max-width: 560px; } }
+.plan {
+  display: flex; flex-direction: column; gap: 18px;
+  background: var(--surface); border: var(--bw) solid var(--line); border-radius: var(--radius-lg);
+  padding: 28px; box-shadow: var(--card-shadow); position: relative;
+}
+.plan__name { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: 28px; line-height: 1.1; }
+html[data-style="club"] .plan__name { font-size: 22px; }
+.plan__price { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.plan__price b { font-family: var(--f-display); font-weight: var(--display-weight); font-size: 52px; line-height: 1; font-variant-numeric: tabular-nums; }
+html[data-style="club"] .plan__price b { font-size: 40px; }
+.plan__price span { color: var(--muted); font-size: 15px; }
+.plan__note { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; font-size: 15.5px; }
+.plan li { display: grid; grid-template-columns: 18px 1fr; gap: 10px; align-items: baseline; }
+.plan li::before { content: ""; width: 10px; height: 10px; border: 2px solid var(--accent); border-radius: 50%; transform: translateY(1px); }
+.plan .btn { margin-top: auto; width: 100%; }
+.plan--hot { border-color: var(--accent); border-width: 2px; }
+.plan__badge {
+  position: absolute; top: -13px; left: 26px;
+  font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+  background: var(--accent); color: var(--accent-ink); padding: 5px 10px; border-radius: var(--btn-radius);
+}
+html[data-style="evening"] .plan--hot { box-shadow: 0 0 0 1px var(--accent), 0 20px 60px -20px rgba(242, 180, 67, .35); }
+html[data-style="club"] .plan { border-color: var(--ink); }
+html[data-style="club"] .plan--hot { background: #FFE0EF; }
+html[data-style="club"] .plan__badge { border: 2px solid var(--ink); transform: rotate(-3deg); }
+html[data-style="club"] .plan li::before { border-color: var(--ink); background: var(--c-talk); }
+
+.punch { display: grid; gap: 10px; padding: 16px; border: var(--bw) dashed var(--line); border-radius: var(--radius); }
+.punch__holes { display: flex; gap: 10px; }
+.hole {
+  width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+  border: 2px dashed color-mix(in srgb, var(--ink) 35%, transparent); background: transparent;
+  display: grid; place-items: center; font-family: var(--f-mono); font-size: 11px; color: var(--muted);
+  transition: transform .15s ease;
+}
+.hole:hover { transform: scale(1.06); }
+.hole[aria-pressed="true"] {
+  border: 2px solid var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent);
+  transform: rotate(-12deg); font-weight: 500;
+}
+html[data-style="club"] .hole[aria-pressed="true"] { background: var(--accent); color: var(--ink); border-color: var(--ink); }
+.punch small { color: var(--muted); font-size: 13px; }
+.gift { margin-top: 26px; color: var(--muted); font-size: 15.5px; }
+.gift a { color: var(--ink); }
+
+/* ============ Пространство (план) ============ */
+.space { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
+@media (max-width: 900px) { .space { grid-template-columns: 1fr; } }
+.plan-box { background: var(--surface); border: var(--bw) solid var(--line); border-radius: var(--radius-lg); padding: clamp(12px, 2vw, 22px); box-shadow: var(--card-shadow); }
+html[data-style="club"] .plan-box { border-color: var(--ink); }
+.fp { display: block; width: 100%; height: auto; }
+.fp .zone { fill: transparent; transition: fill .25s ease; }
+.fp .zone.is-on { fill: color-mix(in srgb, var(--accent) 16%, transparent); }
+.fp .wall { fill: none; stroke: var(--ink); stroke-width: 8; stroke-linecap: square; }
+.fp .wall-in { fill: none; stroke: var(--ink); stroke-width: 4; stroke-linecap: square; }
+.fp .gap { fill: var(--surface); }
+.fp .furn { fill: color-mix(in srgb, var(--ink) 16%, var(--surface)); }
+.fp .furn-2 { fill: color-mix(in srgb, var(--ink) 30%, var(--surface)); }
+.fp .screen { stroke: var(--accent); stroke-width: 6; stroke-linecap: round; }
+.fp .door { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 4 4; }
+.fp text { font-family: var(--f-mono); font-size: 16px; fill: var(--ink); }
+.fp text.sm { font-size: 13px; fill: var(--muted); }
+.zones-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.zones-list li {
+  display: grid; gap: 4px; padding: 16px 14px; border-bottom: var(--bw) solid var(--line);
+  cursor: default; border-radius: var(--radius); transition: background-color .2s;
+}
+.zones-list li:first-child { border-top: var(--bw) solid var(--line); }
+.zones-list li.is-on { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.zones-list b { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: 22px; line-height: 1.2; }
+html[data-style="club"] .zones-list b { font-size: 18px; }
+.zones-list span { color: var(--muted); font-size: 15.5px; }
+.hours { margin-top: 22px; display: grid; gap: 6px; font-family: var(--f-mono); font-size: 14px; }
+.hours div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dotted var(--line); padding-bottom: 6px; }
+
+/* ============ Аренда ============ */
+.rent {
+  display: grid; grid-template-columns: minmax(0, 1.4fr) auto; gap: 24px 40px; align-items: center;
+  padding: clamp(24px, 4vw, 44px); border: var(--bw) solid var(--line); border-radius: var(--radius-lg);
+  background: var(--surface); box-shadow: var(--card-shadow);
+}
+.rent h3 { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: clamp(26px, 3vw, 36px); line-height: 1.1; }
+html[data-style="club"] .rent { border-color: var(--ink); background: #D9F5E6; }
+html[data-style="club"] .rent h3 { font-size: clamp(22px, 2.6vw, 30px); }
+.rent p { color: var(--muted); margin-top: 10px; max-width: 38em; }
+@media (max-width: 760px) { .rent { grid-template-columns: 1fr; } }
+
+/* ============ Вопросы ============ */
+.faq { display: grid; max-width: 860px; border-top: var(--bw) solid var(--line); }
+.faq details { border-bottom: var(--bw) solid var(--line); }
+.faq summary {
+  list-style: none; cursor: pointer; padding: 22px 44px 22px 0; position: relative;
+  font-family: var(--f-display); font-weight: var(--h2-weight); font-size: 23px; line-height: 1.25;
+}
+html[data-style="club"] .faq summary { font-size: 18px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+"; position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  font-family: var(--f-mono); font-size: 24px; color: var(--accent); transition: transform .2s ease;
+}
+.faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+.faq details p { padding: 0 0 22px; color: var(--muted); max-width: 44em; }
+
+/* ============ Финал ============ */
+.final { text-align: left; display: grid; gap: 22px; justify-items: start; }
+.final h2 { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: clamp(40px, 7vw, 96px); line-height: 1; letter-spacing: -.01em; text-shadow: var(--glow); }
+html[data-style="club"] .final h2 { font-size: clamp(32px, 5.4vw, 72px); letter-spacing: -.03em; }
+.final h2 em { font-style: normal; color: var(--accent); }
+html[data-style="club"] .final h2 em { color: var(--ink); background: var(--accent); padding: 0 .1em; border-radius: 12px; }
+.final p { color: var(--muted); font-size: 19px; max-width: 34em; }
+.promo { font-family: var(--f-mono); color: var(--ink); background: color-mix(in srgb, var(--accent) 14%, transparent); padding: 2px 8px; border-radius: 4px; }
+
+/* ============ Подвал ============ */
+.foot { border-top: var(--bw) solid var(--line); padding-block: 48px 40px; }
+.foot__grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; }
+@media (max-width: 760px) { .foot__grid { grid-template-columns: 1fr; } }
+.foot h3 { font-family: var(--f-mono); font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 400; margin-bottom: 10px; }
+.foot p, .foot li { font-size: 15.5px; }
+.foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.foot .copy { margin-top: 36px; font-size: 13px; color: var(--muted); }
+.selectable { user-select: all; font-variant-numeric: tabular-nums; }
+
+/* ============ Запись (модальное окно) ============ */
+.modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgba(10, 8, 6, .55); }
+.modal__panel {
+  width: 100%; max-width: 480px; max-height: calc(100% - 32px); overflow: auto;
+  background: var(--surface); color: var(--ink); border: var(--bw) solid var(--line);
+  border-radius: var(--radius-lg); padding: 28px; box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .5);
+}
+html[data-style="club"] .modal__panel { border-color: var(--ink); box-shadow: 8px 8px 0 var(--ink); }
+.modal__head { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
+.modal__title { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: 26px; line-height: 1.15; margin-top: 6px; }
+html[data-style="club"] .modal__title { font-size: 21px; }
+.x { border: 0; background: transparent; font-size: 26px; line-height: 1; cursor: pointer; color: var(--muted); padding: 4px; }
+.form { display: grid; gap: 16px; margin-top: 22px; }
+.field { display: grid; gap: 6px; }
+.field label, .field legend { font-size: 14px; color: var(--muted); }
+.field input[type="text"], .field input[type="tel"] {
+  font: inherit; color: var(--ink); background: var(--bg);
+  border: var(--bw) solid var(--line); border-radius: var(--radius); padding: 13px 14px;
+}
+html[data-style="club"] .field input[type="text"], html[data-style="club"] .field input[type="tel"] { border-color: var(--ink); }
+fieldset.field { border: 0; padding: 0; margin: 0; }
+.opt { display: flex; gap: 10px; align-items: center; padding: 10px 0; font-size: 15.5px; border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+.opt input { accent-color: var(--accent); width: 18px; height: 18px; }
+.demo-note { font-size: 13px; color: var(--muted); }
+.done { display: grid; gap: 12px; margin-top: 18px; }
+.done__big { font-family: var(--f-display); font-weight: var(--h2-weight); font-size: 30px; line-height: 1.1; }
+
+/* ============ Переключатель стилей (не часть сайта) ============ */
+.switcher {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 40;
+  width: max-content; max-width: calc(100% - 24px);
+  display: grid; gap: 6px; justify-items: center;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.switcher__bar {
+  display: flex; align-items: center; gap: 4px; padding: 5px;
+  background: rgba(20, 20, 22, .94); color: #fff; border-radius: 999px;
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, .45); max-width: 100%;
+}
+.switcher__label { font-size: 12px; color: rgba(255, 255, 255, .6); padding: 0 8px 0 10px; white-space: nowrap; }
+.switcher button {
+  border: 0; background: transparent; color: #fff; cursor: pointer; white-space: nowrap;
+  padding: 9px 14px; border-radius: 999px; font-size: 14px; font-weight: 500;
+}
+.switcher button[aria-pressed="true"] { background: #fff; color: #141416; }
+.switcher button:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.switcher__refs {
+  font-size: 12px; color: #fff; background: rgba(20, 20, 22, .82); padding: 5px 12px; border-radius: 999px;
+  max-width: 100%; text-align: center;
+}
+@media (max-width: 560px) {
+  .switcher__label, .switcher__refs { display: none; }
+  .switcher button { padding: 9px 11px; font-size: 13px; }
+}
+
+/* Зерно плёнки — только «Вечерний сеанс» */
+html[data-style="evening"] body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .07; mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<script>
+  (function () {
+    var root = document.documentElement, allowed = ["library", "evening", "club"], s = null;
+    root.classList.add("js");
+    var h = (location.hash || "").slice(1);
+    if (allowed.indexOf(h) > -1) s = h;
+    if (!s) { try { s = localStorage.getItem("prostranstvo-style"); } catch (e) {} }
+    root.setAttribute("data-style", allowed.indexOf(s) > -1 ? s : "library");
+  })();
+</script>
+
+<header class="top" id="top">
+  <div class="wrap top__in">
+    <a class="logo" href="#top"><span class="logo__mark" aria-hidden="true"></span>Пространство</a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#formats">Форматы</a>
+      <a href="#afisha">Афиша</a>
+      <a href="#abonement">Абонементы</a>
+      <a href="#space">Как у нас</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+    <a class="btn btn--primary btn--sm" href="#abonement"><span class="hide-sm">Купить абонемент</span><span class="show-sm">Абонемент</span></a>
+  </div>
+</header>
+
+<main>
+  <!-- Первый экран -->
+  <section class="hero" aria-labelledby="word">
+    <canvas class="hero__beam" id="beam" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="titlepage">
+        <span class="label">Клубы · кино · лекции · тренинги · встречи</span>
+        <span class="label">Москва · ул. Садовая, 12</span>
+      </div>
+      <h1 class="word" id="word" aria-label="Пространство"><span aria-hidden="true">П</span><span aria-hidden="true">р</span><span aria-hidden="true">о</span><span aria-hidden="true">с</span><span aria-hidden="true">т</span><span aria-hidden="true">р</span><span aria-hidden="true">а</span><span aria-hidden="true">н</span><span aria-hidden="true">с</span><span aria-hidden="true">т</span><span aria-hidden="true">в</span><span aria-hidden="true">о</span></h1>
+
+      <div class="hero__grid">
+        <div>
+          <p class="tagline">Вечера с книгами, кино и&nbsp;людьми, <em>с&nbsp;которыми интересно</em></p>
+          <p class="lead">Каждую неделю здесь проходят книжные клубы, кинопоказы с обсуждением, лекции, тренинги и тематические встречи. Можно прийти один раз, а можно взять абонемент и сделать Пространство своим местом.</p>
+          <div class="cta-row">
+            <a class="btn btn--primary" href="#afisha">Смотреть афишу</a>
+            <a class="btn btn--ghost" href="#abonement">Абонементы от 2&nbsp;400&nbsp;₽</a>
+          </div>
+          <ul class="facts">
+            <li>Можно прийти одному</li>
+            <li>Чай и печенье бесплатно</li>
+            <li>Книги можно брать домой</li>
+            <li>Зал на 40 человек</li>
+          </ul>
+        </div>
+
+        <aside class="tonight" aria-label="Сегодня вечером">
+          <div class="tonight__when">
+            <span class="label">Сегодня, чт 24 сентября</span>
+            <span class="label">19:30 · 2,5 ч</span>
+          </div>
+          <h2 class="tonight__title">«Короткие встречи»</h2>
+          <p class="tonight__text">Кира Муратова, 1967. Показ из цикла «Оттепель», после фильма обсуждаем его с киноведом Ильёй Соколовым.</p>
+          <div class="tonight__seats">
+            <div class="seats"><span>Свободно <b>6 мест</b> из 30</span><span>Кино</span></div>
+            <div class="meter"><i style="width: 80%"></i></div>
+          </div>
+          <div class="tonight__row">
+            <span class="price"><b>700 ₽</b> или по абонементу</span>
+            <button class="btn btn--primary btn--sm" type="button" data-book="1">Записаться</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Форматы -->
+  <section class="section section--alt" id="formats" aria-labelledby="formats-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Что здесь происходит</span>
+        <h2 id="formats-h">Шесть способов провести вечер</h2>
+        <p>Нажмите на формат, чтобы увидеть ближайшие встречи в афише.</p>
+      </div>
+
+      <div class="formats">
+        <button class="fmt f-book" type="button" data-filter="book">
+          <span class="fmt__cover">
+            <svg viewBox="0 0 320 180" aria-hidden="true">
+              <rect x="40" y="148" width="240" height="7" class="cv-ink"/>
+              <rect x="58" y="66" width="24" height="82" class="cv-p"/>
+              <rect x="84" y="44" width="16" height="104" class="cv-p2"/>
+              <rect x="102" y="74" width="30" height="74" class="cv-p"/>
+              <rect x="134" y="52" width="14" height="96" class="cv-ink"/>
+              <rect x="150" y="60" width="26" height="88" class="cv-p2"/>
+              <rect x="178" y="38" width="20" height="110" class="cv-p"/>
+              <rect x="206" y="58" width="22" height="92" class="cv-p2" transform="rotate(16 217 148)"/>
+              <rect x="244" y="96" width="30" height="52" class="cv-p"/>
+            </svg>
+          </span>
+          <span class="fmt__body">
+            <span class="fmt__title">Книжный клуб</span>
+            <span class="fmt__text">Две группы: современная проза и классика. Одна книга в месяц, спорим, соглашаемся, пьём чай.</span>
+            <span class="fmt__meta"><span>Ср и сб</span><span>2 часа</span><span>до 20 человек</span></span>
+            <span class="fmt__go">Ближайшие встречи</span>
+          </span>
+        </button>
+
+        <button class="fmt f-film" type="button" data-filter="film">
+          <span class="fmt__cover">
+            <svg viewBox="0 0 320 180" aria-hidden="true">
+              <defs>
+                <pattern id="perf" width="22" height="12" patternUnits="userSpaceOnUse">
+                  <rect x="7" y="2" width="9" height="7" rx="1.5" class="cv-bg"/>
+                </pattern>
+              </defs>
+              <rect x="0" y="44" width="320" height="92" class="cv-ink"/>
+              <rect x="0" y="47" width="320" height="12" fill="url(#perf)"/>
+              <rect x="0" y="122" width="320" height="12" fill="url(#perf)"/>
+              <rect x="14" y="64" width="86" height="52" class="cv-p2"/>
+              <rect x="116" y="64" width="86" height="52" class="cv-p"/>
+              <rect x="218" y="64" width="86" height="52" class="cv-p2"/>
+            </svg>
+          </span>
+          <span class="fmt__body">
+            <span class="fmt__title">Кино</span>
+            <span class="fmt__text">Фильмы циклами на большом экране, после показа обсуждение. Сейчас идёт цикл «Оттепель».</span>
+            <span class="fmt__meta"><span>Четверги</span><span>2,5 часа</span><span>30 кресел</span></span>
+            <span class="fmt__go">Ближайшие показы</span>
+          </span>
+        </button>
+
+        <button class="fmt f-talk" type="button" data-filter="talk">
+          <span class="fmt__cover">
+            <svg viewBox="0 0 320 180" aria-hidden="true">
+              <circle cx="112" cy="90" r="20" class="cv-p"/>
+              <path d="M152 56 A48 48 0 0 1 152 124" class="cv-s"/>
+              <path d="M180 36 A76 76 0 0 1 180 144" class="cv-s2"/>
+              <path d="M208 18 A104 104 0 0 1 208 162" class="cv-s"/>
+              <rect x="98" y="118" width="28" height="44" class="cv-ink"/>
+            </svg>
+          </span>
+          <span class="fmt__body">
+            <span class="fmt__title">Лекции</span>
+            <span class="fmt__text">Искусство, история, психология и наука простым языком. Вопросы из зала приветствуются.</span>
+            <span class="fmt__meta"><span>Вторники</span><span>1,5 часа</span><span>до 40 человек</span></span>
+            <span class="fmt__go">Ближайшие лекции</span>
+          </span>
+        </button>
+
+        <button class="fmt f-train" type="button" data-filter="train">
+          <span class="fmt__cover">
+            <svg viewBox="0 0 320 180" aria-hidden="true">
+              <rect x="58" y="126" width="52" height="30" class="cv-p2"/>
+              <rect x="110" y="98" width="52" height="58" class="cv-p"/>
+              <rect x="162" y="70" width="52" height="86" class="cv-p2"/>
+              <rect x="214" y="42" width="52" height="114" class="cv-p"/>
+              <circle cx="240" cy="26" r="11" class="cv-ink"/>
+              <rect x="40" y="156" width="244" height="6" class="cv-ink"/>
+            </svg>
+          </span>
+          <span class="fmt__body">
+            <span class="fmt__title">Тренинги</span>
+            <span class="fmt__text">Практикумы в группах до 16 человек: выступления, общение, эмоции, работа с временем.</span>
+            <span class="fmt__meta"><span>Выходные</span><span>3–4 часа</span><span>до 16 человек</span></span>
+            <span class="fmt__go">Ближайшие тренинги</span>
+          </span>
+        </button>
+
+        <button class="fmt f-meet" type="button" data-filter="meet">
+          <span class="fmt__cover">
+            <svg viewBox="0 0 320 180" aria-hidden="true">
+              <circle cx="160" cy="90" r="34" class="cv-p2"/>
+              <circle cx="222" cy="90" r="11" class="cv-p"/>
+              <circle cx="203.8" cy="133.8" r="11" class="cv-ink"/>
+              <circle cx="160" cy="152" r="11" class="cv-p"/>
+              <circle cx="116.2" cy="133.8" r="11" class="cv-p"/>
+              <circle cx="98" cy="90" r="11" class="cv-ink"/>
+              <circle cx="116.2" cy="46.2" r="11" class="cv-p"/>
+              <circle cx="160" cy="28" r="11" class="cv-p"/>
+              <circle cx="203.8" cy="46.2" r="11" class="cv-p"/>
+            </svg>
+          </span>
+          <span class="fmt__body">
+            <span class="fmt__title">Тематические встречи</span>
+            <span class="fmt__text">Разговорные вечера о переезде, работе, отношениях и обо всём, о чём хочется поговорить с новыми людьми.</span>
+            <span class="fmt__meta"><span>Пятницы</span><span>2 часа</span><span>до 30 человек</span></span>
+            <span class="fmt__go">Ближайшие встречи</span>
+          </span>
+        </button>
+
+        <button class="fmt f-craft" type="button" data-filter="craft">
+          <span class="fmt__cover">
+            <svg viewBox="0 0 320 180" aria-hidden="true">
+              <rect x="150" y="44" width="96" height="96" rx="6" class="cv-p2" transform="rotate(6 198 92)"/>
+              <rect x="84" y="36" width="96" height="96" rx="6" class="cv-p" transform="rotate(-8 132 84)"/>
+              <path d="M104 64 L160 108 M104 88 L144 120 M122 52 L168 90" class="cv-line"/>
+              <rect x="60" y="150" width="200" height="6" class="cv-ink"/>
+            </svg>
+          </span>
+          <span class="fmt__body">
+            <span class="fmt__title">Мастерские</span>
+            <span class="fmt__text">Линогравюра, керамика, зины. Делаем руками и уносим результат домой.</span>
+            <span class="fmt__meta"><span>Субботы</span><span>3 часа</span><span>до 12 человек</span></span>
+            <span class="fmt__go">Ближайшие мастерские</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Афиша -->
+  <section class="section" id="afisha" aria-labelledby="afisha-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Афиша · 24 сентября — 4 октября</span>
+        <h2 id="afisha-h">Ближайшие встречи</h2>
+        <p>Клубы, кино, лекции и встречи входят в абонемент. На тренинги и мастерские по абонементу действует скидка.</p>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Фильтр по формату"></div>
+      <div class="events" id="events"></div>
+    </div>
+  </section>
+
+  <!-- Первый визит -->
+  <section class="section section--alt" aria-labelledby="first-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Впервые у нас</span>
+        <h2 id="first-h">Как прийти в первый раз</h2>
+      </div>
+      <ol class="steps">
+        <li class="step">
+          <h3>Выберите встречу</h3>
+          <p>В афише всё на две недели вперёд. Если не знаете, с чего начать, идите в книжный клуб или на кино: там проще всего познакомиться.</p>
+        </li>
+        <li class="step">
+          <h3>Запишитесь</h3>
+          <p>Оплатите разовый визит или купите абонемент. Место в зале закрепляется за вами до начала встречи.</p>
+        </li>
+        <li class="step">
+          <h3>Приходите за 10 минут</h3>
+          <p>Чай уже заварен. Ведущий встретит у входа и познакомит с остальными.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Абонементы -->
+  <section class="section" id="abonement" aria-labelledby="abon-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Абонементы</span>
+        <h2 id="abon-h">Чем чаще приходите, тем дешевле вечер</h2>
+        <p>Абонемент можно заморозить на две недели, если уезжаете. Визиты с «Четырёх вечеров» можно отдать другу.</p>
+      </div>
+
+      <div class="plans">
+        <article class="plan">
+          <h3 class="plan__name">Разовый визит</h3>
+          <div class="plan__price"><b>700 ₽</b><span>за встречу</span></div>
+          <p class="plan__note">Первый визит 500 ₽ по промокоду</p>
+          <ul>
+            <li>Любой клуб, кинопоказ, лекция или встреча</li>
+            <li>Чай, кофе и печенье</li>
+            <li>Место в зале закреплено за вами</li>
+          </ul>
+          <a class="btn btn--ghost" href="#afisha">Выбрать встречу</a>
+        </article>
+
+        <article class="plan plan--hot">
+          <span class="plan__badge">Берут чаще всего</span>
+          <h3 class="plan__name">Четыре вечера</h3>
+          <div class="plan__price"><b>2 400 ₽</b><span>600 ₽ за встречу</span></div>
+          <p class="plan__note">Действует 6 недель</p>
+          <ul>
+            <li>Любые 4 встречи из афиши</li>
+            <li>Визит можно отдать другу</li>
+            <li>Скидка 10% на тренинги и мастерские</li>
+          </ul>
+          <div class="punch">
+            <div class="punch__holes" role="group" aria-label="Отметки о посещениях">
+              <button class="hole" type="button" aria-pressed="true" aria-label="Визит 1">24.09</button>
+              <button class="hole" type="button" aria-pressed="true" aria-label="Визит 2">26.09</button>
+              <button class="hole" type="button" aria-pressed="false" aria-label="Визит 3">3</button>
+              <button class="hole" type="button" aria-pressed="false" aria-label="Визит 4">4</button>
+            </div>
+            <small>Так выглядит абонемент: каждый визит отмечаем. Нажмите на кружок.</small>
+          </div>
+          <button class="btn btn--primary" type="button" data-plan="Четыре вечера · 2 400 ₽">Купить абонемент</button>
+        </article>
+
+        <article class="plan">
+          <h3 class="plan__name">Свой человек</h3>
+          <div class="plan__price"><b>4 900 ₽</b><span>в месяц</span></div>
+          <p class="plan__note">Выгодно от 7 визитов в месяц</p>
+          <ul>
+            <li>Все клубы, кино, лекции и встречи без ограничений</li>
+            <li>Скидка 20% на тренинги и мастерские</li>
+            <li>Книги из библиотеки домой</li>
+            <li>Днём можно работать в тихой комнате</li>
+            <li>Раз в месяц приводите гостя бесплатно</li>
+          </ul>
+          <button class="btn btn--ghost" type="button" data-plan="Свой человек · 4 900 ₽ в месяц">Оформить</button>
+        </article>
+      </div>
+      <p class="gift">Хотите подарить вечер? Есть <a href="#faq">подарочные сертификаты</a> на любую сумму от 1 000 ₽.</p>
+    </div>
+  </section>
+
+  <!-- Пространство -->
+  <section class="section section--alt" id="space" aria-labelledby="space-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Как у нас</span>
+        <h2 id="space-h">280 квадратных метров для чтения, кино и разговоров</h2>
+        <p>Наведите на комнату в списке, чтобы найти её на плане.</p>
+      </div>
+
+      <div class="space">
+        <div class="plan-box">
+          <svg class="fp" viewBox="0 0 640 420" role="img" aria-label="План Пространства: большой зал, библиотека, тихая комната, кухня и вход">
+            <defs>
+              <pattern id="seat" width="30" height="30" patternUnits="userSpaceOnUse">
+                <rect x="7" y="9" width="16" height="12" rx="3" class="furn-2"/>
+              </pattern>
+            </defs>
+            <g>
+              <rect class="zone" data-zone="hall" x="14" y="14" width="366" height="246"/>
+              <rect class="zone" data-zone="library" x="380" y="14" width="246" height="186"/>
+              <rect class="zone" data-zone="quiet" x="380" y="200" width="246" height="206"/>
+              <rect class="zone" data-zone="kitchen" x="14" y="260" width="206" height="146"/>
+              <rect class="zone" data-zone="entry" x="220" y="260" width="160" height="146"/>
+            </g>
+            <!-- зал -->
+            <line class="screen" x1="74" y1="32" x2="320" y2="32"/>
+            <rect x="77" y="66" width="240" height="150" fill="url(#seat)"/>
+            <text x="30" y="246">Большой зал · 40 мест</text>
+            <!-- библиотека -->
+            <rect class="furn" x="392" y="22" width="222" height="12"/>
+            <rect class="furn" x="602" y="22" width="12" height="166"/>
+            <circle class="furn-2" cx="440" cy="104" r="16"/>
+            <circle class="furn-2" cx="510" cy="130" r="16"/>
+            <circle class="furn" cx="474" cy="118" r="9"/>
+            <text x="394" y="186">Библиотека</text>
+            <!-- тихая комната -->
+            <rect class="furn" x="420" y="282" width="164" height="40" rx="4"/>
+            <circle class="furn-2" cx="444" cy="266" r="8"/><circle class="furn-2" cx="484" cy="266" r="8"/><circle class="furn-2" cx="524" cy="266" r="8"/><circle class="furn-2" cx="564" cy="266" r="8"/>
+            <circle class="furn-2" cx="444" cy="338" r="8"/><circle class="furn-2" cx="484" cy="338" r="8"/><circle class="furn-2" cx="524" cy="338" r="8"/><circle class="furn-2" cx="564" cy="338" r="8"/>
+            <text x="394" y="392">Тихая комната</text>
+            <!-- кухня -->
+            <rect class="furn" x="24" y="384" width="150" height="16"/>
+            <circle class="furn" cx="118" cy="324" r="22"/>
+            <circle class="furn-2" cx="118" cy="292" r="7"/><circle class="furn-2" cx="150" cy="324" r="7"/><circle class="furn-2" cx="118" cy="356" r="7"/><circle class="furn-2" cx="86" cy="324" r="7"/>
+            <text x="30" y="286">Кухня</text>
+            <!-- вход -->
+            <rect class="furn" x="232" y="274" width="8" height="84"/>
+            <text x="256" y="292">Вход</text>
+            <text class="sm" x="256" y="312">гардероб</text>
+            <!-- стены -->
+            <rect class="wall" x="10" y="10" width="620" height="400"/>
+            <rect class="gap" x="282" y="404" width="52" height="12"/>
+            <path class="door" d="M282 410 A52 52 0 0 1 334 358"/>
+            <path class="wall-in" d="M380 10 V118 M380 162 V300 M380 344 V410"/>
+            <path class="wall-in" d="M10 260 H96 M142 260 H266 M322 260 H380"/>
+            <path class="wall-in" d="M220 260 V318 M220 362 V410"/>
+            <path class="wall-in" d="M380 200 H478 M522 200 H630"/>
+          </svg>
+        </div>
+
+        <div>
+          <ul class="zones-list" id="zones">
+            <li data-zone="hall" tabindex="0"><b>Большой зал</b><span>40 мест, проектор и экран на три метра, хороший звук. Здесь проходят кино, лекции и клубы.</span></li>
+            <li data-zone="library" tabindex="0"><b>Библиотека</b><span>800 книг: проза, нон-фикшн и всё, что читали в клубах. По абонементу «Свой человек» книги можно брать домой.</span></li>
+            <li data-zone="quiet" tabindex="0"><b>Тихая комната</b><span>Днём здесь читают и работают с ноутбуком. 8 мест, розетка у каждого.</span></li>
+            <li data-zone="kitchen" tabindex="0"><b>Кухня</b><span>Чай, кофе и печенье для гостей бесплатно. Свою еду приносить можно.</span></li>
+            <li data-zone="entry" tabindex="0"><b>Вход и гардероб</b><span>Второй этаж, есть лифт. Пледы на случай холодного вечера.</span></li>
+          </ul>
+          <div class="hours" aria-label="Часы работы">
+            <div><span>Вт — пт</span><span>12:00 — 23:00</span></div>
+            <div><span>Сб — вс</span><span>11:00 — 22:00</span></div>
+            <div><span>Пн</span><span>выходной</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Аренда -->
+  <section class="section" aria-labelledby="rent-h" style="padding-bottom: 0">
+    <div class="wrap">
+      <div class="rent">
+        <div>
+          <span class="label">Аренда</span>
+          <h3 id="rent-h" style="margin-top: 10px">Проведите у нас своё событие</h3>
+          <p>Зал на 40 человек с проектором, звуком и кухней. Подходит для лекций, презентаций, спокойных дней рождения и командных встреч. От 3 000 ₽ в час.</p>
+        </div>
+        <a class="btn btn--ghost" href="#contacts">Узнать условия</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Вопросы -->
+  <section class="section" id="faq" aria-labelledby="faq-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Вопросы</span>
+        <h2 id="faq-h">Что обычно спрашивают</h2>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>Можно прийти одному, если я никого не знаю?</summary>
+          <p>Да, большинство так и приходят. В начале встречи ведущий всех знакомит, а обсуждение идёт в небольших группах, так что молчать в углу не придётся.</p>
+        </details>
+        <details>
+          <summary>Нужно ли дочитать книгу до встречи клуба?</summary>
+          <p>Желательно, но не обязательно. Можно прийти послушать и решить, стоит ли читать. Спойлеров будет много.</p>
+        </details>
+        <details>
+          <summary>Что будет, если я не смогу прийти?</summary>
+          <p>Отмените запись минимум за 24 часа, и визит вернётся на абонемент. За разовый визит вернём деньги.</p>
+        </details>
+        <details>
+          <summary>Сколько длится встреча?</summary>
+          <p>Клубы и тематические встречи идут около двух часов, лекции полтора, кинопоказ с обсуждением два с половиной. Тренинги и мастерские от трёх часов.</p>
+        </details>
+        <details>
+          <summary>Можно подарить абонемент?</summary>
+          <p>Да. Есть сертификаты на любую сумму от 1 000 ₽ и на любой абонемент. Сертификат действует полгода.</p>
+        </details>
+        <details>
+          <summary>Есть ли возрастные ограничения?</summary>
+          <p>Вечерние встречи для взрослых 18+. По субботам утром бывают семейные мастерские, они отмечены в афише.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Финал -->
+  <section class="section section--alt" aria-labelledby="final-h">
+    <div class="wrap final">
+      <h2 id="final-h">Первый вечер за <em>500&nbsp;₽</em></h2>
+      <p>Выберите любую встречу из афиши и введите промокод <span class="promo">ПЕРВЫЙ</span> при записи.</p>
+      <a class="btn btn--primary" href="#afisha">Выбрать первую встречу</a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="contacts">
+  <div class="wrap">
+    <div class="foot__grid">
+      <div>
+        <a class="logo" href="#top"><span class="logo__mark" aria-hidden="true"></span>Пространство</a>
+        <p style="margin-top: 12px; color: var(--muted); max-width: 26em;">Место для книжных клубов, кино, лекций, тренингов и встреч.</p>
+      </div>
+      <div>
+        <h3>Адрес и часы</h3>
+        <ul>
+          <li>Москва, ул. Садовая, 12, 2 этаж</li>
+          <li>Вт — пт 12:00 — 23:00</li>
+          <li>Сб — вс 11:00 — 22:00</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Связаться</h3>
+        <ul>
+          <li class="selectable">+7 900 000-00-00</li>
+          <li class="selectable">hello@prostranstvo.example</li>
+          <li>Telegram · ВКонтакте</li>
+        </ul>
+      </div>
+    </div>
+    <p class="copy">© 2026 Пространство. Прототип: адрес, цены, события и люди на странице вымышлены.</p>
+  </div>
+</footer>
+
+<!-- Запись -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal__head">
+      <div>
+        <span class="label" id="modal-kicker">Запись</span>
+        <h2 class="modal__title" id="modal-title">…</h2>
+      </div>
+      <button class="x" type="button" id="modal-close" aria-label="Закрыть">×</button>
+    </div>
+    <form class="form" id="form" novalidate>
+      <div class="field">
+        <label for="f-name">Имя</label>
+        <input id="f-name" type="text" autocomplete="given-name" required placeholder="Как к вам обращаться">
+      </div>
+      <div class="field">
+        <label for="f-phone">Телефон</label>
+        <input id="f-phone" type="tel" autocomplete="tel" required placeholder="+7 900 000-00-00">
+      </div>
+      <fieldset class="field" id="f-pay">
+        <legend>Оплата</legend>
+        <label class="opt"><input type="radio" name="pay" id="pay-once" value="once" checked> <span id="pay-once-text">Разовый визит, 700 ₽</span></label>
+        <label class="opt"><input type="radio" name="pay" id="pay-abon" value="abon"> Списать визит с абонемента</label>
+        <label class="opt"><input type="radio" name="pay" id="pay-buy" value="buy"> Купить «Четыре вечера» за 2 400 ₽</label>
+      </fieldset>
+      <button class="btn btn--primary" type="submit" id="f-submit">Записаться</button>
+      <p class="demo-note">Это прототип: заявка никуда не отправляется. На настоящем сайте здесь будет оплата и подтверждение по СМС.</p>
+    </form>
+    <div class="done" id="done" hidden>
+      <p class="done__big" id="done-title">Готово</p>
+      <p id="done-text"></p>
+      <p class="demo-note">Прототип: заявка никуда не отправлена.</p>
+      <button class="btn btn--ghost" type="button" id="done-close">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Переключатель стилей: только для прототипа -->
+<div class="switcher" aria-label="Вариант дизайна">
+  <div class="switcher__bar" role="group" aria-label="Вариант дизайна">
+    <span class="switcher__label">Вариант</span>
+    <button type="button" data-set="library">Библиотека</button>
+    <button type="button" data-set="evening">Вечерний сеанс</button>
+    <button type="button" data-set="club">Клуб</button>
+  </div>
+  <p class="switcher__refs" id="refs"></p>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+
+  /* ---------- данные афиши (пример) ---------- */
+  var FORMATS = {
+    book:  { one: "Книжный клуб", many: "Книжный клуб" },
+    film:  { one: "Кино", many: "Кино" },
+    talk:  { one: "Лекция", many: "Лекции" },
+    train: { one: "Тренинг", many: "Тренинги" },
+    meet:  { one: "Встреча", many: "Встречи" },
+    craft: { one: "Мастерская", many: "Мастерские" }
+  };
+  var EVENTS = [
+    { id: 1,  day: 24, mon: "сент", wd: "чт", today: true, time: "19:30", dur: "2,5 ч", f: "film",
+      title: "«Короткие встречи»", text: "Кира Муратова, 1967. Цикл «Оттепель»: после показа обсуждаем фильм.", host: "Ведёт киновед Илья Соколов", left: 6, total: 30, price: 700, incl: true },
+    { id: 2,  day: 25, mon: "сент", wd: "пт", time: "19:00", dur: "2 ч", f: "meet",
+      title: "Как переехать в новый город и найти своих", text: "Разговорный вечер: истории, вопросы и знакомства в небольших группах.", host: "Ведёт психолог Мария Орлова", left: 11, total: 24, price: 700, incl: true },
+    { id: 3,  day: 26, mon: "сент", wd: "сб", time: "12:00", dur: "3 ч", f: "craft",
+      title: "Линогравюра за один день", text: "Вырежем штамп и напечатаем открытки. Материалы включены.", host: "Ведёт художница Вера Ким", left: 3, total: 12, price: 2200, incl: false },
+    { id: 4,  day: 26, mon: "сент", wd: "сб", time: "17:00", dur: "2 ч", f: "book",
+      title: "«Лавр» Евгения Водолазкина", text: "Обсуждаем роман о времени, вине и любви. Можно прийти, не дочитав.", host: "Ведёт филолог Анна Лебедева", left: 9, total: 20, price: 700, incl: true },
+    { id: 5,  day: 27, mon: "сент", wd: "вс", time: "15:00", dur: "4 ч", f: "train",
+      title: "Говорить спокойно: публичные выступления", text: "Упражнения, видеозапись и разбор. Для тех, кто волнуется у микрофона.", host: "Ведёт тренер Дмитрий Власов", left: 0, total: 16, price: 3500, incl: false },
+    { id: 6,  day: 29, mon: "сент", wd: "вт", time: "19:30", dur: "1,5 ч", f: "talk",
+      title: "Как смотреть современное искусство", text: "Лекция без терминов: на что обращать внимание в музее и почему это работает.", host: "Читает куратор Ольга Миронова", left: 18, total: 40, price: 700, incl: true },
+    { id: 7,  day: 30, mon: "сент", wd: "ср", time: "19:30", dur: "2 ч", f: "book",
+      title: "«Стоунер» Джона Уильямса", text: "Тихий роман о жизни, работе и верности себе.", host: "Ведёт филолог Анна Лебедева", left: 12, total: 20, price: 700, incl: true },
+    { id: 8,  day: 1,  mon: "окт",  wd: "чт", time: "19:30", dur: "2,5 ч", f: "film",
+      title: "«Июльский дождь»", text: "Марлен Хуциев, 1966. Цикл «Оттепель», показ с обсуждением.", host: "Ведёт киновед Илья Соколов", left: 21, total: 30, price: 700, incl: true },
+    { id: 9,  day: 2,  mon: "окт",  wd: "пт", time: "19:00", dur: "3 ч", f: "meet",
+      title: "Вечер настольных игр", text: "«Кодовые имена», «Диксит» и новинки. Правила объясним, пару найдём.", host: "Ведёт команда Пространства", left: 14, total: 30, price: 500, incl: true },
+    { id: 10, day: 3,  mon: "окт",  wd: "сб", time: "13:00", dur: "4 ч", f: "train",
+      title: "Эмоциональный интеллект: практикум", text: "Учимся замечать свои эмоции и спокойно договариваться с людьми.", host: "Ведёт психолог Мария Орлова", left: 7, total: 16, price: 3200, incl: false },
+    { id: 11, day: 4,  mon: "окт",  wd: "вс", time: "18:00", dur: "1,5 ч", f: "talk",
+      title: "Москва в пяти домах", text: "История города через пять зданий, мимо которых мы ходим каждый день.", host: "Читает историк Павел Громов", left: 25, total: 40, price: 700, incl: true }
+  ];
+
+  function plural(n, one, few, many) {
+    var m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+    return many;
+  }
+  function money(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₽"; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  /* ---------- афиша ---------- */
+  var chipsEl = document.getElementById("chips"), eventsEl = document.getElementById("events");
+  var current = "all";
+
+  function renderChips() {
+    var counts = {};
+    EVENTS.forEach(function (e) { counts[e.f] = (counts[e.f] || 0) + 1; });
+    var html = '<button class="chip" type="button" data-f="all" aria-pressed="' + (current === "all") + '">Все <small>' + EVENTS.length + "</small></button>";
+    Object.keys(FORMATS).forEach(function (k) {
+      if (!counts[k]) return;
+      html += '<button class="chip" type="button" data-f="' + k + '" aria-pressed="' + (current === k) + '">' + FORMATS[k].many + " <small>" + counts[k] + "</small></button>";
+    });
+    chipsEl.innerHTML = html;
+  }
+
+  function renderEvents() {
+    var list = EVENTS.filter(function (e) { return current === "all" || e.f === current; });
+    if (!list.length) { eventsEl.innerHTML = '<p class="events__empty">В ближайшие две недели таких встреч нет.</p>'; return; }
+    eventsEl.innerHTML = list.map(function (e) {
+      var taken = Math.round((1 - e.left / e.total) * 100);
+      var low = e.left > 0 && e.left <= 5;
+      var seats = e.left === 0
+        ? '<div class="seats seats--low"><span><b>Мест нет</b></span><span>' + e.total + " мест</span></div>"
+        : '<div class="seats' + (low ? " seats--low" : "") + '"><span>Осталось <b>' + e.left + " " + plural(e.left, "место", "места", "мест") + "</b></span><span>из " + e.total + "</span></div>";
+      var price = e.incl
+        ? '<span class="price"><b>' + money(e.price) + "</b> или по абонементу</span>"
+        : '<span class="price"><b>' + money(e.price) + "</b> · скидка по абонементу</span>";
+      var btn = e.left === 0
+        ? '<button class="btn btn--ghost btn--sm" type="button" data-book="' + e.id + '">В лист ожидания</button>'
+        : '<button class="btn btn--primary btn--sm" type="button" data-book="' + e.id + '">Записаться</button>';
+      return '<article class="ev f-' + e.f + (e.today ? " ev--today" : "") + '">' +
+        '<div class="ev__date"><b>' + e.day + "</b><span>" + e.mon + ", " + e.wd + "</span></div>" +
+        '<div class="ev__main"><span class="ev__tag">' + FORMATS[e.f].one + " <i>· " + e.time + ", " + e.dur + "</i></span>" +
+          '<h3 class="ev__title">' + esc(e.title) + "</h3>" +
+          '<p class="ev__text">' + esc(e.text) + "</p>" +
+          '<p class="ev__host">' + esc(e.host) + "</p></div>" +
+        '<div class="ev__meta">' + seats + '<div class="meter' + (low || e.left === 0 ? " meter--low" : "") + '"><i style="width:' + taken + '%"></i></div>' + price + "</div>" +
+        '<div class="ev__act">' + btn + "</div>" +
+      "</article>";
+    }).join("");
+  }
+
+  function setFilter(f) { current = f; renderChips(); renderEvents(); }
+  chipsEl.addEventListener("click", function (ev) {
+    var b = ev.target.closest(".chip"); if (b) setFilter(b.getAttribute("data-f"));
+  });
+  document.querySelectorAll(".fmt").forEach(function (card) {
+    card.addEventListener("click", function () {
+      setFilter(card.getAttribute("data-filter"));
+      document.getElementById("afisha").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    });
+  });
+  setFilter("all");
+
+  /* ---------- запись ---------- */
+  var modal = document.getElementById("modal"), form = document.getElementById("form"), done = document.getElementById("done");
+  var lastFocus = null, currentItem = null;
+
+  function openModal(item) {
+    currentItem = item;
+    lastFocus = document.activeElement;
+    document.getElementById("modal-kicker").textContent = item.kicker;
+    document.getElementById("modal-title").textContent = item.title;
+    document.getElementById("f-pay").hidden = !item.pay;
+    if (item.pay) {
+      document.getElementById("pay-once-text").textContent = item.payText;
+      document.getElementById("pay-once").checked = true;
+    }
+    document.getElementById("f-submit").textContent = item.submit;
+    form.hidden = false; done.hidden = true;
+    modal.hidden = false;
+    setTimeout(function () { document.getElementById("f-name").focus(); }, 30);
+  }
+  function closeModal() {
+    modal.hidden = true;
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-book]");
+    if (b) {
+      var e = EVENTS.filter(function (x) { return String(x.id) === b.getAttribute("data-book"); })[0];
+      if (!e) return;
+      var wait = e.left === 0;
+      openModal({
+        kicker: FORMATS[e.f].one + " · " + e.day + " " + e.mon + ", " + e.time,
+        title: e.title,
+        pay: !wait,
+        payText: "Разовый визит, " + money(e.price).replace(/ /g, " "),
+        submit: wait ? "Встать в лист ожидания" : "Записаться",
+        doneTitle: wait ? "Вы в листе ожидания" : "Вы записаны",
+        doneText: wait ? "Если место освободится, напишем вам в СМС." : "Ждём вас " + e.day + " " + e.mon + " в " + e.time + ". Напомним о встрече за день."
+      });
+      return;
+    }
+    var p = ev.target.closest("[data-plan]");
+    if (p) {
+      openModal({
+        kicker: "Абонемент",
+        title: p.getAttribute("data-plan"),
+        pay: false,
+        submit: "Оформить",
+        doneTitle: "Заявка принята",
+        doneText: "Абонемент начнёт действовать с первого визита."
+      });
+    }
+  });
+  modal.addEventListener("click", function (ev) { if (ev.target === modal) closeModal(); });
+  document.getElementById("modal-close").addEventListener("click", closeModal);
+  document.getElementById("done-close").addEventListener("click", closeModal);
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !modal.hidden) closeModal(); });
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var name = document.getElementById("f-name"), phone = document.getElementById("f-phone");
+    if (!name.value.trim()) { name.focus(); name.setAttribute("aria-invalid", "true"); return; }
+    if (phone.value.replace(/\D/g, "").length < 10) { phone.focus(); phone.setAttribute("aria-invalid", "true"); return; }
+    name.removeAttribute("aria-invalid"); phone.removeAttribute("aria-invalid");
+    document.getElementById("done-title").textContent = currentItem.doneTitle + ", " + name.value.trim();
+    document.getElementById("done-text").textContent = currentItem.doneText;
+    form.hidden = true; done.hidden = false;
+    document.getElementById("done-close").focus();
+  });
+
+  /* ---------- абонемент: отметки ---------- */
+  document.querySelectorAll(".hole").forEach(function (h, i) {
+    var dates = ["24.09", "26.09", "01.10", "04.10"];
+    h.addEventListener("click", function () {
+      var on = h.getAttribute("aria-pressed") !== "true";
+      h.setAttribute("aria-pressed", String(on));
+      h.textContent = on ? dates[i] : String(i + 1);
+    });
+  });
+
+  /* ---------- план пространства ---------- */
+  var zoneRects = document.querySelectorAll(".fp .zone"), zoneItems = document.querySelectorAll("#zones li");
+  function lightZone(z) {
+    zoneRects.forEach(function (r) { r.classList.toggle("is-on", r.getAttribute("data-zone") === z); });
+    zoneItems.forEach(function (li) { li.classList.toggle("is-on", li.getAttribute("data-zone") === z); });
+  }
+  zoneItems.forEach(function (li) {
+    var z = li.getAttribute("data-zone");
+    li.addEventListener("mouseenter", function () { lightZone(z); });
+    li.addEventListener("focus", function () { lightZone(z); });
+    li.addEventListener("click", function () { lightZone(z); });
+  });
+  zoneRects.forEach(function (r) {
+    r.addEventListener("mouseenter", function () { lightZone(r.getAttribute("data-zone")); });
+  });
+  lightZone("hall");
+
+  /* ---------- слово «Пространство» раздвигается ---------- */
+  var word = document.getElementById("word"), letters = word.querySelectorAll("span");
+  function fitWord(replay) {
+    var cw = word.clientWidth; if (!cw) return;
+    word.style.fontSize = "";
+    var fs = parseFloat(getComputedStyle(word).fontSize), total = 0;
+    letters.forEach(function (l) { total += l.offsetWidth; });
+    var fill = parseFloat(getComputedStyle(root).getPropertyValue("--word-fill")) || .8;
+    if (cw < 560) fill = Math.min(.9, fill + .06);
+    var nfs = Math.min(176, fs * (cw * fill) / total);
+    word.style.fontSize = nfs + "px";
+    var ntotal = total * nfs / fs;
+    var gap = Math.max(0, (cw - ntotal) / (letters.length - 1) - 1);
+    if (replay) {
+      word.classList.add("word--instant");
+      word.style.setProperty("--g", "0px");
+      void word.offsetWidth;
+      word.classList.remove("word--instant");
+      requestAnimationFrame(function () { requestAnimationFrame(function () { word.style.setProperty("--g", gap + "px"); }); });
+    } else {
+      word.style.setProperty("--g", gap + "px");
+    }
+  }
+  var fitted = false;
+  function firstFit() { if (fitted) return; fitted = true; fitWord(true); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(firstFit);
+  setTimeout(firstFit, 1200);
+  var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { fitWord(false); }, 120); });
+
+  /* ---------- луч проектора (вечерний стиль) ---------- */
+  var canvas = document.getElementById("beam"), ctx = canvas.getContext("2d"), dust = [], raf = 0;
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function sizeBeam() {
+    var r = canvas.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.max(1, r.width * d); canvas.height = Math.max(1, r.height * d);
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+    dust = [];
+    for (var i = 0; i < 90; i++) dust.push({ x: Math.random() * r.width, y: Math.random() * r.height, r: Math.random() * 1.4 + .3, vx: (Math.random() - .5) * .12, vy: -Math.random() * .12 - .02, a: Math.random() * .6 + .2 });
+  }
+  function drawBeam() {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    ctx.clearRect(0, 0, w, h);
+    var ox = w * .96, oy = -40;
+    var g = ctx.createLinearGradient(ox, oy, w * .25, h);
+    g.addColorStop(0, "rgba(255, 210, 140, .22)");
+    g.addColorStop(1, "rgba(255, 190, 110, 0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(w * -.05, h); ctx.lineTo(w * .6, h); ctx.closePath(); ctx.fill();
+    dust.forEach(function (p) {
+      ctx.fillStyle = "rgba(255, 226, 180," + p.a + ")";
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      if (!reduce) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.y < -4) { p.y = h + 4; p.x = Math.random() * w; }
+        if (p.x < -4) p.x = w + 4; if (p.x > w + 4) p.x = -4;
+      }
+    });
+  }
+  function loop() { drawBeam(); raf = requestAnimationFrame(loop); }
+  function beamOn(on) {
+    cancelAnimationFrame(raf);
+    if (!on) return;
+    sizeBeam();
+    if (reduce) drawBeam(); else loop();
+  }
+  window.addEventListener("resize", function () { if (root.getAttribute("data-style") === "evening") sizeBeam(); });
+
+  /* ---------- переключатель стилей ---------- */
+  var REFS = {
+    library: "По мотивам: The School of Life, Anthropic и Vimeo из Refero, библиотечные карточки",
+    evening: "По мотивам: Metrograph, NYFF, Parallel и Mercury из Refero",
+    club: "По мотивам: Buy Me a Coffee из Refero, ризограф-афиши, Psychedelic Society"
+  };
+  function setStyle(s, replay) {
+    root.setAttribute("data-style", s);
+    try { localStorage.setItem("prostranstvo-style", s); } catch (e) {}
+    document.querySelectorAll(".switcher [data-set]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-set") === s)); });
+    document.getElementById("refs").textContent = REFS[s];
+    beamOn(s === "evening");
+    if (replay) {
+      var go = function () { fitWord(true); };
+      if (document.fonts && document.fonts.ready) { setTimeout(function () { document.fonts.ready.then(go); }, 60); } else { setTimeout(go, 200); }
+    }
+  }
+  document.querySelectorAll(".switcher [data-set]").forEach(function (b) {
+    b.addEventListener("click", function () { setStyle(b.getAttribute("data-set"), true); });
+  });
+  setStyle(root.getAttribute("data-style") || "library", false);
+})();
+</script>
+</body>
+</html>
