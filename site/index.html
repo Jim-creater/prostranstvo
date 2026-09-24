@@ -4,29 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Пространство</title>
-<meta name="description" content="Книжные клубы, кино, лекции, тренинги и встречи в центре Москвы.">
+<meta name="description" content="Литературный и сценарный клубы, специальные гости, кино, история костюма, рисунок и история искусств.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Onest:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* ================================================================
-   Пространство. Тёплая темнота, свет лампы, одна история вечера.
-   Цвета фона и текста — анимируемые переменные: при прокрутке
-   страница плавно перекрашивается под каждый блок.
+   Пространство. Белый фон, дневной свет, лёгкость.
+   Фон — анимируемая переменная: при прокрутке страница мягко
+   окрашивается в пастельный цвет каждого формата и снова белеет.
    ================================================================ */
 :root {
-  color-scheme: dark;
-  --bg: rgba(16, 10, 6, 1);
-  --fg: rgba(244, 230, 210, 1);
-  --muted: rgba(244, 230, 210, 0.62);
-  --line: rgba(244, 230, 210, 0.14);
-  --accent: rgba(240, 164, 91, 1);
-
-  --walnut: #100A06;
-  --cream: #F4E6D2;
-  --lamp: #F0A45B;
-  --paper: #F1E6D6;
-  --ink: #1B130D;
+  color-scheme: light;
+  --bg: rgba(255, 255, 255, 1);
+  --fg: #1A1714;
+  --muted: rgba(26, 23, 20, 0.58);
+  --line: rgba(26, 23, 20, 0.12);
+  --accent: #C2531E;
+  --soft: #F6F3EE;
 
   --f-serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
   --f-sans: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -56,7 +51,7 @@ h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { text-wrap: balance; font-weight: 300; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-::selection { background: var(--lamp); color: var(--walnut); }
+::selection { background: var(--accent); color: #fff; }
 
 .wrap { max-width: 1360px; margin-inline: auto; padding-inline: var(--gutter); }
 .eyebrow {
@@ -68,7 +63,7 @@ button { font: inherit; color: inherit; }
   font-family: var(--f-serif); font-weight: 300;
   font-size: clamp(44px, 6.4vw, 108px); line-height: .95; letter-spacing: -.02em;
 }
-.h2 em, .hero__title em, .collage__text em, .chapter__title em { font-style: italic; color: var(--accent); }
+.h2 em, .hero__title em, .collage__text em { font-style: italic; color: var(--accent); }
 .muted { color: var(--muted); }
 
 /* слова для анимации появления */
@@ -80,32 +75,26 @@ button { font: inherit; color: inherit; }
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   font: 500 15px/1 var(--f-sans); text-decoration: none; white-space: nowrap; cursor: pointer;
   padding: 16px 24px; border-radius: 999px; border: 1px solid transparent;
-  transition: background-color .4s var(--ease), color .4s var(--ease), transform .4s var(--ease), border-color .4s;
+  transition: background-color .4s var(--ease), color .4s var(--ease), translate .4s var(--ease), border-color .4s;
 }
-.pill--lamp { background: var(--lamp); color: var(--walnut); }
-.pill--lamp:hover { background: #F7BD7F; transform: translateY(-2px); }
+.pill--ink { background: var(--fg); color: #fff; }
+.pill--ink:hover { background: var(--accent); translate: 0 -2px; }
 .pill--ghost { border-color: var(--line); color: var(--fg); background: transparent; }
 .pill--ghost:hover { border-color: var(--fg); }
 .pill--sm { padding: 11px 18px; font-size: 14px; }
 .pill .arr { transition: transform .5s var(--ease); }
 .pill:hover .arr { transform: translateX(4px); }
 
-/* зерно плёнки */
-.grain {
-  position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .07; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
 /* ================= занавес ================= */
 .curtain {
-  position: fixed; inset: 0; z-index: 100; background: var(--walnut); color: var(--cream);
+  position: fixed; inset: 0; z-index: 100; background: #fff; color: var(--fg);
   display: grid; place-items: center; align-content: center; gap: 28px;
 }
 .curtain__word { display: flex; font: 300 clamp(48px, 11vw, 176px)/1 var(--f-serif); letter-spacing: -.02em; }
 .curtain__word .m { display: inline-block; overflow: hidden; padding-bottom: .08em; }
 .curtain__word .m > span { display: inline-block; }
-.curtain__bar { width: 140px; height: 1px; background: rgba(244, 230, 210, .18); }
-.curtain__bar i { display: block; height: 100%; background: var(--lamp); transform: scaleX(0); transform-origin: left; }
+.curtain__bar { width: 140px; height: 1px; background: var(--line); }
+.curtain__bar i { display: block; height: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; }
 
 /* ================= меню ================= */
 .nav {
@@ -114,8 +103,8 @@ button { font: inherit; color: inherit; }
   width: min(1120px, calc(100% - 24px));
   display: flex; align-items: center; gap: 24px;
   padding: 8px 8px 8px 22px; border-radius: 999px;
-  background: color-mix(in srgb, var(--bg) 58%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(140%); backdrop-filter: blur(16px) saturate(140%);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(160%); backdrop-filter: blur(16px) saturate(160%);
   border: 1px solid var(--line);
   transition: transform .8s var(--ease);
 }
@@ -130,22 +119,7 @@ button { font: inherit; color: inherit; }
 }
 
 /* ================= первый экран ================= */
-.hero {
-  position: relative; min-height: 100svh; display: flex; align-items: flex-end;
-  overflow: hidden; color: var(--cream); background: var(--walnut);
-}
-.hero__media { position: absolute; inset: -6% 0 -14% 0; will-change: transform; }
-.hero__media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
-.hero__shade {
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(180deg, rgba(16, 10, 6, .72) 0%, rgba(16, 10, 6, .12) 30%, rgba(16, 10, 6, .35) 58%, rgba(16, 10, 6, .94) 88%, #100A06 100%),
-    radial-gradient(ellipse at 30% 70%, rgba(16, 10, 6, .35), transparent 60%);
-}
-@media (max-width: 900px) {
-  .hero__shade { background: linear-gradient(180deg, rgba(16, 10, 6, .78) 0%, rgba(16, 10, 6, .5) 30%, rgba(16, 10, 6, .72) 55%, rgba(16, 10, 6, .94) 80%, #100A06 100%); }
-}
-.hero__content { position: relative; z-index: 2; width: 100%; padding-block: 150px clamp(40px, 7vh, 88px); }
+.hero { padding-top: clamp(120px, 18vh, 170px); }
 .hero__title {
   font-family: var(--f-serif); font-weight: 300;
   font-size: clamp(52px, 7.8vw, 136px); line-height: .92; letter-spacing: -.025em;
@@ -153,22 +127,28 @@ button { font: inherit; color: inherit; }
 }
 .hero__title .line { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
 .hero__title .line > span { display: block; }
-.hero__title em { color: var(--lamp); }
-.hero__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px 48px; flex-wrap: wrap; margin-top: clamp(28px, 5vh, 52px); }
-.hero__lead { max-width: 33em; font-size: 18px; color: rgba(244, 230, 210, .8); }
+.hero__foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px 48px; flex-wrap: wrap; margin-top: clamp(28px, 5vh, 48px); }
+.hero__lead { max-width: 34em; font-size: 18px; color: var(--muted); }
 .hero__actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.hero .eyebrow { color: rgba(244, 230, 210, .7); }
-.tonight {
+.soon {
   display: grid; gap: 4px; text-decoration: none; padding: 12px 20px 12px 18px; border-radius: 18px;
-  background: rgba(244, 230, 210, .08); border: 1px solid rgba(244, 230, 210, .2);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-  transition: background-color .4s;
+  border: 1px solid var(--line); background: rgba(255, 255, 255, .6);
+  transition: border-color .4s, background-color .4s;
 }
-.tonight:hover { background: rgba(244, 230, 210, .14); }
-.tonight__top { display: flex; align-items: center; gap: 8px; font: 400 11.5px/1.3 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: rgba(244, 230, 210, .7); }
-.tonight__top i { width: 7px; height: 7px; border-radius: 50%; background: var(--lamp); box-shadow: 0 0 0 0 rgba(240, 164, 91, .6); animation: pulse 2.2s infinite; }
-.tonight b { font: 400 21px/1.2 var(--f-serif); }
-@keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(240, 164, 91, 0); } 100% { box-shadow: 0 0 0 0 rgba(240, 164, 91, 0); } }
+.soon:hover { border-color: var(--fg); }
+.soon__top { display: flex; align-items: center; gap: 8px; font: 400 11.5px/1.3 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.soon__top i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 rgba(194, 83, 30, .5); animation: pulse 2.2s infinite; }
+.soon b { font: 400 21px/1.2 var(--f-serif); }
+@keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(194, 83, 30, 0); } 100% { box-shadow: 0 0 0 0 rgba(194, 83, 30, 0); } }
+.hero__stage { margin-top: clamp(40px, 7vh, 72px); }
+.hero__frame {
+  height: 88vh; overflow: hidden;
+  clip-path: inset(0 var(--gutter) round 6px);
+}
+.hero__frame img { width: 100%; height: 118%; object-fit: cover; object-position: 50% 50%; will-change: transform; }
+@media (max-width: 900px) {
+  .hero__frame { height: 62vh; }
+}
 
 /* ================= что это за место ================= */
 .manifesto { position: relative; min-height: 190vh; }
@@ -178,10 +158,10 @@ button { font: inherit; color: inherit; }
   font-size: clamp(32px, 4.3vw, 70px); line-height: 1.1; letter-spacing: -.01em;
   max-width: min(17em, 64vw);
 }
-.float { position: absolute; margin: 0; overflow: hidden; border-radius: 3px; z-index: 1; will-change: transform; }
+.float { position: absolute; margin: 0; overflow: hidden; border-radius: 4px; z-index: 1; will-change: transform; }
 .float img { width: 100%; height: 100%; object-fit: cover; }
 .float--a { width: clamp(150px, 17vw, 270px); aspect-ratio: 3 / 4; right: 7vw; top: 22vh; }
-.float--b { width: clamp(170px, 20vw, 320px); aspect-ratio: 16 / 10; right: 21vw; bottom: 12vh; }
+.float--b { width: clamp(170px, 20vw, 320px); aspect-ratio: 3 / 2; right: 21vw; bottom: 12vh; }
 @media (max-width: 900px) {
   .manifesto { min-height: auto; padding-block: 18vh; }
   .manifesto__inner { position: static; min-height: auto; }
@@ -198,7 +178,7 @@ button { font: inherit; color: inherit; }
 .rooms__head { flex: none; width: min(32vw, 470px); display: grid; gap: 22px; padding-bottom: 2vh; }
 .rooms__head .h2 { font-size: clamp(44px, 5.2vw, 88px); }
 .room { flex: none; width: clamp(300px, 31vw, 500px); display: grid; gap: 18px; }
-.room__img { height: 54vh; overflow: hidden; border-radius: 3px; }
+.room__img { height: 54vh; overflow: hidden; border-radius: 4px; }
 .room__img img { width: 118%; max-width: none; height: 100%; object-fit: cover; margin-left: -9%; will-change: transform; }
 .room__top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .room h3 { font: 400 clamp(30px, 2.6vw, 42px)/1.05 var(--f-serif); }
@@ -214,48 +194,56 @@ button { font: inherit; color: inherit; }
   .room__img img { width: 100%; margin-left: 0; }
 }
 
-/* ================= неделя ================= */
+/* ================= форматы ================= */
 .week__head { padding-block: 20vh 8vh; display: grid; gap: 24px; }
-.week__head p.muted { max-width: 30em; font-size: 18px; }
+.week__head p.muted { max-width: 32em; font-size: 18px; }
 .week__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 100px); align-items: start; }
 .week__media { position: sticky; top: 12vh; height: 76vh; }
-.week__frame { position: relative; height: 100%; overflow: hidden; border-radius: 3px; background: #1a120c; }
+.week__frame { position: relative; height: 100%; overflow: hidden; border-radius: 4px; background: var(--soft); }
 .wk-img {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
   opacity: 0; transform: scale(1.1);
   transition: opacity 1.1s var(--ease), transform 1.8s var(--ease);
 }
 .wk-img.is-on { opacity: 1; transform: scale(1); }
-.week__frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, .55)); }
+.week__frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 58%, rgba(20, 16, 12, .45)); }
 .week__day {
-  position: absolute; z-index: 2; left: 26px; bottom: 6px;
-  font: italic 300 clamp(96px, 11vw, 190px)/1 var(--f-serif); color: var(--cream); letter-spacing: -.03em;
+  position: absolute; z-index: 2; left: 26px; bottom: 18px; right: 90px;
+  font: italic 300 clamp(52px, 6vw, 104px)/.95 var(--f-serif); color: #fff; letter-spacing: -.02em;
 }
-.week__count { position: absolute; z-index: 2; right: 22px; bottom: 26px; font: 400 12px/1 var(--f-mono); letter-spacing: .14em; color: rgba(244, 230, 210, .8); font-variant-numeric: tabular-nums; }
+.week__count { position: absolute; z-index: 2; right: 22px; bottom: 26px; font: 400 12px/1 var(--f-mono); letter-spacing: .14em; color: rgba(255, 255, 255, .85); font-variant-numeric: tabular-nums; }
 .chapter { min-height: 94vh; display: grid; align-content: center; gap: 24px; padding-block: 8vh; }
 .chapter__img { display: none; }
 .chapter__when { display: inline-flex; align-items: center; gap: 12px; font: 400 12.5px/1.4 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-.chapter__when::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--tint); box-shadow: 0 0 18px var(--tint); }
-.chapter__title { font: 300 clamp(64px, 7.4vw, 128px)/.9 var(--f-serif); letter-spacing: -.025em; }
-.chapter__title em { color: var(--tint); }
+.chapter__when::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--tint); }
+.chapter__title { font: 300 clamp(58px, 6.6vw, 116px)/.92 var(--f-serif); letter-spacing: -.025em; }
+.chapter__title em { color: var(--tint); font-style: italic; }
 .chapter__what { font-size: 19px; line-height: 1.6; max-width: 30em; color: color-mix(in srgb, var(--fg) 82%, transparent); }
 .chapter__next { border-top: 1px solid var(--line); padding-top: 20px; display: grid; gap: 12px; max-width: 34em; }
 .chapter__next ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .chapter__next li { font: 400 23px/1.3 var(--f-serif); }
 .chapter__next li span { font: 400 12.5px/1 var(--f-mono); letter-spacing: .08em; color: var(--tint); margin-right: 10px; text-transform: uppercase; }
-.week__off { padding-block: 6vh 18vh; display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; }
-.week__off b { font: italic 300 clamp(40px, 4vw, 64px)/1 var(--f-serif); }
-.week__off span { color: var(--muted); }
 @media (max-width: 900px) {
   .week__grid { grid-template-columns: 1fr; }
   .week__media { display: none; }
   .chapter { min-height: auto; padding-block: 44px; }
-  .chapter__img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 3px; }
+  .chapter__img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 4px; }
 }
 html:not(.fx) .week__grid { grid-template-columns: 1fr; max-width: 820px; }
 html:not(.fx) .week__media { display: none; }
 html:not(.fx) .chapter { min-height: auto; padding-block: 56px; }
-html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 3px; }
+html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 4px; }
+
+/* ================= специальный гость ================= */
+.guest { padding-block: 18vh; }
+.guest__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(32px, 5vw, 96px); align-items: center; }
+.guest__text { display: grid; gap: 22px; justify-items: start; }
+.guest__date { font: 300 clamp(64px, 8vw, 140px)/.88 var(--f-serif); letter-spacing: -.03em; }
+.guest__name { font: italic 300 clamp(48px, 5.6vw, 96px)/.95 var(--f-serif); letter-spacing: -.02em; color: var(--accent); }
+.guest__text p.muted { max-width: 28em; font-size: 18px; }
+.guest__img { overflow: hidden; border-radius: 4px; aspect-ratio: 4 / 3; }
+.guest__img img { width: 100%; height: 120%; object-fit: cover; will-change: transform; }
+@media (max-width: 900px) { .guest__grid { grid-template-columns: 1fr; } }
 
 /* ================= как проходит вечер ================= */
 .evening__grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 120px); padding-block: 20vh 16vh; }
@@ -273,7 +261,7 @@ html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 16 / 10
 .tl .t { font: 400 13px/1 var(--f-mono); letter-spacing: .12em; color: var(--accent); }
 .tl h3 { font: 400 clamp(30px, 2.8vw, 44px)/1.05 var(--f-serif); }
 .tl p { color: var(--muted); max-width: 28em; }
-.fx .tl li { opacity: .32; }
+.fx .tl li { opacity: .3; }
 .fx .tl li.is-on, .fx .tl li.is-done { opacity: 1; }
 .fx .tl li.is-on::before, .fx .tl li.is-done::before { background: var(--accent); }
 .fx .tl__fill { transform: scaleY(0); }
@@ -291,8 +279,8 @@ html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 16 / 10
   position: relative; z-index: 2; text-align: center; padding-inline: var(--gutter);
   font: 300 clamp(46px, 7.4vw, 124px)/.96 var(--f-serif); letter-spacing: -.025em;
 }
-.cl { position: absolute; margin: 0; overflow: hidden; border-radius: 3px; z-index: 1; will-change: transform; }
-.cl img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.7) saturate(.95); }
+.cl { position: absolute; margin: 0; overflow: hidden; border-radius: 4px; z-index: 1; will-change: transform; }
+.cl img { width: 100%; height: 100%; object-fit: cover; }
 .cl-1 { width: 17vw; aspect-ratio: 2 / 3; left: 5vw; top: 10vh; }
 .cl-2 { width: 22vw; aspect-ratio: 3 / 2; right: 4vw; top: 16vh; }
 .cl-3 { width: 15vw; aspect-ratio: 2 / 3; left: 18vw; bottom: 8vh; }
@@ -321,7 +309,7 @@ html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 16 / 10
 }
 .chip small { font: 400 11.5px/1 var(--f-mono); color: var(--muted); }
 .chip:hover { border-color: var(--fg); }
-.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.chip[aria-pressed="true"] { background: var(--fg); color: #fff; border-color: var(--fg); }
 .chip[aria-pressed="true"] small { color: inherit; opacity: .7; }
 .events { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .ev {
@@ -330,8 +318,9 @@ html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 16 / 10
   transition: padding .7s var(--ease), background-color .5s;
 }
 @media (hover: hover) and (min-width: 900px) {
-  .ev:hover { padding-inline: 18px; background: color-mix(in srgb, var(--fg) 4%, transparent); }
+  .ev:hover { padding-inline: 18px; background: var(--soft); }
 }
+.ev--special { background: rgba(194, 83, 30, .06); padding-inline: 18px; }
 .ev__date { display: grid; gap: 6px; }
 .ev__date b { font: 300 64px/.85 var(--f-serif); font-variant-numeric: lining-nums; }
 .ev__date span { font: 400 11.5px/1.3 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
@@ -343,7 +332,8 @@ html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 16 / 10
 .ev__seats b { color: var(--fg); font-weight: 500; }
 .ev__seats.is-low b { color: var(--accent); }
 .meter { height: 2px; background: var(--line); }
-.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i { display: block; height: 100%; background: var(--fg); }
+.ev__seats.is-low .meter i { background: var(--accent); }
 @media (max-width: 1000px) {
   .ev { grid-template-columns: 84px minmax(0, 1fr) 180px; }
   .ev__act { grid-column: 2 / -1; }
@@ -354,8 +344,9 @@ html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 16 / 10
   .ev__seats, .ev__act { grid-column: 2 / -1; }
 }
 .peek {
-  position: fixed; left: 0; top: 0; z-index: 25; width: 300px; aspect-ratio: 4 / 3; pointer-events: none;
-  border-radius: 3px; overflow: hidden; opacity: 0; scale: .85;
+  position: fixed; left: 0; top: 0; z-index: 25; width: 280px; aspect-ratio: 4 / 5; pointer-events: none;
+  border-radius: 4px; overflow: hidden; opacity: 0; scale: .85;
+  box-shadow: 0 30px 60px -30px rgba(26, 23, 20, .4);
   transition: opacity .35s var(--ease), scale .6s var(--ease);
 }
 .peek.is-on { opacity: 1; scale: 1; }
@@ -363,11 +354,6 @@ html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 16 / 10
 
 /* ================= стоимость ================= */
 .price { padding-block: 18vh 14vh; }
-html:not(.fx) .price {
-  background: var(--paper);
-  --fg: #1B130D; --muted: rgba(27, 19, 13, 0.62); --line: rgba(27, 19, 13, 0.16); --accent: #A8551A;
-  color: var(--fg);
-}
 .price__head { display: grid; gap: 24px; }
 .price__head p { color: var(--muted); max-width: 34em; font-size: 18px; }
 .plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 64px; align-items: stretch; }
@@ -375,40 +361,38 @@ html:not(.fx) .price {
 .plan {
   position: relative; display: flex; flex-direction: column; gap: 22px;
   border: 1px solid var(--line); border-radius: 6px; padding: clamp(24px, 2.6vw, 36px);
-  color: var(--fg);
+  background: #fff; color: var(--fg);
 }
 .plan__name { font: 400 34px/1.05 var(--f-serif); }
 .plan__price { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.plan__price b { font: 300 clamp(64px, 6vw, 92px)/.9 var(--f-serif); letter-spacing: -.03em; font-variant-numeric: lining-nums; }
+.plan__price b { font: 300 clamp(60px, 5.6vw, 88px)/.9 var(--f-serif); letter-spacing: -.03em; font-variant-numeric: lining-nums; white-space: nowrap; }
 .plan__price span { color: var(--muted); }
-.plan__sub { font: 400 12px/1.4 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .plan ul { list-style: none; margin: 0; padding: 0; display: grid; }
 .plan li { padding: 11px 0; border-top: 1px solid var(--line); font-size: 15.5px; }
 .plan .pill { margin-top: auto; width: 100%; }
 .plan--hot {
-  background: #1B130D; border-color: #1B130D;
-  --fg: #F4E6D2; --muted: rgba(244, 230, 210, 0.62); --line: rgba(244, 230, 210, 0.16); --accent: #F0A45B;
-  box-shadow: 0 40px 80px -40px rgba(27, 19, 13, .6);
+  background: var(--fg); border-color: var(--fg); color: #fff;
+  --muted: rgba(255, 255, 255, 0.62); --line: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 40px 80px -40px rgba(26, 23, 20, .5);
 }
+.plan--hot .pill--ink { background: #fff; color: var(--fg); }
+.plan--hot .pill--ink:hover { background: var(--accent); color: #fff; }
 .plan__badge {
   position: absolute; top: -14px; left: 28px; padding: 7px 12px; border-radius: 999px;
-  background: var(--lamp); color: var(--walnut); font: 500 11.5px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase;
+  background: var(--accent); color: #fff; font: 500 11.5px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase;
 }
-.price__foot { margin-top: 40px; display: grid; gap: 10px; color: var(--muted); max-width: 46em; }
-.promo { font-family: var(--f-mono); color: var(--fg); border: 1px dashed var(--accent); padding: 2px 8px; border-radius: 4px; }
 
 /* ================= подвал ================= */
-.foot { padding-top: 16vh; overflow: hidden; }
+.foot { padding-top: 16vh; overflow: hidden; border-top: 1px solid var(--line); }
 .foot__grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 32px; }
 @media (max-width: 760px) { .foot__grid { grid-template-columns: 1fr; } }
 .foot h3 { font: 400 12px/1.4 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
 .foot p, .foot li { font-size: 16px; }
 .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.foot__big { font: 300 clamp(36px, 4vw, 60px)/1.05 var(--f-serif); max-width: 12em; }
+.foot .foot__big { font: 300 clamp(36px, 4vw, 60px)/1.05 var(--f-serif); max-width: 12em; }
 .foot__word {
   display: flex; justify-content: center; margin-top: 12vh;
   font: 300 16.4vw/.78 var(--f-serif); letter-spacing: -.035em; white-space: nowrap;
-  color: var(--fg);
 }
 .foot__word .m { display: inline-block; overflow: hidden; padding-bottom: .1em; }
 .foot__word .m > span { display: inline-block; }
@@ -416,12 +400,11 @@ html:not(.fx) .price {
 .selectable { user-select: all; }
 
 /* ================= запись ================= */
-.modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 16px; background: rgba(8, 5, 3, .6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 16px; background: rgba(26, 23, 20, .28); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .modal__panel {
   width: 100%; max-width: 480px; max-height: calc(100% - 32px); overflow: auto;
-  background: #1A120C; color: var(--cream); border: 1px solid rgba(244, 230, 210, .14); border-radius: 10px;
-  padding: 30px; box-shadow: 0 40px 100px -30px rgba(0, 0, 0, .8);
-  --muted: rgba(244, 230, 210, 0.62); --line: rgba(244, 230, 210, 0.14); --fg: #F4E6D2; --accent: #F0A45B;
+  background: #fff; color: var(--fg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 30px; box-shadow: 0 40px 100px -30px rgba(26, 23, 20, .4);
 }
 .modal__head { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
 .modal__title { font: 400 30px/1.1 var(--f-serif); margin-top: 8px; }
@@ -430,12 +413,12 @@ html:not(.fx) .price {
 .field { display: grid; gap: 6px; }
 .field label, .field legend { font-size: 14px; color: var(--muted); }
 .field input[type="text"], .field input[type="tel"] {
-  font: inherit; font-weight: 400; color: var(--cream); background: rgba(244, 230, 210, .05);
+  font: inherit; font-weight: 400; color: var(--fg); background: var(--soft);
   border: 1px solid var(--line); border-radius: 8px; padding: 14px;
 }
 fieldset.field { border: 0; padding: 0; margin: 0; }
 .opt { display: flex; gap: 10px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 15.5px; }
-.opt input { accent-color: var(--lamp); width: 18px; height: 18px; }
+.opt input { accent-color: var(--accent); width: 18px; height: 18px; }
 .demo { font-size: 13px; color: var(--muted); }
 .done { display: grid; gap: 14px; margin-top: 18px; }
 .done__big { font: 400 34px/1.1 var(--f-serif); }
@@ -448,8 +431,6 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 </head>
 <body>
 
-<div class="grain" aria-hidden="true"></div>
-
 <div class="curtain" id="curtain" hidden aria-hidden="true">
   <div class="curtain__word" id="curtainWord">Пространство</div>
   <div class="curtain__bar"><i></i></div>
@@ -459,309 +440,295 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
   <a class="nav__logo" href="#top">Пространство</a>
   <nav class="nav__links" aria-label="Разделы">
     <a href="#rooms">Как у нас</a>
-    <a href="#week">Неделя</a>
-    <a href="#evening">Вечер</a>
+    <a href="#formats">Клубы</a>
+    <a href="#guest">Гость месяца</a>
     <a href="#afisha">Афиша</a>
     <a href="#price">Стоимость</a>
   </nav>
-  <a class="pill pill--lamp pill--sm" href="#afisha">Записаться</a>
+  <a class="pill pill--ink pill--sm" href="#afisha">Записаться</a>
 </header>
 
 <main>
   <!-- 1. Первый экран -->
-  <section class="hero" id="top" data-bg="rgba(16, 10, 6, 1)">
-    <div class="hero__media"><img src="img/hero.jpg" alt="Библиотека-кафе вечером: книжные полки, тёплые лампы и экран с фильмом"></div>
-    <div class="hero__shade"></div>
-    <div class="hero__content wrap">
-      <p class="eyebrow">Москва, Садовая, 12 · со вторника по воскресенье</p>
+  <section class="hero" id="top" data-bg="rgba(255, 255, 255, 1)">
+    <div class="wrap">
+      <p class="eyebrow">Москва · клубы, гости, кино, костюм и рисунок</p>
       <h1 class="hero__title">
         <span class="line"><span>Вечера, ради которых</span></span>
         <span class="line"><span><em>хочется</em> выйти из дома</span></span>
       </h1>
       <div class="hero__foot">
-        <p class="hero__lead">Пространство — большая тёплая комната в центре города. Каждый вечер здесь что-то происходит: книжный клуб, кино с обсуждением, лекция, тренинг или просто хороший разговор.</p>
+        <p class="hero__lead">Литературный и сценарный клубы, встречи со специальными гостями и кино по выходным, история костюма, рисунок и история искусств. Светлое место, куда приходят читать, писать, смотреть и разговаривать.</p>
         <div class="hero__actions">
-          <a class="pill pill--lamp" href="#week">Посмотреть неделю <span class="arr">→</span></a>
-          <a class="tonight" href="#afisha">
-            <span class="tonight__top"><i></i>Сегодня · 19:30 · осталось 6 мест</span>
-            <b>Кино: «Короткие встречи»</b>
+          <a class="pill pill--ink" href="#formats">Смотреть клубы <span class="arr">→</span></a>
+          <a class="soon" href="#guest">
+            <span class="soon__top"><i></i>Скоро · 24 октября</span>
+            <b>Павел Глобо, специальный гость</b>
           </a>
         </div>
       </div>
     </div>
+    <div class="hero__stage">
+      <div class="hero__frame" id="heroFrame"><img src="img/hero.jpg" alt="Светлое пространство с большими окнами: книжные полки, длинный стол с книгами и чашками, люди в креслах читают и разговаривают"></div>
+    </div>
   </section>
 
   <!-- 2. Что это за место -->
-  <section class="manifesto" data-bg="rgba(20, 13, 8, 1)" aria-label="Что это за место">
+  <section class="manifesto" data-bg="rgba(255, 255, 255, 1)" aria-label="Что это за место">
     <div class="manifesto__inner wrap">
       <p class="eyebrow">Что это за место</p>
-      <p class="manifesto__text" id="manifesto">Сюда приходят одни, а уходят с новыми знакомыми, книгой на вечер и мыслями, которые хочется додумать. Здесь читают вслух, спорят о фильмах, учатся говорить и слушать.</p>
+      <p class="manifesto__text" id="manifesto">Здесь читают книги вслух, пишут сценарии, рисуют, разбираются в истории костюма и смотрят кино со специальными гостями. Сюда приходят одни, а уходят с новыми знакомыми и мыслями, которые хочется додумать.</p>
     </div>
-    <figure class="float float--a" data-speed="-0.35"><img src="img/candle.jpg" alt=""></figure>
-    <figure class="float float--b" data-speed="0.3"><img src="img/reading.jpg" alt=""></figure>
+    <figure class="float float--a" data-speed="-0.35"><img src="img/d-tea.jpg" alt=""></figure>
+    <figure class="float float--b" data-speed="0.3"><img src="img/d-drawing.jpg" alt=""></figure>
   </section>
 
   <!-- 3. Что внутри -->
-  <section class="rooms" id="rooms" data-bg="rgba(16, 10, 6, 1)" aria-labelledby="rooms-h">
+  <section class="rooms" id="rooms" data-bg="rgba(255, 255, 255, 1)" aria-labelledby="rooms-h">
     <div class="rooms__track" id="roomsTrack">
       <div class="rooms__head">
         <p class="eyebrow">Что внутри</p>
-        <h2 class="h2 split" id="rooms-h">Четыре комнаты и&nbsp;<em>280&nbsp;м²</em> тепла</h2>
-        <p class="muted">Второй этаж старого дома на Садовой. Листайте дальше, покажем каждую.</p>
+        <h2 class="h2 split" id="rooms-h">Четыре комнаты и <em>много</em> света</h2>
+        <p class="muted">Большие окна, белые стены и светлое дерево. Листайте дальше, покажем каждую комнату.</p>
       </div>
       <article class="room">
-        <div class="room__img"><img src="img/room-hall.jpg" alt="Зал с мягкими диванами и старыми кинопроекторами в тёплом красном свете"></div>
+        <div class="room__img"><img src="img/room-hall.jpg" alt="Светлый зал с рядами деревянных стульев, невысокой сценой, креслом и торшером"></div>
         <div class="room__top"><h3>Большой зал</h3><span class="eyebrow">40 мест</span></div>
-        <p>Экран на три метра и хороший звук. Здесь проходят кино, лекции и книжные клубы.</p>
+        <p>Экран и хороший звук. Здесь выступают специальные гости и идут кинопоказы.</p>
       </article>
       <article class="room">
-        <div class="room__img"><img src="img/room-library.jpg" alt="Библиотека с книжными полками до потолка, креслами и камином"></div>
-        <div class="room__top"><h3>Библиотека</h3><span class="eyebrow">800 книг</span></div>
-        <p>Кресла, камин и полки до потолка. По абонементу книги можно брать домой.</p>
+        <div class="room__img"><img src="img/room-library.jpg" alt="Библиотека с белыми стеллажами до потолка и двумя креслами у окна"></div>
+        <div class="room__top"><h3>Библиотека</h3><span class="eyebrow">книги клуба</span></div>
+        <p>Кресла у окна и полки до потолка. Здесь собирается литературный клуб.</p>
       </article>
       <article class="room">
-        <div class="room__img"><img src="img/room-kitchen.jpg" alt="Чашка чая и свеча на столе рядом с книгой"></div>
+        <div class="room__img"><img src="img/room-kitchen.jpg" alt="Светлая кухня: деревянная столешница, керамические чашки, чайник и круглый стол"></div>
         <div class="room__top"><h3>Кухня</h3><span class="eyebrow">чай без счёта</span></div>
-        <p>Чай, кофе и печенье для гостей бесплатно. Здесь начинаются самые долгие разговоры.</p>
+        <p>Чай и кофе для гостей. Здесь начинаются самые долгие разговоры.</p>
       </article>
       <article class="room">
-        <div class="room__img"><img src="img/room-quiet.jpg" alt="Тихий читальный зал: люди читают за столами под тёплым светом"></div>
-        <div class="room__top"><h3>Тихая комната</h3><span class="eyebrow">8 мест</span></div>
-        <p>Днём здесь читают и работают с ноутбуком. Розетка у каждого места.</p>
+        <div class="room__img"><img src="img/room-studio.jpg" alt="Мастерская с большим столом, мольбертами, зеркалом и вешалкой с винтажной одеждой"></div>
+        <div class="room__top"><h3>Мастерская</h3><span class="eyebrow">12 мест</span></div>
+        <p>Мольберты, большой стол и зеркало. Здесь рисуют и разбирают историю костюма.</p>
       </article>
       <div class="room room--note">
-        <p>Лифт есть. Пледы на случай холодного вечера тоже.</p>
+        <p>Светло даже вечером: тёплые лампы в каждой комнате.</p>
         <div class="hours" aria-label="Часы работы">
-          <div><span>Вт — пт</span><span>12:00 — 23:00</span></div>
-          <div><span>Сб — вс</span><span>11:00 — 22:00</span></div>
-          <div><span>Пн</span><span>выходной</span></div>
+          <div><span>Пн — пт</span><span>12:00 — 23:00</span></div>
+          <div><span>Сб — вс</span><span>11:00 — 23:00</span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 4. Неделя -->
-  <section class="week" id="week" aria-labelledby="week-h">
-    <div class="week__head wrap" data-bg="rgba(16, 10, 6, 1)">
-      <p class="eyebrow">Неделя в Пространстве</p>
-      <h2 class="h2 split" id="week-h">Каждый вечер — <em>свой</em> повод прийти</h2>
-      <p class="muted">Шесть форматов, по одному на каждый день недели. Вот что здесь бывает и что ждёт в ближайшие две недели.</p>
+  <!-- 4. Форматы -->
+  <section class="week" id="formats" aria-labelledby="formats-h">
+    <div class="week__head wrap" data-bg="rgba(255, 255, 255, 1)">
+      <p class="eyebrow">Клубы и встречи</p>
+      <h2 class="h2 split" id="formats-h">Пять поводов <em>прийти</em> на этой неделе</h2>
+      <p class="muted">Два клуба трижды в неделю, гости и кино по выходным, а ещё история костюма и рисунок. Вот что здесь бывает и что ждёт в ближайшее время.</p>
     </div>
 
     <div class="week__grid wrap">
       <div class="week__media" aria-hidden="true">
         <div class="week__frame">
-          <img class="wk-img is-on" src="img/ch-talk.jpg" alt="">
-          <img class="wk-img" src="img/ch-book.jpg" alt="">
-          <img class="wk-img" src="img/ch-film.jpg" alt="">
-          <img class="wk-img" src="img/ch-meet.jpg" alt="">
-          <img class="wk-img" src="img/ch-craft.jpg" alt="">
-          <img class="wk-img" src="img/ch-train.jpg" alt="">
-          <span class="week__day" id="weekDay">Вт</span>
-          <span class="week__count" id="weekCount">1 / 6</span>
+          <img class="wk-img is-on" src="img/ch-lit.jpg" alt="">
+          <img class="wk-img" src="img/ch-script.jpg" alt="">
+          <img class="wk-img" src="img/ch-guest.jpg" alt="">
+          <img class="wk-img" src="img/ch-costume.jpg" alt="">
+          <img class="wk-img" src="img/ch-art.jpg" alt="">
+          <span class="week__day" id="weekDay">пн · ср · сб</span>
+          <span class="week__count" id="weekCount">1 / 5</span>
         </div>
       </div>
 
       <div class="week__list">
-        <article class="chapter" data-bg="rgba(12, 17, 28, 1)" style="--tint: #93B4E6">
-          <img class="chapter__img" src="img/ch-talk.jpg" alt="Лектор с микрофоном выступает перед залом">
-          <p class="chapter__when">Вторник · 19:30 · полтора часа</p>
-          <h3 class="chapter__title">Лекции</h3>
-          <p class="chapter__what">Искусство, история, психология и наука простым языком. Час лектор рассказывает, потом полчаса отвечает на вопросы из зала. Спрашивать можно всё.</p>
+        <article class="chapter" data-bg="rgba(243, 246, 238, 1)" data-label="пн · ср · сб" style="--tint: #4E7A3B">
+          <img class="chapter__img" src="img/ch-lit.jpg" alt="Участники литературного клуба сидят в кругу, одна из них читает вслух">
+          <p class="chapter__when">Понедельник · среда · суббота</p>
+          <h3 class="chapter__title">Литературный <em>клуб</em></h3>
+          <p class="chapter__what">Читаем книги и обсуждаем их: спорим, соглашаемся, делимся любимыми цитатами. Иногда читаем вслух по ролям. Можно прийти, не дочитав.</p>
           <div class="chapter__next">
             <p class="eyebrow">Что будет</p>
             <ul>
-              <li><span>29 сент</span>Как смотреть современное искусство</li>
-              <li><span>4 окт</span>Москва в пяти домах</li>
+              <li><span>26 сент</span>Читаем вслух: Чехов, «Дама с собачкой»</li>
+              <li><span>28 сент</span>«Лавр» Евгения Водолазкина</li>
             </ul>
           </div>
         </article>
 
-        <article class="chapter" data-bg="rgba(13, 22, 15, 1)" style="--tint: #A8C897">
-          <img class="chapter__img" src="img/ch-book.jpg" alt="Двое читают книги на диване в полумраке">
-          <p class="chapter__when">Среда и суббота · 19:30 · два часа</p>
-          <h3 class="chapter__title">Книжный <em>клуб</em></h3>
-          <p class="chapter__what">Две группы: современная проза и классика. Одна книга в месяц. Можно прийти, не дочитав: спойлеров будет много, а скучно не будет.</p>
+        <article class="chapter" data-bg="rgba(239, 243, 250, 1)" data-label="пн · ср · пт" style="--tint: #3457A6">
+          <img class="chapter__img" src="img/ch-script.jpg" alt="Участники сценарного клуба за столом со страницами сценариев, на стене карточки с планом истории">
+          <p class="chapter__when">Понедельник · среда · пятница</p>
+          <h3 class="chapter__title">Сценарный <em>клуб</em></h3>
+          <p class="chapter__what">Пишем сценарии короткого и полного метра, разбираем сцены и диалоги, читаем друг другу по ролям. Подходит и тем, кто только начинает, и тем, кто уже пишет.</p>
           <div class="chapter__next">
             <p class="eyebrow">Что будет</p>
             <ul>
-              <li><span>26 сент</span>«Лавр» Евгения Водолазкина</li>
-              <li><span>30 сент</span>«Стоунер» Джона Уильямса</li>
+              <li><span>25 сент</span>Первая сцена: как зацепить зрителя</li>
+              <li><span>28 сент</span>Диалоги без лишних слов</li>
             </ul>
           </div>
         </article>
 
-        <article class="chapter" data-bg="rgba(30, 10, 12, 1)" style="--tint: #E8877C">
-          <img class="chapter__img" src="img/ch-film.jpg" alt="Зрители в красных креслах кинозала смотрят фильм">
-          <p class="chapter__when">Четверг · 19:30 · два с половиной часа</p>
-          <h3 class="chapter__title">Кино</h3>
-          <p class="chapter__what">Большой экран, тридцать кресел и фильмы циклами. После показа киновед помогает разобраться, почему кино работает именно так.</p>
+        <article class="chapter" data-bg="rgba(250, 240, 235, 1)" data-label="сб · вс" style="--tint: #B4462F">
+          <img class="chapter__img" src="img/ch-guest.jpg" alt="Встреча со специальным гостем: гость в кресле на сцене, зрители в зале">
+          <p class="chapter__when">Суббота · воскресенье</p>
+          <h3 class="chapter__title">Гости <em>и кино</em></h3>
+          <p class="chapter__what">Днём приходят специальные гости: писатели, режиссёры, художники. Вечером смотрим фильм на большом экране и обсуждаем его вместе.</p>
           <div class="chapter__next">
-            <p class="eyebrow">Что будет · цикл «Оттепель»</p>
+            <p class="eyebrow">Что будет</p>
             <ul>
-              <li><span>24 сент</span>«Короткие встречи», Кира Муратова</li>
-              <li><span>1 окт</span>«Июльский дождь», Марлен Хуциев</li>
+              <li><span>26 сент</span>Кино: «Июльский дождь», Марлен Хуциев</li>
+              <li><span>24 окт</span>Специальный гость — Павел Глобо</li>
             </ul>
           </div>
         </article>
 
-        <article class="chapter" data-bg="rgba(32, 20, 8, 1)" style="--tint: #F2B35B">
-          <img class="chapter__img" src="img/ch-meet.jpg" alt="Компания разговаривает за круглым столом в уютной кухне">
-          <p class="chapter__when">Пятница · 19:00 · два-три часа</p>
-          <h3 class="chapter__title">Встречи</h3>
-          <p class="chapter__what">Разговорные вечера о переезде, работе и отношениях, а иногда просто настольные игры. Лучший вечер, чтобы найти своих.</p>
+        <article class="chapter" data-bg="rgba(248, 240, 246, 1)" data-label="2 раза в месяц" style="--tint: #8E3F7C">
+          <img class="chapter__img" src="img/ch-costume.jpg" alt="Мастерская истории костюма: вешалка с винтажной одеждой, ткани и эскизы, девушка у зеркала с жакетом">
+          <p class="chapter__when">2 раза в месяц</p>
+          <h3 class="chapter__title">История костюма <em>и свой стиль</em></h3>
+          <p class="chapter__what">Как менялась одежда от эпохи к эпохе и что из этого подходит именно вам. Разбираем силуэты, ткани и цвета и собираем свой стиль.</p>
           <div class="chapter__next">
             <p class="eyebrow">Что будет</p>
             <ul>
-              <li><span>25 сент</span>Как переехать в новый город и найти своих</li>
-              <li><span>2 окт</span>Вечер настольных игр</li>
+              <li><span>3 окт</span>Костюм 1920-х: свобода и новый силуэт</li>
+              <li><span>17 окт</span>Цвет и фактура: собираем свою палитру</li>
             </ul>
           </div>
         </article>
 
-        <article class="chapter" data-bg="rgba(31, 15, 9, 1)" style="--tint: #E59E6D">
-          <img class="chapter__img" src="img/ch-craft.jpg" alt="Руки лепят глиняный горшок">
-          <p class="chapter__when">Суббота · 12:00 · три часа</p>
-          <h3 class="chapter__title">Мастерские</h3>
-          <p class="chapter__what">Керамика, линогравюра, зины. Всё делаем руками и уносим домой. Материалы уже на столе, фартуки тоже.</p>
+        <article class="chapter" data-bg="rgba(250, 246, 233, 1)" data-label="4 раза в месяц" style="--tint: #94650F">
+          <img class="chapter__img" src="img/ch-art.jpg" alt="Урок рисунка: мольберты с рисунками гипсовой головы, книги по истории искусств на столе">
+          <p class="chapter__when">4 раза в месяц</p>
+          <h3 class="chapter__title">Рисунок <em>и история искусств</em></h3>
+          <p class="chapter__what">Рисуем с натуры и узнаём, как смотрели на мир художники разных эпох. Опыт не нужен, бумагу и уголь дадим.</p>
           <div class="chapter__next">
             <p class="eyebrow">Что будет</p>
             <ul>
-              <li><span>26 сент</span>Линогравюра за один день</li>
-              <li><span>3 окт</span>Керамика: первая чашка</li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="chapter" data-bg="rgba(21, 14, 30, 1)" style="--tint: #BBA4E2">
-          <img class="chapter__img" src="img/ch-train.jpg" alt="Группа людей сидит в кругу на тренинге">
-          <p class="chapter__when">Воскресенье · 15:00 · три-четыре часа</p>
-          <h3 class="chapter__title">Тренинги</h3>
-          <p class="chapter__what">Практикумы в группах до шестнадцати человек: выступления, общение, эмоции. Много упражнений и мало теории.</p>
-          <div class="chapter__next">
-            <p class="eyebrow">Что будет</p>
-            <ul>
-              <li><span>27 сент</span>Говорить спокойно: публичные выступления</li>
-              <li><span>4 окт</span>Эмоциональный интеллект на практике</li>
+              <li><span>1 окт</span>Гипсовая голова: свет и тень</li>
+              <li><span>8 окт</span>Импрессионисты: как нарисовать воздух</li>
             </ul>
           </div>
         </article>
       </div>
     </div>
+  </section>
 
-    <div class="week__off wrap" data-bg="rgba(16, 10, 6, 1)">
-      <b>А в понедельник</b><span>мы отдыхаем и завариваем новый чай.</span>
+  <!-- 5. Специальный гость -->
+  <section class="guest" id="guest" data-bg="rgba(250, 240, 235, 1)" aria-labelledby="guest-h">
+    <div class="wrap guest__grid">
+      <div class="guest__text">
+        <p class="eyebrow">Специальный гость · суббота</p>
+        <p class="guest__date">24 октября</p>
+        <h2 class="guest__name split" id="guest-h">Павел Глобо</h2>
+        <p class="muted">Встреча в большом зале. Мест сорок, поэтому лучше записаться заранее.</p>
+        <button class="pill pill--ink" type="button" data-book="99">Записаться на встречу <span class="arr">→</span></button>
+      </div>
+      <div class="guest__img"><img src="img/guest-stage.jpg" alt="Пустое кресло и микрофон на сцене светлого зала перед встречей"></div>
     </div>
   </section>
 
-  <!-- 5. Как проходит вечер -->
-  <section class="evening" id="evening" data-bg="rgba(16, 10, 6, 1)" aria-labelledby="evening-h">
+  <!-- 6. Как проходит вечер -->
+  <section class="evening" id="evening" data-bg="rgba(255, 255, 255, 1)" aria-labelledby="evening-h">
     <div class="evening__grid wrap">
       <div class="evening__head">
-        <p class="eyebrow">Как проходит вечер</p>
+        <p class="eyebrow">Как проходит вечер клуба</p>
         <h2 class="h2 split" id="evening-h">От первого чая до <em>последнего</em> разговора</h2>
         <div class="clock" id="clock" aria-hidden="true">19:00</div>
       </div>
       <div class="tl">
         <div class="tl__bar"><div class="tl__fill" id="tlFill"></div></div>
         <ol>
-          <li data-time="19:00"><span class="t">19:00</span><h3>Открываем двери</h3><p>Чай уже заварен, пледы лежат на креслах. Можно прийти пораньше и осмотреться.</p></li>
+          <li data-time="19:00"><span class="t">19:00</span><h3>Открываем двери</h3><p>Чай уже заварен. Можно прийти пораньше, осмотреться и выбрать кресло у окна.</p></li>
           <li data-time="19:30"><span class="t">19:30</span><h3>Знакомимся</h3><p>Ведущий представляет всех по кругу. Даже если вы пришли один, в углу не останетесь.</p></li>
-          <li data-time="19:45"><span class="t">19:45</span><h3>Главная часть</h3><p>Фильм, книга, лекция или практикум: зависит от дня недели.</p></li>
+          <li data-time="19:45"><span class="t">19:45</span><h3>Главная часть</h3><p>Читаем и обсуждаем книгу, разбираем сцены сценариев, рисуем или слушаем гостя.</p></li>
           <li data-time="21:00"><span class="t">21:00</span><h3>Перерыв на кухне</h3><p>Кофе, печенье и самые интересные разговоры за вечер.</p></li>
           <li data-time="21:30"><span class="t">21:30</span><h3>Обсуждение</h3><p>Спорим, соглашаемся и записываем, что почитать и посмотреть дальше.</p></li>
-          <li data-time="23:00"><span class="t">23:00</span><h3>Закрываемся</h3><p>Кто-то идёт домой, а кто-то вместе с новыми знакомыми в соседнее кафе.</p></li>
+          <li data-time="22:30"><span class="t">22:30</span><h3>Расходимся</h3><p>Кто-то идёт домой, а кто-то вместе с новыми знакомыми в соседнее кафе.</p></li>
         </ol>
       </div>
     </div>
   </section>
 
-  <!-- 6. Коллаж -->
-  <section class="collage" data-bg="rgba(12, 8, 5, 1)" aria-label="Атмосфера">
-    <figure class="cl cl-1" data-speed="-0.5"><img src="img/c-books.jpg" alt=""></figure>
-    <figure class="cl cl-2" data-speed="0.35"><img src="img/c-seats.jpg" alt=""></figure>
-    <figure class="cl cl-3" data-speed="0.55"><img src="img/c-projector.jpg" alt=""></figure>
-    <figure class="cl cl-4" data-speed="-0.3"><img src="img/c-clay.jpg" alt=""></figure>
-    <figure class="cl cl-5" data-speed="0.8"><img src="img/c-tea.jpg" alt=""></figure>
+  <!-- 7. Коллаж -->
+  <section class="collage" data-bg="rgba(255, 255, 255, 1)" aria-label="Атмосфера">
+    <figure class="cl cl-1" data-speed="-0.5"><img src="img/d-script.jpg" alt=""></figure>
+    <figure class="cl cl-2" data-speed="0.35"><img src="img/d-fabric.jpg" alt=""></figure>
+    <figure class="cl cl-3" data-speed="0.55"><img src="img/d-projector.jpg" alt=""></figure>
+    <figure class="cl cl-4" data-speed="-0.3"><img src="img/ch-film.jpg" alt=""></figure>
+    <figure class="cl cl-5" data-speed="0.8"><img src="img/d-tea.jpg" alt=""></figure>
     <h2 class="collage__text split">Приходите одни.<br><em>Уходите с друзьями.</em></h2>
   </section>
 
-  <!-- 7. Афиша -->
-  <section class="afisha" id="afisha" data-bg="rgba(16, 10, 6, 1)" aria-labelledby="afisha-h">
+  <!-- 8. Афиша -->
+  <section class="afisha" id="afisha" data-bg="rgba(255, 255, 255, 1)" aria-labelledby="afisha-h">
     <div class="wrap">
       <div class="afisha__head">
-        <p class="eyebrow">Что будет · 24 сентября — 4 октября</p>
-        <h2 class="h2 split" id="afisha-h">Афиша на две недели</h2>
-        <p>Выберите вечер и запишитесь: место в зале закрепится за вами. Сколько это стоит, рассказываем в самом конце.</p>
+        <p class="eyebrow">Что будет · сентябрь и октябрь</p>
+        <h2 class="h2 split" id="afisha-h">Ближайшие встречи</h2>
+        <p>Выберите вечер и запишитесь: место закрепится за вами. Сколько стоят абонементы, рассказываем в самом конце.</p>
       </div>
       <div class="chips" id="chips" role="group" aria-label="Фильтр по формату"></div>
       <ol class="events" id="events"></ol>
     </div>
   </section>
 
-  <!-- 8. Стоимость -->
-  <section class="price" id="price" data-bg="rgba(241, 230, 214, 1)" data-light aria-labelledby="price-h">
+  <!-- 9. Стоимость -->
+  <section class="price" id="price" data-bg="rgba(255, 255, 255, 1)" aria-labelledby="price-h">
     <div class="wrap">
       <div class="price__head">
         <p class="eyebrow">Стоимость</p>
-        <h2 class="h2 split" id="price-h">Один вечер или <em>целый месяц</em></h2>
-        <p>Клубы, кино, лекции и встречи входят в любой абонемент. Чем чаще приходите, тем дешевле вечер.</p>
+        <h2 class="h2 split" id="price-h">Абонемент <em>на месяц</em></h2>
+        <p>Выберите, сколько Пространства вам нужно: один клуб, клубы с гостями и кино или всё сразу.</p>
       </div>
       <div class="plans">
         <article class="plan">
-          <h3 class="plan__name">Разовый визит</h3>
-          <div class="plan__price"><b>700 ₽</b><span>за вечер</span></div>
-          <p class="plan__sub">Первый визит — 500 ₽</p>
+          <h3 class="plan__name">Один клуб</h3>
+          <div class="plan__price"><b>3 500 ₽</b><span>в месяц</span></div>
           <ul>
-            <li>Любой клуб, кинопоказ, лекция или встреча</li>
-            <li>Чай, кофе и печенье</li>
-            <li>Место в зале закреплено за вами</li>
+            <li>Литературный или сценарный клуб на выбор</li>
+            <li>Все встречи клуба за месяц</li>
+            <li>Чай и кофе</li>
           </ul>
-          <a class="pill pill--ghost" href="#afisha">Выбрать вечер</a>
+          <button class="pill pill--ghost" type="button" data-plan="Один клуб · 3 500 ₽ в месяц">Выбрать</button>
         </article>
         <article class="plan plan--hot">
           <span class="plan__badge">Берут чаще всего</span>
-          <h3 class="plan__name">Четыре вечера</h3>
-          <div class="plan__price"><b>2 400 ₽</b><span>600 ₽ за вечер</span></div>
-          <p class="plan__sub">Действует 6 недель</p>
+          <h3 class="plan__name">Клубы и гости</h3>
+          <div class="plan__price"><b>6 500 ₽</b><span>в месяц</span></div>
           <ul>
-            <li>Любые четыре встречи из афиши</li>
-            <li>Один визит можно отдать другу</li>
-            <li>Скидка 10% на тренинги и мастерские</li>
+            <li>Литературный и сценарный клубы</li>
+            <li>Специальные гости и кинопоказы по выходным</li>
+            <li>Чай и кофе</li>
           </ul>
-          <button class="pill pill--lamp" type="button" data-plan="Четыре вечера · 2 400 ₽">Купить абонемент <span class="arr">→</span></button>
+          <button class="pill pill--ink" type="button" data-plan="Клубы и гости · 6 500 ₽ в месяц">Купить абонемент <span class="arr">→</span></button>
         </article>
         <article class="plan">
-          <h3 class="plan__name">Свой человек</h3>
-          <div class="plan__price"><b>4 900 ₽</b><span>в месяц</span></div>
-          <p class="plan__sub">Выгодно от семи вечеров в месяц</p>
+          <h3 class="plan__name">Всё Пространство</h3>
+          <div class="plan__price"><b>12 000 ₽</b><span>в месяц</span></div>
           <ul>
-            <li>Все клубы, кино, лекции и встречи без ограничений</li>
-            <li>Скидка 20% на тренинги и мастерские</li>
-            <li>Книги из библиотеки домой</li>
-            <li>Тихая комната днём</li>
-            <li>Гость бесплатно раз в месяц</li>
+            <li>Всё из абонемента «Клубы и гости»</li>
+            <li>История костюма и поиск стиля, 2 встречи</li>
+            <li>Рисунок и история искусств, 4 встречи</li>
           </ul>
-          <button class="pill pill--ghost" type="button" data-plan="Свой человек · 4 900 ₽ в месяц">Оформить</button>
+          <button class="pill pill--ghost" type="button" data-plan="Всё Пространство · 12 000 ₽ в месяц">Выбрать</button>
         </article>
-      </div>
-      <div class="price__foot">
-        <p>Тренинги и мастерские оплачиваются отдельно, от 2 200 до 3 500 ₽ за занятие. Материалы включены.</p>
-        <p>Промокод на первый визит: <span class="promo">ПЕРВЫЙ</span>. Подарочные сертификаты — на любую сумму от 1 000 ₽.</p>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="foot" id="contacts" data-bg="rgba(16, 10, 6, 1)">
+<footer class="foot" id="contacts" data-bg="rgba(255, 255, 255, 1)">
   <div class="wrap foot__grid">
-    <p class="foot__big">Ждём вас на Садовой, 12. Чай уже заварен.</p>
+    <p class="foot__big">Приходите. Чай уже заварен.</p>
     <div>
       <h3>Адрес и часы</h3>
       <ul>
         <li>Москва, ул. Садовая, 12, 2 этаж</li>
-        <li>Вт — пт 12:00 — 23:00</li>
-        <li>Сб — вс 11:00 — 22:00</li>
+        <li>Пн — пт 12:00 — 23:00</li>
+        <li>Сб — вс 11:00 — 23:00</li>
       </ul>
     </div>
     <div>
@@ -774,7 +741,7 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
     </div>
   </div>
   <div class="foot__word" id="footWord" aria-hidden="true">Пространство</div>
-  <p class="wrap foot__copy">© 2026 Пространство. Прототип: адрес, цены, события и люди вымышлены. Фото: Pexels.</p>
+  <p class="wrap foot__copy">© 2026 Пространство. Прототип: адрес, контакты, темы встреч и имена ведущих — примеры. Изображения сгенерированы.</p>
 </footer>
 
 <div class="peek" id="peek" aria-hidden="true"><img alt="" id="peekImg"></div>
@@ -798,12 +765,12 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
         <input id="f-phone" type="tel" autocomplete="tel" placeholder="+7 900 000-00-00">
       </div>
       <fieldset class="field" id="f-pay">
-        <legend>Оплата</legend>
-        <label class="opt"><input type="radio" name="pay" id="pay-once" value="once" checked> <span id="pay-once-text">Разовый визит, 700 ₽</span></label>
-        <label class="opt"><input type="radio" name="pay" id="pay-abon" value="abon"> Списать с абонемента</label>
-        <label class="opt"><input type="radio" name="pay" id="pay-buy" value="buy"> Купить «Четыре вечера» за 2 400 ₽</label>
+        <legend>Как придёте</legend>
+        <label class="opt"><input type="radio" name="pay" id="pay-abon" value="abon" checked> По абонементу</label>
+        <label class="opt"><input type="radio" name="pay" id="pay-buy" value="buy"> Хочу купить абонемент</label>
+        <label class="opt"><input type="radio" name="pay" id="pay-first" value="first"> Первый раз, свяжитесь со мной</label>
       </fieldset>
-      <button class="pill pill--lamp" type="submit" id="f-submit">Записаться</button>
+      <button class="pill pill--ink" type="submit" id="f-submit">Записаться</button>
       <p class="demo">Это прототип: заявка никуда не отправляется. На настоящем сайте здесь будет оплата и подтверждение по СМС.</p>
     </form>
     <div class="done" id="done" hidden>
@@ -822,32 +789,33 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 (function () {
   var root = document.documentElement;
 
-  /* ---------------- афиша: данные (пример) ---------------- */
+  /* ---------------- афиша: данные (темы и ведущие — примеры) ---------------- */
   var FORMATS = {
-    talk: { one: "Лекция", many: "Лекции", img: "img/ch-talk.jpg" },
-    book: { one: "Книжный клуб", many: "Книжный клуб", img: "img/ch-book.jpg" },
+    lit: { one: "Литературный клуб", many: "Литературный клуб", img: "img/ch-lit.jpg" },
+    script: { one: "Сценарный клуб", many: "Сценарный клуб", img: "img/ch-script.jpg" },
+    guest: { one: "Специальный гость", many: "Гости", img: "img/ch-guest.jpg" },
     film: { one: "Кино", many: "Кино", img: "img/ch-film.jpg" },
-    meet: { one: "Встреча", many: "Встречи", img: "img/ch-meet.jpg" },
-    craft: { one: "Мастерская", many: "Мастерские", img: "img/ch-craft.jpg" },
-    train: { one: "Тренинг", many: "Тренинги", img: "img/ch-train.jpg" }
+    costume: { one: "История костюма", many: "История костюма", img: "img/ch-costume.jpg" },
+    art: { one: "Рисунок и история искусств", many: "Рисунок", img: "img/ch-art.jpg" }
   };
   var EVENTS = [
-    { id: 1, day: 24, mon: "сент", wd: "чт", time: "19:30", f: "film", title: "«Короткие встречи»", host: "Кира Муратова, 1967. Обсуждение ведёт киновед Илья Соколов", left: 6, total: 30, price: 700 },
-    { id: 2, day: 25, mon: "сент", wd: "пт", time: "19:00", f: "meet", title: "Как переехать в новый город и найти своих", host: "Ведёт психолог Мария Орлова", left: 11, total: 24, price: 700 },
-    { id: 3, day: 26, mon: "сент", wd: "сб", time: "12:00", f: "craft", title: "Линогравюра за один день", host: "Ведёт художница Вера Ким", left: 3, total: 12, price: 2200 },
-    { id: 4, day: 26, mon: "сент", wd: "сб", time: "17:00", f: "book", title: "«Лавр» Евгения Водолазкина", host: "Ведёт филолог Анна Лебедева", left: 9, total: 20, price: 700 },
-    { id: 5, day: 27, mon: "сент", wd: "вс", time: "15:00", f: "train", title: "Говорить спокойно: публичные выступления", host: "Ведёт тренер Дмитрий Власов", left: 0, total: 16, price: 3500 },
-    { id: 6, day: 29, mon: "сент", wd: "вт", time: "19:30", f: "talk", title: "Как смотреть современное искусство", host: "Читает куратор Ольга Миронова", left: 18, total: 40, price: 700 },
-    { id: 7, day: 30, mon: "сент", wd: "ср", time: "19:30", f: "book", title: "«Стоунер» Джона Уильямса", host: "Ведёт филолог Анна Лебедева", left: 12, total: 20, price: 700 },
-    { id: 8, day: 1, mon: "окт", wd: "чт", time: "19:30", f: "film", title: "«Июльский дождь»", host: "Марлен Хуциев, 1966. Обсуждение ведёт Илья Соколов", left: 21, total: 30, price: 700 },
-    { id: 9, day: 2, mon: "окт", wd: "пт", time: "19:00", f: "meet", title: "Вечер настольных игр", host: "Ведёт команда Пространства", left: 14, total: 30, price: 700 },
-    { id: 10, day: 3, mon: "окт", wd: "сб", time: "12:00", f: "craft", title: "Керамика: первая чашка", host: "Ведёт керамистка Ольга Ли", left: 5, total: 10, price: 2800 },
-    { id: 11, day: 4, mon: "окт", wd: "вс", time: "15:00", f: "train", title: "Эмоциональный интеллект на практике", host: "Ведёт психолог Мария Орлова", left: 7, total: 16, price: 3200 },
-    { id: 12, day: 4, mon: "окт", wd: "вс", time: "18:00", f: "talk", title: "Москва в пяти домах", host: "Читает историк Павел Громов", left: 25, total: 40, price: 700 }
+    { id: 1, day: 25, mon: "сент", wd: "пт", time: "19:30", f: "script", title: "Первая сцена: как зацепить зрителя", host: "Ведёт сценарист Ирина Белова", left: 8, total: 16 },
+    { id: 2, day: 26, mon: "сент", wd: "сб", time: "12:00", f: "lit", title: "Читаем вслух: Чехов, «Дама с собачкой»", host: "Ведёт филолог Анна Лебедева", left: 11, total: 20 },
+    { id: 3, day: 26, mon: "сент", wd: "сб", time: "16:00", f: "guest", title: "Как строят мир фильма", host: "Гость — художник-постановщик Олег Сафронов", left: 14, total: 40 },
+    { id: 4, day: 26, mon: "сент", wd: "сб", time: "19:30", f: "film", title: "«Июльский дождь», 1966", host: "Показ и обсуждение", left: 9, total: 30 },
+    { id: 5, day: 27, mon: "сент", wd: "вс", time: "16:00", f: "guest", title: "От дневника к роману", host: "Гость — писательница Мария Лис", left: 20, total: 40 },
+    { id: 6, day: 27, mon: "сент", wd: "вс", time: "19:30", f: "film", title: "«Короткие встречи», 1967", host: "Показ и обсуждение", left: 6, total: 30 },
+    { id: 7, day: 28, mon: "сент", wd: "пн", time: "19:00", f: "lit", title: "«Лавр» Евгения Водолазкина", host: "Ведёт филолог Анна Лебедева", left: 9, total: 20 },
+    { id: 8, day: 28, mon: "сент", wd: "пн", time: "19:30", f: "script", title: "Диалоги без лишних слов", host: "Ведёт сценарист Ирина Белова", left: 5, total: 16 },
+    { id: 9, day: 30, mon: "сент", wd: "ср", time: "19:00", f: "lit", title: "«Стоунер» Джона Уильямса", host: "Ведёт филолог Анна Лебедева", left: 12, total: 20 },
+    { id: 10, day: 30, mon: "сент", wd: "ср", time: "19:30", f: "script", title: "Питчинг: рассказать идею за минуту", host: "Ведёт сценарист Ирина Белова", left: 10, total: 16 },
+    { id: 11, day: 1, mon: "окт", wd: "чт", time: "19:00", f: "art", title: "Гипсовая голова: свет и тень", host: "Ведёт художница Вера Ким", left: 4, total: 12 },
+    { id: 12, day: 2, mon: "окт", wd: "пт", time: "19:30", f: "script", title: "Разбор ваших сцен", host: "Ведёт сценарист Ирина Белова", left: 0, total: 16 },
+    { id: 13, day: 3, mon: "окт", wd: "сб", time: "12:00", f: "costume", title: "Костюм 1920-х: свобода и новый силуэт", host: "Ведёт историк моды Софья Нарышкина", left: 7, total: 14 },
+    { id: 99, day: 24, mon: "окт", wd: "сб", time: "", f: "guest", title: "Павел Глобо", host: "Специальный гость. Время объявим позже", left: 22, total: 40, special: true }
   ];
 
   function plural(n, a, b, c) { var m = n % 10, h = n % 100; if (m === 1 && h !== 11) return a; if (m >= 2 && m <= 4 && (h < 12 || h > 14)) return b; return c; }
-  function money(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₽"; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 
   var chipsEl = document.getElementById("chips"), eventsEl = document.getElementById("events"), current = "all";
@@ -866,9 +834,9 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
       var seats = e.left === 0 ? "<b>Мест нет</b>, можно в лист ожидания" : "Осталось <b>" + e.left + " " + plural(e.left, "место", "места", "мест") + "</b> из " + e.total;
       var btn = e.left === 0
         ? '<button class="pill pill--ghost pill--sm" type="button" data-book="' + e.id + '">В лист ожидания</button>'
-        : '<button class="pill pill--lamp pill--sm" type="button" data-book="' + e.id + '">Записаться</button>';
-      return '<li class="ev" data-f="' + e.f + '">' +
-        '<div class="ev__date"><b>' + e.day + "</b><span>" + e.mon + ", " + e.wd + " · " + e.time + "</span></div>" +
+        : '<button class="pill pill--ink pill--sm" type="button" data-book="' + e.id + '">Записаться</button>';
+      return '<li class="ev' + (e.special ? " ev--special" : "") + '" data-f="' + e.f + '">' +
+        '<div class="ev__date"><b>' + e.day + "</b><span>" + e.mon + ", " + e.wd + (e.time ? " · " + e.time : "") + "</span></div>" +
         '<div class="ev__main"><span class="ev__tag">' + FORMATS[e.f].one + "</span>" +
         '<h3 class="ev__title">' + esc(e.title) + "</h3>" +
         '<p class="ev__host">' + esc(e.host) + "</p></div>" +
@@ -892,7 +860,7 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
     document.getElementById("modal-kicker").textContent = it.kicker;
     document.getElementById("modal-title").textContent = it.title;
     document.getElementById("f-pay").hidden = !it.pay;
-    if (it.pay) { document.getElementById("pay-once-text").textContent = it.payText; document.getElementById("pay-once").checked = true; }
+    if (it.pay) document.getElementById("pay-abon").checked = true;
     document.getElementById("f-submit").textContent = it.submit;
     form.hidden = false; done.hidden = true; modal.hidden = false;
     if (lenis) lenis.stop();
@@ -909,17 +877,17 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
       var e = EVENTS.filter(function (x) { return String(x.id) === b.getAttribute("data-book"); })[0];
       if (!e) return;
       var wait = e.left === 0;
+      var when = e.day + " " + e.mon + (e.time ? ", " + e.time : "");
       openModal({
-        kicker: FORMATS[e.f].one + " · " + e.day + " " + e.mon + ", " + e.time, title: e.title, pay: !wait,
-        payText: "Разовый визит, " + money(e.price),
+        kicker: FORMATS[e.f].one + " · " + when, title: e.title, pay: !wait,
         submit: wait ? "Встать в лист ожидания" : "Записаться",
         doneTitle: wait ? "Вы в листе ожидания" : "Вы записаны",
-        doneText: wait ? "Если место освободится, напишем вам в СМС." : "Ждём вас " + e.day + " " + e.mon + " в " + e.time + ". Напомним о встрече за день."
+        doneText: wait ? "Если место освободится, напишем вам в СМС." : "Ждём вас " + when + ". Напомним о встрече за день."
       });
       return;
     }
     var p = ev.target.closest("[data-plan]");
-    if (p) openModal({ kicker: "Абонемент", title: p.getAttribute("data-plan"), pay: false, submit: "Оформить", doneTitle: "Заявка принята", doneText: "Абонемент начнёт действовать с первого визита." });
+    if (p) openModal({ kicker: "Абонемент", title: p.getAttribute("data-plan"), pay: false, submit: "Оформить", doneTitle: "Заявка принята", doneText: "Мы свяжемся с вами, чтобы оформить абонемент." });
   });
   modal.addEventListener("click", function (ev) { if (ev.target === modal) closeModal(); });
   document.getElementById("modal-close").addEventListener("click", closeModal);
@@ -974,18 +942,19 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
         scrollTrigger: { trigger: img.parentNode, containerAnimation: h, start: "left right", end: "right left", scrub: true } });
     });
 
-    // неделя: фото слева меняется вместе с главой
+    // форматы: фото слева меняется вместе с главой
     var imgs = document.querySelectorAll(".wk-img"), dayEl = document.getElementById("weekDay"), countEl = document.getElementById("weekCount");
-    var days = ["Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
-    document.querySelectorAll(".chapter").forEach(function (ch, i) {
+    var chapters = document.querySelectorAll(".chapter");
+    chapters.forEach(function (ch, i) {
       ScrollTrigger.create({ trigger: ch, start: "top 55%", end: "bottom 55%", onToggle: function (s) {
         if (!s.isActive) return;
         imgs.forEach(function (im, j) { im.classList.toggle("is-on", j === i); });
-        if (dayEl.textContent !== days[i]) {
-          dayEl.textContent = days[i];
+        var label = ch.getAttribute("data-label");
+        if (dayEl.textContent !== label) {
+          dayEl.textContent = label;
           gsap.fromTo(dayEl, { yPercent: 35, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.9, ease: "expo.out" });
         }
-        countEl.textContent = (i + 1) + " / 6";
+        countEl.textContent = (i + 1) + " / " + chapters.length;
       } });
     });
     gsap.fromTo(".week__frame", { scale: 0.92 }, { scale: 1, ease: "none", scrollTrigger: { trigger: ".week__grid", start: "top bottom", end: "top 20%", scrub: true } });
@@ -1019,20 +988,11 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
     });
   }
 
-  // перекраска страницы под текущий блок
-  function setTheme(el) {
-    var light = el.hasAttribute("data-light");
-    gsap.to(root, {
-      "--bg": el.getAttribute("data-bg"),
-      "--fg": light ? "rgba(27, 19, 13, 1)" : "rgba(244, 230, 210, 1)",
-      "--muted": light ? "rgba(27, 19, 13, 0.62)" : "rgba(244, 230, 210, 0.62)",
-      "--line": light ? "rgba(27, 19, 13, 0.16)" : "rgba(244, 230, 210, 0.14)",
-      "--accent": light ? "rgba(168, 85, 26, 1)" : "rgba(240, 164, 91, 1)",
-      duration: 1.1, ease: "power2.out", overwrite: "auto"
-    });
-  }
+  // фон мягко окрашивается под текущий блок
   document.querySelectorAll("[data-bg]").forEach(function (el) {
-    ScrollTrigger.create({ trigger: el, start: "top 55%", end: "bottom 55%", onToggle: function (s) { if (s.isActive) setTheme(el); } });
+    ScrollTrigger.create({ trigger: el, start: "top 55%", end: "bottom 55%", onToggle: function (s) {
+      if (s.isActive) gsap.to(root, { "--bg": el.getAttribute("data-bg"), duration: 1.1, ease: "power2.out", overwrite: "auto" });
+    } });
   });
 
   // меню прячется при прокрутке вниз и возвращается при прокрутке вверх
@@ -1057,13 +1017,15 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
       .to(curtain, { yPercent: -100, duration: 1.2, ease: "expo.inOut" }, "+=0.1")
       .add(function () { curtain.hidden = true; if (lenis) lenis.start(); });
   }
-  intro.from(".hero__media img", { scale: 1.3, duration: 2.4 }, seen ? 0 : "-=0.9")
-    .from(".hero__title .line > span", { yPercent: 110, duration: 1.4, stagger: 0.12 }, "<0.15")
-    .from(".hero .eyebrow, .hero__lead, .hero__actions > *", { y: 26, opacity: 0, duration: 1.2, stagger: 0.08 }, "<0.35");
+  intro.from(".hero__title .line > span", { yPercent: 110, duration: 1.4, stagger: 0.12 }, seen ? 0 : "-=0.5")
+    .from(".hero .eyebrow, .hero__lead, .hero__actions > *", { y: 26, opacity: 0, duration: 1.2, stagger: 0.08 }, "<0.3")
+    .from(".hero__frame", { yPercent: 12, opacity: 0, duration: 1.6 }, "<0.1");
 
-  // параллакс первого экрана
-  gsap.to(".hero__media", { yPercent: 18, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
-  gsap.to(".hero__content", { y: -120, opacity: 0.15, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+  // фото первого экрана раскрывается на всю ширину и уходит с параллаксом
+  gsap.fromTo("#heroFrame", { clipPath: "inset(0% 6% 0% 6% round 8px)" }, { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "none",
+    scrollTrigger: { trigger: ".hero__stage", start: "top 80%", end: "top top", scrub: true } });
+  gsap.fromTo("#heroFrame img", { yPercent: -8 }, { yPercent: 6, ease: "none",
+    scrollTrigger: { trigger: ".hero__stage", start: "top bottom", end: "bottom top", scrub: true } });
 
   // заголовки выезжают по словам
   document.querySelectorAll(".split").forEach(function (el) {
@@ -1090,11 +1052,15 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
     });
   });
 
-  // главы недели появляются
+  // главы появляются
   document.querySelectorAll(".chapter").forEach(function (ch) {
     gsap.from(ch.querySelectorAll(".chapter__when, .chapter__title, .chapter__what, .chapter__next"), { y: 50, opacity: 0, duration: 1.2, ease: "expo.out", stagger: 0.08,
       scrollTrigger: { trigger: ch, start: "top 72%" } });
   });
+
+  // специальный гость: дата выезжает, фото с параллаксом
+  gsap.from(".guest__date", { yPercent: 40, opacity: 0, duration: 1.4, ease: "expo.out", scrollTrigger: { trigger: ".guest", start: "top 75%" } });
+  gsap.fromTo(".guest__img img", { yPercent: -10 }, { yPercent: 4, ease: "none", scrollTrigger: { trigger: ".guest", start: "top bottom", end: "bottom top", scrub: true } });
 
   // вечер: часы и линия времени
   var clock = document.getElementById("clock");
@@ -1128,7 +1094,7 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
   if (window.matchMedia("(hover: hover) and (min-width: 900px)").matches) {
     var peek = document.getElementById("peek"), peekImg = document.getElementById("peekImg");
     var qx = gsap.quickTo(peek, "x", { duration: 0.6, ease: "power3" }), qy = gsap.quickTo(peek, "y", { duration: 0.6, ease: "power3" });
-    eventsEl.addEventListener("mousemove", function (e) { qx(e.clientX + 28); qy(e.clientY - 110); });
+    eventsEl.addEventListener("mousemove", function (e) { qx(e.clientX + 28); qy(e.clientY - 150); });
     eventsEl.addEventListener("mouseover", function (e) {
       var row = e.target.closest(".ev");
       if (!row || e.target.closest(".ev__act")) { peek.classList.remove("is-on"); return; }
