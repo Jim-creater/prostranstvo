@@ -224,11 +224,12 @@ button { font: inherit; color: inherit; }
 /* ================= форматы ================= */
 .week__head { padding-block: 18vh 6vh; display: grid; gap: 24px; }
 .week__head p.muted { max-width: 32em; font-size: 18px; }
-.days { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.days { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
 .days li { border: 1px solid var(--line); border-radius: 8px; padding: 16px 16px 18px; display: grid; gap: 8px; align-content: start; background: rgba(255, 255, 255, .55); }
 .days b { font: 400 34px/1 var(--f-serif); margin-bottom: 4px; }
 .days span { display: flex; align-items: center; gap: 8px; font-size: 14.5px; line-height: 1.3; }
 .days span::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--dot); }
+.days small { font: 400 12px/1 var(--f-mono); color: var(--muted); margin-left: auto; padding-left: 6px; }
 .d-lit { --dot: var(--c-lit); }
 .d-script { --dot: var(--c-script); }
 .d-guest { --dot: var(--c-guest); }
@@ -573,7 +574,7 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
           <a class="pill pill--ink" href="#formats">Смотреть клубы <span class="arr">→</span></a>
           <a class="soon" href="#guest">
             <span class="soon__top"><i></i>Скоро · 24 октября</span>
-            <b>Павел Глобо, специальный гость</b>
+            <b>Павел Глоба, специальный гость</b>
           </a>
         </div>
       </div>
@@ -581,8 +582,8 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
     <div class="hero__stage">
       <div class="hero__frame" id="heroFrame">
         <picture>
-          <source media="(max-width: 700px)" srcset="img/m/hero-m.jpg 800w, img/hero-m.jpg 1100w" sizes="100vw">
-          <img src="img/hero.jpg" alt="Вечер в Пространстве: гости с чаем в светлом зале с книжными полками и тёплыми лампами">
+          <source media="(max-width: 700px)" srcset="img/hero-m-s.webp 1200w, img/hero-m-l.webp 1600w" sizes="100vw">
+          <img src="img/hero-l.webp" srcset="img/hero-s.webp 1200w, img/hero-l.webp 2800w" sizes="100vw" alt="Вечер в Пространстве: гости с чаем в светлом зале с книжными полками и тёплыми лампами">
         </picture>
       </div>
     </div>
@@ -594,8 +595,8 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
       <p class="eyebrow">Что это за место</p>
       <p class="manifesto__text" id="manifesto">Здесь читают книги вслух, пишут сценарии, рисуют, разбираются в истории костюма и смотрят кино со специальными гостями. Сюда приходят одни, а уходят с новыми знакомыми и мыслями, которые хочется додумать.</p>
     </div>
-    <figure class="float float--a" data-speed="-0.35"><img src="img/d-tea.jpg" alt=""></figure>
-    <figure class="float float--b" data-speed="0.3"><img src="img/d-drawing.jpg" alt=""></figure>
+    <figure class="float float--a" data-speed="-0.35"><img src="img/d-tea-s.webp" srcset="img/d-tea-s.webp 1200w, img/d-tea-l.webp 1800w" sizes="(max-width: 900px) 45vw, 24vw" alt=""></figure>
+    <figure class="float float--b" data-speed="0.3"><img src="img/d-drawing-s.webp" srcset="img/d-drawing-s.webp 1200w, img/d-drawing-l.webp 2400w" sizes="(max-width: 900px) 45vw, 24vw" alt=""></figure>
   </section>
 
   <!-- 3. Зал -->
@@ -609,22 +610,22 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
       <div class="rooms__view" id="roomsView">
       <div class="rooms__track" id="roomsTrack">
       <figure class="room">
-        <div class="room__img"><img src="img/hall.jpg" srcset="img/m/hall.jpg 800w, img/hall.jpg 1600w" sizes="(max-width: 900px) 78vw, 28vw" alt="Общий зал без окон: белые стены, книжные полки, длинный стол, стулья и тёплый свет"></div>
+        <div class="room__img"><img src="img/hall-l.webp" srcset="img/hall-s.webp 1200w, img/hall-l.webp 2800w" sizes="(max-width: 900px) 160vw, 60vw" alt="Общий зал без окон: белые стены, книжные полки, длинный стол, стулья и тёплый свет"></div>
         <figcaption class="room__top"><h3>Зал</h3><span class="eyebrow">до 30 гостей</span></figcaption>
         <p>Кресла, стулья и длинный стол переставляем под вечер: круг для клуба, ряды для кино.</p>
       </figure>
       <figure class="room">
-        <div class="room__img"><img src="img/hall-shelves.jpg" srcset="img/m/hall-shelves.jpg 800w, img/hall-shelves.jpg 1400w" sizes="(max-width: 900px) 78vw, 28vw" alt="Книжные полки вдоль стены и два кресла с торшером"></div>
+        <div class="room__img"><img src="img/hall-shelves-l.webp" srcset="img/hall-shelves-s.webp 1200w, img/hall-shelves-l.webp 1800w" sizes="(max-width: 900px) 78vw, 34vw" alt="Книжные полки вдоль стены и два кресла с торшером"></div>
         <figcaption class="room__top"><h3>Книжная стена</h3><span class="eyebrow">книги клубов</span></figcaption>
         <p>Полки с книгами, которые читают в клубе, и кресла рядом.</p>
       </figure>
       <figure class="room">
-        <div class="room__img"><img src="img/hall-tea.jpg" srcset="img/m/hall-tea.jpg 800w, img/hall-tea.jpg 1400w" sizes="(max-width: 900px) 78vw, 28vw" alt="Чайная стойка с керамическими чашками и чайником"></div>
+        <div class="room__img"><img src="img/hall-tea-l.webp" srcset="img/hall-tea-s.webp 1200w, img/hall-tea-l.webp 1800w" sizes="(max-width: 900px) 78vw, 34vw" alt="Чайная стойка с керамическими чашками и чайником"></div>
         <figcaption class="room__top"><h3>Чайная стойка</h3><span class="eyebrow">чай без счёта</span></figcaption>
         <p>Чай и кофе для гостей. Здесь начинаются самые долгие разговоры.</p>
       </figure>
       <figure class="room">
-        <div class="room__img"><img src="img/hall-screen.jpg" srcset="img/m/hall-screen.jpg 800w, img/hall-screen.jpg 1400w" sizes="(max-width: 900px) 78vw, 28vw" alt="Белая стена-экран и низкий подиум с креслами"></div>
+        <div class="room__img"><img src="img/hall-screen-l.webp" srcset="img/hall-screen-s.webp 1200w, img/hall-screen-l.webp 1800w" sizes="(max-width: 900px) 78vw, 34vw" alt="Белая стена-экран и низкий подиум с креслами"></div>
         <figcaption class="room__top"><h3>Экран и сцена</h3><span class="eyebrow">кино и гости</span></figcaption>
         <p>Белая стена становится экраном, а низкий подиум сценой для гостей.</p>
       </figure>
@@ -649,21 +650,22 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
       <ul class="days" aria-label="Расписание недели">
         <li><b>Пн</b><span class="d-lit">Литературный клуб</span><span class="d-script">Сценарный клуб</span></li>
         <li><b>Ср</b><span class="d-lit">Литературный клуб</span><span class="d-script">Сценарный клуб</span></li>
+        <li><b>Чт</b><span class="d-costume">История костюма <small>12:00</small></span></li>
         <li><b>Пт</b><span class="d-script">Сценарный клуб</span></li>
         <li><b>Сб</b><span class="d-lit">Литературный клуб</span><span class="d-guest">Гости и кино</span></li>
-        <li><b>Вс</b><span class="d-guest">Гости и кино</span></li>
+        <li><b>Вс</b><span class="d-art">Рисунок <small>12:00</small></span><span class="d-guest">Гости и кино</span></li>
       </ul>
-      <p class="days__note"><span class="d-costume">История костюма — 2 раза в месяц</span><span class="d-art">Рисунок и история искусств — 4 раза в месяц</span></p>
+      <p class="days__note"><span class="d-costume">История костюма — 2 четверга в месяц</span><span class="d-art">Рисунок и история искусств — 4 воскресенья в месяц, по 2 часа</span></p>
     </div>
 
     <div class="week__grid wrap">
       <div class="week__media" aria-hidden="true">
         <div class="week__frame">
-          <img class="wk-img is-on" src="img/ch-lit.jpg" alt="">
-          <img class="wk-img" src="img/ch-script.jpg" alt="">
-          <img class="wk-img" src="img/ch-guest.jpg" alt="">
-          <img class="wk-img" src="img/ch-costume.jpg" alt="">
-          <img class="wk-img" src="img/ch-art.jpg" alt="">
+          <img class="wk-img is-on" src="img/ch-lit-l.webp" srcset="img/ch-lit-s.webp 1200w, img/ch-lit-l.webp 1800w" sizes="45vw" alt="">
+          <img class="wk-img" src="img/ch-script-l.webp" srcset="img/ch-script-s.webp 1200w, img/ch-script-l.webp 1800w" sizes="45vw" alt="">
+          <img class="wk-img" src="img/ch-guest-l.webp" srcset="img/ch-guest-s.webp 1200w, img/ch-guest-l.webp 1800w" sizes="45vw" alt="">
+          <img class="wk-img" src="img/ch-costume-l.webp" srcset="img/ch-costume-s.webp 1200w, img/ch-costume-l.webp 1800w" sizes="45vw" alt="">
+          <img class="wk-img" src="img/ch-art-l.webp" srcset="img/ch-art-s.webp 1200w, img/ch-art-l.webp 1800w" sizes="45vw" alt="">
           <span class="week__day" id="weekDay">пн · ср · сб</span>
           <span class="week__count" id="weekCount">1 / 5</span>
         </div>
@@ -671,7 +673,7 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 
       <div class="week__list">
         <article class="chapter" data-bg="rgba(243, 246, 238, 1)" data-label="пн · ср · сб" style="--tint: var(--c-lit)">
-          <img class="chapter__img" src="img/m/ch-lit.jpg" alt="Участники литературного клуба сидят в кругу, одна из них читает вслух" loading="lazy">
+          <img class="chapter__img" src="img/ch-lit-s.webp" srcset="img/ch-lit-s.webp 1200w, img/ch-lit-l.webp 1800w" sizes="(max-width: 900px) 100vw, 820px" alt="Участники литературного клуба сидят в кругу, одна из них читает вслух" loading="lazy">
           <p class="chapter__when">Понедельник · среда · суббота</p>
           <h3 class="chapter__title">Литературный <em>клуб</em></h3>
           <p class="chapter__what">Читаем книги и обсуждаем их: спорим, соглашаемся, делимся любимыми цитатами. Иногда читаем вслух по ролям. Можно прийти, не дочитав.</p>
@@ -685,7 +687,7 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
         </article>
 
         <article class="chapter" data-bg="rgba(239, 243, 250, 1)" data-label="пн · ср · пт" style="--tint: var(--c-script)">
-          <img class="chapter__img" src="img/m/ch-script.jpg" alt="Участники сценарного клуба за длинным столом со страницами сценариев, на стене карточки с планом истории" loading="lazy">
+          <img class="chapter__img" src="img/ch-script-s.webp" srcset="img/ch-script-s.webp 1200w, img/ch-script-l.webp 1800w" sizes="(max-width: 900px) 100vw, 820px" alt="Участники сценарного клуба за длинным столом со страницами сценариев, на стене карточки с планом истории" loading="lazy">
           <p class="chapter__when">Понедельник · среда · пятница</p>
           <h3 class="chapter__title">Сценарный <em>клуб</em></h3>
           <p class="chapter__what">Пишем сценарии короткого и полного метра, разбираем сцены и диалоги, читаем друг другу по ролям. Подходит и тем, кто только начинает, и тем, кто уже пишет.</p>
@@ -699,7 +701,7 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
         </article>
 
         <article class="chapter" data-bg="rgba(250, 240, 235, 1)" data-label="сб · вс" style="--tint: var(--c-guest)">
-          <img class="chapter__img" src="img/m/ch-guest.jpg" alt="Встреча с гостем: гость и ведущий в креслах на подиуме, зрители в зале" loading="lazy">
+          <img class="chapter__img" src="img/ch-guest-s.webp" srcset="img/ch-guest-s.webp 1200w, img/ch-guest-l.webp 1800w" sizes="(max-width: 900px) 100vw, 820px" alt="Встреча с гостем: гость и ведущий в креслах на подиуме, зрители в зале" loading="lazy">
           <p class="chapter__when">Суббота · воскресенье</p>
           <h3 class="chapter__title">Гости <em>и кино</em></h3>
           <p class="chapter__what">Днём приходят специальные гости: писатели, режиссёры, художники. Вечером смотрим фильм на большом экране и обсуждаем его вместе.</p>
@@ -707,35 +709,35 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
             <p class="eyebrow">Что будет</p>
             <ul>
               <li><span>26 сент</span>Кино: «Июльский дождь», Марлен Хуциев</li>
-              <li><span>24 окт</span>Специальный гость — Павел Глобо</li>
+              <li><span>24 окт</span>Специальный гость — Павел Глоба</li>
             </ul>
           </div>
         </article>
 
-        <article class="chapter" data-bg="rgba(248, 240, 246, 1)" data-label="2 раза в месяц" style="--tint: var(--c-costume)">
-          <img class="chapter__img" src="img/m/ch-costume.jpg" alt="Встреча по истории костюма: вешалка с винтажной одеждой, ткани, зеркало и участницы" loading="lazy">
-          <p class="chapter__when">2 раза в месяц</p>
+        <article class="chapter" data-bg="rgba(248, 240, 246, 1)" data-label="чт · 12:00" style="--tint: var(--c-costume)">
+          <img class="chapter__img" src="img/ch-costume-s.webp" srcset="img/ch-costume-s.webp 1200w, img/ch-costume-l.webp 1800w" sizes="(max-width: 900px) 100vw, 820px" alt="Встреча по истории костюма: вешалка с винтажной одеждой, ткани, зеркало и участницы" loading="lazy">
+          <p class="chapter__when">Четверг · 12:00 · 2 раза в месяц</p>
           <h3 class="chapter__title">История костюма <em>и свой стиль</em></h3>
           <p class="chapter__what">Как менялась одежда от эпохи к эпохе и что из этого подходит именно вам. Разбираем силуэты, ткани и цвета и собираем свой стиль.</p>
           <div class="chapter__next">
             <p class="eyebrow">Что будет</p>
             <ul>
-              <li><span>3 окт</span>Костюм 1920-х: свобода и новый силуэт</li>
-              <li><span>17 окт</span>Цвет и фактура: собираем свою палитру</li>
+              <li><span>1 окт</span>Костюм 1920-х: свобода и новый силуэт</li>
+              <li><span>15 окт</span>Цвет и фактура: собираем свою палитру</li>
             </ul>
           </div>
         </article>
 
-        <article class="chapter" data-bg="rgba(250, 246, 233, 1)" data-label="4 раза в месяц" style="--tint: var(--c-art)">
-          <img class="chapter__img" src="img/m/ch-art.jpg" alt="Урок рисунка: несколько человек у мольбертов рисуют натюрморт" loading="lazy">
-          <p class="chapter__when">4 раза в месяц</p>
+        <article class="chapter" data-bg="rgba(250, 246, 233, 1)" data-label="вс · 12:00" style="--tint: var(--c-art)">
+          <img class="chapter__img" src="img/ch-art-s.webp" srcset="img/ch-art-s.webp 1200w, img/ch-art-l.webp 1800w" sizes="(max-width: 900px) 100vw, 820px" alt="Урок рисунка: несколько человек у мольбертов рисуют натюрморт" loading="lazy">
+          <p class="chapter__when">Воскресенье · 12:00 · 2 часа · 4 раза в месяц</p>
           <h3 class="chapter__title">Рисунок <em>и история искусств</em></h3>
           <p class="chapter__what">Рисуем с натуры и узнаём, как смотрели на мир художники разных эпох. Опыт не нужен, бумагу и уголь дадим.</p>
           <div class="chapter__next">
             <p class="eyebrow">Что будет</p>
             <ul>
-              <li><span>1 окт</span>Натюрморт: свет и тень</li>
-              <li><span>8 окт</span>Импрессионисты: как нарисовать воздух</li>
+              <li><span>27 сент</span>Натюрморт: свет и тень</li>
+              <li><span>4 окт</span>Импрессионисты: как нарисовать воздух</li>
             </ul>
           </div>
         </article>
@@ -749,11 +751,11 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
       <div class="guest__text">
         <p class="eyebrow">Специальный гость · суббота</p>
         <p class="guest__date">24 октября</p>
-        <h2 class="guest__name split" id="guest-h">Павел Глобо</h2>
+        <h2 class="guest__name split" id="guest-h">Павел Глоба</h2>
         <p class="muted">Встреча в нашем зале. Мест около тридцати, поэтому лучше записаться заранее.</p>
         <button class="pill pill--ink" type="button" data-book="99">Записаться на встречу <span class="arr">→</span></button>
       </div>
-      <div class="guest__img"><img src="img/guest-stage.jpg" srcset="img/m/guest-stage.jpg 800w, img/guest-stage.jpg 1400w" sizes="(max-width: 900px) 100vw, 50vw" alt="Два кресла и микрофон на подиуме в зале перед встречей с гостем" loading="lazy"></div>
+      <div class="guest__img"><img src="img/guest-stage-l.webp" srcset="img/guest-stage-s.webp 1200w, img/guest-stage-l.webp 2400w" sizes="(max-width: 900px) 170vw, 50vw" alt="Два кресла и микрофон на подиуме в зале перед встречей с гостем" loading="lazy"></div>
     </div>
   </section>
 
@@ -781,11 +783,11 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 
   <!-- 7. Коллаж -->
   <section class="collage" data-bg="rgba(255, 255, 255, 1)" aria-label="Атмосфера">
-    <figure class="cl cl-1" data-speed="-0.5"><img src="img/d-script.jpg" alt="" loading="lazy"></figure>
-    <figure class="cl cl-2" data-speed="0.35"><img src="img/d-fabric.jpg" alt="" loading="lazy"></figure>
-    <figure class="cl cl-3" data-speed="0.55"><img src="img/d-projector.jpg" alt="" loading="lazy"></figure>
-    <figure class="cl cl-4" data-speed="-0.3"><img src="img/ch-film.jpg" alt="" loading="lazy"></figure>
-    <figure class="cl cl-5" data-speed="0.8"><img src="img/d-tea.jpg" alt="" loading="lazy"></figure>
+    <figure class="cl cl-1" data-speed="-0.5"><img src="img/d-script-s.webp" srcset="img/d-script-s.webp 1200w, img/d-script-l.webp 1800w" sizes="(max-width: 900px) 45vw, 24vw" alt="" loading="lazy"></figure>
+    <figure class="cl cl-2" data-speed="0.35"><img src="img/d-fabric-s.webp" srcset="img/d-fabric-s.webp 1200w, img/d-fabric-l.webp 2400w" sizes="(max-width: 900px) 45vw, 24vw" alt="" loading="lazy"></figure>
+    <figure class="cl cl-3" data-speed="0.55"><img src="img/d-projector-s.webp" srcset="img/d-projector-s.webp 1200w, img/d-projector-l.webp 1800w" sizes="(max-width: 900px) 45vw, 24vw" alt="" loading="lazy"></figure>
+    <figure class="cl cl-4" data-speed="-0.3"><img src="img/ch-film-s.webp" srcset="img/ch-film-s.webp 1200w, img/ch-film-l.webp 1800w" sizes="(max-width: 900px) 45vw, 24vw" alt="" loading="lazy"></figure>
+    <figure class="cl cl-5" data-speed="0.8"><img src="img/d-tea-s.webp" srcset="img/d-tea-s.webp 1200w, img/d-tea-l.webp 1800w" sizes="(max-width: 900px) 45vw, 24vw" alt="" loading="lazy"></figure>
     <h2 class="collage__text split">Приходите одни.<br><em>Уходите с друзьями.</em></h2>
   </section>
 
@@ -836,16 +838,16 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
       <div class="price__head">
         <p class="eyebrow">Стоимость</p>
         <h2 class="h2 split" id="price-h">Абонемент <em>на месяц</em></h2>
-        <p>Выберите, сколько Пространства вам нужно: один клуб, клубы с гостями и кино или всё сразу.</p>
+        <p>Выберите, сколько Пространства вам нужно. В каждом абонементе есть чат держателей карты, а чай и кофе на встречах бесплатны для всех.</p>
       </div>
       <div class="plans">
         <article class="plan">
           <h3 class="plan__name">Один клуб</h3>
           <div class="plan__price"><b>3 500 ₽</b><span>в месяц</span></div>
           <ul>
-            <li>Литературный или сценарный клуб на выбор</li>
-            <li>Все встречи клуба за месяц</li>
-            <li>Чай и кофе</li>
+            <li>Литературный или сценарный клуб на выбор, все встречи месяца</li>
+            <li>2 посещения выходных встреч: гости и кино</li>
+            <li>Чат держателей карты</li>
           </ul>
           <button class="pill pill--ghost" type="button" data-plan="Один клуб · 3 500 ₽ в месяц">Выбрать</button>
         </article>
@@ -854,9 +856,9 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
           <h3 class="plan__name">Клубы и гости</h3>
           <div class="plan__price"><b>6 500 ₽</b><span>в месяц</span></div>
           <ul>
-            <li>Литературный и сценарный клубы</li>
-            <li>Специальные гости и кинопоказы по выходным</li>
-            <li>Чай и кофе</li>
+            <li>Литературный и сценарный клубы, все встречи месяца</li>
+            <li>4 посещения выходных встреч: гости и кино</li>
+            <li>Чат держателей карты</li>
           </ul>
           <button class="pill pill--ink" type="button" data-plan="Клубы и гости · 6 500 ₽ в месяц">Купить абонемент <span class="arr">→</span></button>
         </article>
@@ -864,9 +866,11 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
           <h3 class="plan__name">Всё Пространство</h3>
           <div class="plan__price"><b>12 000 ₽</b><span>в месяц</span></div>
           <ul>
-            <li>Всё из абонемента «Клубы и гости»</li>
-            <li>История костюма и поиск стиля, 2 встречи</li>
-            <li>Рисунок и история искусств, 4 встречи</li>
+            <li>Литературный и сценарный клубы, все встречи месяца</li>
+            <li>6 посещений выходных встреч: гости и кино</li>
+            <li>История костюма: 2 занятия по четвергам</li>
+            <li>Рисунок и история искусств: 4 занятия по воскресеньям, по 2 часа</li>
+            <li>Чат держателей карты</li>
           </ul>
           <button class="pill pill--ghost" type="button" data-plan="Всё Пространство · 12 000 ₽ в месяц">Выбрать</button>
         </article>
@@ -951,28 +955,29 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 
   /* ---------------- афиша: данные (темы и ведущие — примеры) ---------------- */
   var FORMATS = {
-    lit: { one: "Литературный клуб", many: "Литературный клуб", img: "img/m/ch-lit.jpg" },
-    script: { one: "Сценарный клуб", many: "Сценарный клуб", img: "img/m/ch-script.jpg" },
-    guest: { one: "Специальный гость", many: "Гости", img: "img/m/ch-guest.jpg" },
-    film: { one: "Кино", many: "Кино", img: "img/m/ch-film.jpg" },
-    costume: { one: "История костюма", many: "История костюма", img: "img/m/ch-costume.jpg" },
-    art: { one: "Рисунок и история искусств", many: "Рисунок", img: "img/m/ch-art.jpg" }
+    lit: { one: "Литературный клуб", many: "Литературный клуб", img: "img/ch-lit-s.webp" },
+    script: { one: "Сценарный клуб", many: "Сценарный клуб", img: "img/ch-script-s.webp" },
+    guest: { one: "Специальный гость", many: "Гости", img: "img/ch-guest-s.webp" },
+    film: { one: "Кино", many: "Кино", img: "img/ch-film-s.webp" },
+    costume: { one: "История костюма", many: "История костюма", img: "img/ch-costume-s.webp" },
+    art: { one: "Рисунок и история искусств", many: "Рисунок", img: "img/ch-art-s.webp" }
   };
   var EVENTS = [
     { id: 1, day: 25, mon: "сент", wd: "пт", time: "19:30", f: "script", title: "Первая сцена: как зацепить зрителя", host: "Ведёт сценарист Ирина Белова", left: 8, total: 16 },
     { id: 2, day: 26, mon: "сент", wd: "сб", time: "12:00", f: "lit", title: "Читаем вслух: Чехов, «Дама с собачкой»", host: "Ведёт филолог Анна Лебедева", left: 11, total: 20 },
     { id: 3, day: 26, mon: "сент", wd: "сб", time: "16:00", f: "guest", title: "Как строят мир фильма", host: "Гость — художник-постановщик Олег Сафронов", left: 14, total: 30 },
     { id: 4, day: 26, mon: "сент", wd: "сб", time: "19:30", f: "film", title: "«Июльский дождь», 1966", host: "Показ и обсуждение", left: 9, total: 30 },
+    { id: 14, day: 27, mon: "сент", wd: "вс", time: "12:00", f: "art", title: "Натюрморт: свет и тень", host: "Ведёт художница Вера Ким · 2 часа", left: 4, total: 12 },
     { id: 5, day: 27, mon: "сент", wd: "вс", time: "16:00", f: "guest", title: "От дневника к роману", host: "Гость — писательница Мария Лис", left: 20, total: 30 },
     { id: 6, day: 27, mon: "сент", wd: "вс", time: "19:30", f: "film", title: "«Короткие встречи», 1967", host: "Показ и обсуждение", left: 6, total: 30 },
     { id: 7, day: 28, mon: "сент", wd: "пн", time: "19:00", f: "lit", title: "«Лавр» Евгения Водолазкина", host: "Ведёт филолог Анна Лебедева", left: 9, total: 20 },
     { id: 8, day: 28, mon: "сент", wd: "пн", time: "19:30", f: "script", title: "Диалоги без лишних слов", host: "Ведёт сценарист Ирина Белова", left: 5, total: 16 },
     { id: 9, day: 30, mon: "сент", wd: "ср", time: "19:00", f: "lit", title: "«Стоунер» Джона Уильямса", host: "Ведёт филолог Анна Лебедева", left: 12, total: 20 },
     { id: 10, day: 30, mon: "сент", wd: "ср", time: "19:30", f: "script", title: "Питчинг: рассказать идею за минуту", host: "Ведёт сценарист Ирина Белова", left: 10, total: 16 },
-    { id: 11, day: 1, mon: "окт", wd: "чт", time: "19:00", f: "art", title: "Натюрморт: свет и тень", host: "Ведёт художница Вера Ким", left: 4, total: 12 },
+    { id: 13, day: 1, mon: "окт", wd: "чт", time: "12:00", f: "costume", title: "Костюм 1920-х: свобода и новый силуэт", host: "Ведёт историк моды Софья Нарышкина", left: 7, total: 14 },
     { id: 12, day: 2, mon: "окт", wd: "пт", time: "19:30", f: "script", title: "Разбор ваших сцен", host: "Ведёт сценарист Ирина Белова", left: 0, total: 16 },
-    { id: 13, day: 3, mon: "окт", wd: "сб", time: "12:00", f: "costume", title: "Костюм 1920-х: свобода и новый силуэт", host: "Ведёт историк моды Софья Нарышкина", left: 7, total: 14 },
-    { id: 99, day: 24, mon: "окт", wd: "сб", time: "", f: "guest", title: "Павел Глобо", host: "Специальный гость. Время объявим позже", left: 22, total: 30, special: true }
+    { id: 15, day: 4, mon: "окт", wd: "вс", time: "12:00", f: "art", title: "Импрессионисты: как нарисовать воздух", host: "Ведёт художница Вера Ким · 2 часа", left: 9, total: 12 },
+    { id: 99, day: 24, mon: "окт", wd: "сб", time: "", f: "guest", title: "Павел Глоба", host: "Специальный гость. Время объявим позже", left: 22, total: 30, special: true }
   ];
 
   function plural(n, a, b, c) { var m = n % 10, h = n % 100; if (m === 1 && h !== 11) return a; if (m >= 2 && m <= 4 && (h < 12 || h > 14)) return b; return c; }
