@@ -44,7 +44,7 @@ window.PRDemo = (() => {
   const NAMES = ['Мария Кузнецова', 'Екатерина Орлова', 'Дмитрий Волков', 'Ольга Лебедева', 'Сергей Морозов', 'Наталья Соколова', 'Алексей Павлов', 'Ирина Фёдорова', 'Татьяна Николаева', 'Михаил Егоров', 'Юлия Семёнова', 'Андрей Васильев', 'Елена Зайцева', 'Павел Голубев', 'Светлана Виноградова', 'Артём Богданов', 'Ксения Воробьёва', 'Никита Тарасов', 'Анастасия Белова', 'Григорий Комаров', 'Вера Киселёва', 'Илья Макаров', 'Дарья Андреева', 'Максим Ковалёв', 'Полина Ильина', 'Роман Гусев', 'Алина Титова', 'Виктор Кудрявцев', 'Софья Баранова', 'Олег Куликов', 'Людмила Алексеева', 'Степан Степанов', 'Варвара Яковлева', 'Константин Сорокин', 'Евгения Романова', 'Фёдор Захаров', 'Александра Борисова', 'Тимофей Королёв', 'Надежда Герасимова', 'Игорь Пономарёв', 'Валерия Григорьева', 'Борис Лазарев', 'Маргарита Медведева', 'Кирилл Ершов', 'Лариса Никитина'];
 
   function seed() {
-    db.clients.push({ id: ME, name: 'Анна Смирнова', phone: '79001234567', telegram: true, tg_username: 'anna_reads', max: false, is_staff: true, consent_pd: true, consent_news: true, notify_tg: true, notify_max: false, notify_24h: true, notify_2h: true, note: '', created_at: '2026-09-02 12:00:00' });
+    db.clients.push({ id: ME, name: 'Анна Смирнова', phone: '79001234567', telegram: true, tg_username: 'anna_reads', max: false, is_staff: false, consent_pd: true, consent_news: true, notify_tg: true, notify_max: false, notify_24h: true, notify_2h: true, note: '', created_at: '2026-09-02 12:00:00' });
     NAMES.forEach((name, i) => db.clients.push({ id: i + 2, name, phone: '7916' + String(1000000 + i * 7919).slice(-7), telegram: true, tg_username: i % 3 ? null : 'guest' + (i + 2), max: false, is_staff: false, consent_pd: true, consent_news: i % 2 === 0, notify_tg: true, notify_max: false, notify_24h: true, notify_2h: true, note: '', created_at: '2026-08-' + pad(1 + (i % 28)) + ' 18:00:00' }));
 
     // Темы встреч — те же, что в афише на сайте.
@@ -471,6 +471,8 @@ window.PRDemo = (() => {
         try {
           const fn = routes[route];
           if (!fn) fail('Неизвестный запрос', 404);
+          // Как на сервере: раздел команды только для сотрудников.
+          if (route.startsWith('staff/') && !me().is_staff) fail('Раздел только для команды Пространства', 403);
           resolve(clone(fn(body ? clone(body) : null, query || {})));
         } catch (e) { reject(e); }
       }, 160);
@@ -509,12 +511,20 @@ window.PRDemo = (() => {
     setTimeout(() => ui.checkPurchase(pid), 320);
   });
 
+  // В демо можно посмотреть кабинет глазами гостя и глазами команды.
   function init(hooks) {
     ui = hooks;
     const logo = document.querySelector('.top__logo');
-    if (logo && !document.querySelector('.demo-flag')) {
-      logo.insertAdjacentHTML('afterend', '<span class="badge badge--wait demo-flag" title="Данные ненастоящие: можно нажимать всё">демо</span>');
-    }
+    if (!logo || document.querySelector('.demo-flag')) return;
+    logo.insertAdjacentHTML('afterend', '<button class="demo-flag" type="button" title="Данные ненастоящие. Нажмите, чтобы посмотреть кабинет как гость или как команда">Демо · гость</button>');
+    const btn = document.querySelector('.demo-flag');
+    btn.addEventListener('click', async () => {
+      const c = me();
+      c.is_staff = !c.is_staff;
+      btn.textContent = c.is_staff ? 'Демо · команда' : 'Демо · гость';
+      await ui.reload();
+      ui.toast(c.is_staff ? 'Вы смотрите как сотрудник: появилась вкладка «Команда»' : 'Вы смотрите как гость: вкладки «Команда» нет', true, 4000);
+    });
   }
 
   seed();

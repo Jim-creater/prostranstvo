@@ -228,7 +228,10 @@
       return;
     }
     let name = h;
-    if (!SCREENS.includes(name) || (name === 'staff' && !isStaff())) name = 'home';
+    if (!SCREENS.includes(name) || (name === 'staff' && !isStaff())) {
+      name = 'home';
+      history.replaceState(null, '', '#home');
+    }
     if (sheetOpen()) closeSheet();
     showScreen(name);
   }
@@ -1376,7 +1379,13 @@
 
     try {
       if (CFG.demo) {
-        window.PRDemo.init({ openSheet, closeSheet, checkPurchase, toast });
+        window.PRDemo.init({
+          openSheet, closeSheet, checkPurchase, toast,
+          reload: async () => {
+            await refresh('me');
+            if (S.screen === 'staff' && !isStaff()) location.hash = '#home'; else render();
+          },
+        });
         setToken('demo');
       } else if (inTG) {
         const r = await api('auth/telegram', { initData: TG.initData });
@@ -1395,5 +1404,13 @@
     if (!S.me.client.consent_pd) showOnboarding(); else showApp();
   }
 
-  boot();
+  // Демо-режим: если demo.js не подключён на странице, подгружаем его сами.
+  if (CFG.demo && !window.PRDemo) {
+    const s = document.createElement('script');
+    s.src = 'demo.js';
+    s.onload = boot;
+    document.head.appendChild(s);
+  } else {
+    boot();
+  }
 })();
