@@ -470,7 +470,7 @@ html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 4 / 5; 
 
 /* ================= подвал ================= */
 .foot { padding-top: 14vh; overflow: hidden; border-top: 1px solid var(--line); }
-.foot__grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 32px; }
+.foot__grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 32px; }
 @media (max-width: 760px) { .foot__grid { grid-template-columns: 1fr; } }
 .foot h3 { font: 400 12px/1.4 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
 .foot p, .foot li { font-size: 16px; }
@@ -505,34 +505,6 @@ html:not(.fx) .chapter__img { display: block; width: 100%; aspect-ratio: 4 / 5; 
   .bar .pill { flex: none; }
 }
 
-/* ================= запись ================= */
-.modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 16px; background: rgba(26, 23, 20, .28); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
-.modal__panel {
-  width: 100%; max-width: 480px; max-height: calc(100% - 32px); overflow: auto;
-  background: #fff; color: var(--fg); border: 1px solid var(--line); border-radius: 10px;
-  padding: 28px; box-shadow: 0 40px 100px -30px rgba(26, 23, 20, .4);
-}
-@media (max-width: 600px) {
-  .modal { place-items: end stretch; padding: 0; }
-  .modal__panel { max-width: none; max-height: 92%; border-radius: 16px 16px 0 0; padding: 24px 20px calc(24px + env(safe-area-inset-bottom, 0px)); }
-}
-.modal__head { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
-.modal__title { font: 400 30px/1.1 var(--f-serif); margin-top: 8px; }
-.x { border: 0; background: transparent; cursor: pointer; font-size: 30px; line-height: 1; color: var(--muted); padding: 6px 8px; }
-.form { display: grid; gap: 16px; margin-top: 22px; }
-.field { display: grid; gap: 6px; }
-.field label, .field legend { font-size: 14px; color: var(--muted); }
-.field input[type="text"], .field input[type="tel"] {
-  font: inherit; font-size: 16px; font-weight: 400; color: var(--fg); background: var(--soft);
-  border: 1px solid var(--line); border-radius: 8px; padding: 14px;
-}
-fieldset.field { border: 0; padding: 0; margin: 0; }
-.opt { display: flex; gap: 10px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15.5px; }
-.opt input { accent-color: var(--accent); width: 20px; height: 20px; }
-.demo { font-size: 13px; color: var(--muted); }
-.done { display: grid; gap: 14px; margin-top: 18px; }
-.done__big { font: 400 34px/1.1 var(--f-serif); }
-
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -554,8 +526,9 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
     <a href="#guest">Гость месяца</a>
     <a href="#afisha">Афиша</a>
     <a href="#price">Стоимость</a>
+    <a href="app/">Личный кабинет</a>
   </nav>
-  <a class="nav__short" href="#afisha">Афиша</a>
+  <a class="nav__short" href="app/">Кабинет</a>
   <a class="pill pill--ink pill--sm" href="#price">Абонемент</a>
 </header>
 
@@ -611,7 +584,7 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
       <div class="rooms__track" id="roomsTrack">
       <figure class="room">
         <div class="room__img"><img src="img/hall-l.webp" srcset="img/hall-s.webp 1200w, img/hall-l.webp 2800w" sizes="(max-width: 900px) 160vw, 60vw" alt="Общий зал без окон: белые стены, книжные полки, длинный стол, стулья и тёплый свет"></div>
-        <figcaption class="room__top"><h3>Зал</h3><span class="eyebrow">до 30 гостей</span></figcaption>
+        <figcaption class="room__top"><h3>Зал</h3><span class="eyebrow">до 40 гостей</span></figcaption>
         <p>Кресла, стулья и длинный стол переставляем под вечер: круг для клуба, ряды для кино.</p>
       </figure>
       <figure class="room">
@@ -825,6 +798,18 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
           <p>Нет. Бумагу и уголь дадим, начнём с простых форм.</p>
         </details>
         <details>
+          <summary>Как записаться на встречу?</summary>
+          <p>В личном кабинете: он открывается прямо в Telegram, без паролей. Выберите встречу и нажмите «Записаться». Накануне и за 2 часа до начала бот напомнит о ней.</p>
+        </details>
+        <details>
+          <summary>Можно отменить запись?</summary>
+          <p>Да, в кабинете. Если до начала больше суток, посещение вернётся на абонемент, а за разовое посещение мы вернём деньги. Если меньше суток, посещение спишется.</p>
+        </details>
+        <details>
+          <summary>Как работает абонемент?</summary>
+          <p>Он действует календарный месяц, с 1-го по последнее число. Неиспользованные посещения в конце месяца сгорают, заморозки нет. Разовое посещение без абонемента стоит 2 500 ₽.</p>
+        </details>
+        <details>
           <summary>Как найти вход?</summary>
           <p>У зала отдельный вход с улицы. Точный адрес и фото входа пришлём после записи.</p>
         </details>
@@ -898,6 +883,13 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
         <li>Telegram · ВКонтакте</li>
       </ul>
     </div>
+    <div>
+      <h3>Гостям</h3>
+      <ul>
+        <li><a href="app/">Личный кабинет</a></li>
+        <li><a href="privacy.html">Политика конфиденциальности</a></li>
+      </ul>
+    </div>
   </div>
   <div class="foot__word" id="footWord" aria-hidden="true">Пространство</div>
   <p class="wrap foot__copy">© 2026 Пространство. Прототип: адрес, контакты, темы встреч и имена ведущих — примеры. Изображения сгенерированы и показывают, каким может быть зал.</p>
@@ -909,42 +901,6 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 </div>
 
 <div class="peek" id="peek" aria-hidden="true"><img alt="" id="peekImg"></div>
-
-<div class="modal" id="modal" hidden>
-  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal__head">
-      <div>
-        <p class="eyebrow" id="modal-kicker">Запись</p>
-        <h2 class="modal__title" id="modal-title">…</h2>
-      </div>
-      <button class="x" type="button" id="modal-close" aria-label="Закрыть">×</button>
-    </div>
-    <form class="form" id="form" novalidate>
-      <div class="field">
-        <label for="f-name">Имя</label>
-        <input id="f-name" type="text" autocomplete="given-name" placeholder="Как к вам обращаться">
-      </div>
-      <div class="field">
-        <label for="f-phone">Телефон</label>
-        <input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00">
-      </div>
-      <fieldset class="field" id="f-pay">
-        <legend>Как придёте</legend>
-        <label class="opt"><input type="radio" name="pay" id="pay-abon" value="abon" checked> По абонементу</label>
-        <label class="opt"><input type="radio" name="pay" id="pay-buy" value="buy"> Хочу купить абонемент</label>
-        <label class="opt"><input type="radio" name="pay" id="pay-first" value="first"> Первый раз, свяжитесь со мной</label>
-      </fieldset>
-      <button class="pill pill--ink" type="submit" id="f-submit">Записаться</button>
-      <p class="demo">Это прототип: заявка никуда не отправляется. На настоящем сайте здесь будет оплата и подтверждение по СМС.</p>
-    </form>
-    <div class="done" id="done" hidden>
-      <p class="done__big" id="done-title">Готово</p>
-      <p id="done-text"></p>
-      <p class="demo">Прототип: заявка никуда не отправлена.</p>
-      <button class="pill pill--ghost" type="button" id="done-close">Закрыть</button>
-    </div>
-  </div>
-</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -963,21 +919,21 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
     art: { one: "Рисунок и история искусств", many: "Рисунок", img: "img/ch-art-s.webp" }
   };
   var EVENTS = [
-    { id: 1, day: 25, mon: "сент", wd: "пт", time: "19:30", f: "script", title: "Первая сцена: как зацепить зрителя", host: "Ведёт сценарист Ирина Белова", left: 8, total: 16 },
-    { id: 2, day: 26, mon: "сент", wd: "сб", time: "12:00", f: "lit", title: "Читаем вслух: Чехов, «Дама с собачкой»", host: "Ведёт филолог Анна Лебедева", left: 11, total: 20 },
-    { id: 3, day: 26, mon: "сент", wd: "сб", time: "16:00", f: "guest", title: "Как строят мир фильма", host: "Гость — художник-постановщик Олег Сафронов", left: 14, total: 30 },
-    { id: 4, day: 26, mon: "сент", wd: "сб", time: "19:30", f: "film", title: "«Июльский дождь», 1966", host: "Показ и обсуждение", left: 9, total: 30 },
-    { id: 14, day: 27, mon: "сент", wd: "вс", time: "12:00", f: "art", title: "Натюрморт: свет и тень", host: "Ведёт художница Вера Ким · 2 часа", left: 4, total: 12 },
-    { id: 5, day: 27, mon: "сент", wd: "вс", time: "16:00", f: "guest", title: "От дневника к роману", host: "Гость — писательница Мария Лис", left: 20, total: 30 },
-    { id: 6, day: 27, mon: "сент", wd: "вс", time: "19:30", f: "film", title: "«Короткие встречи», 1967", host: "Показ и обсуждение", left: 6, total: 30 },
-    { id: 7, day: 28, mon: "сент", wd: "пн", time: "19:00", f: "lit", title: "«Лавр» Евгения Водолазкина", host: "Ведёт филолог Анна Лебедева", left: 9, total: 20 },
-    { id: 8, day: 28, mon: "сент", wd: "пн", time: "19:30", f: "script", title: "Диалоги без лишних слов", host: "Ведёт сценарист Ирина Белова", left: 5, total: 16 },
-    { id: 9, day: 30, mon: "сент", wd: "ср", time: "19:00", f: "lit", title: "«Стоунер» Джона Уильямса", host: "Ведёт филолог Анна Лебедева", left: 12, total: 20 },
-    { id: 10, day: 30, mon: "сент", wd: "ср", time: "19:30", f: "script", title: "Питчинг: рассказать идею за минуту", host: "Ведёт сценарист Ирина Белова", left: 10, total: 16 },
-    { id: 13, day: 1, mon: "окт", wd: "чт", time: "12:00", f: "costume", title: "Костюм 1920-х: свобода и новый силуэт", host: "Ведёт историк моды Софья Нарышкина", left: 7, total: 14 },
-    { id: 12, day: 2, mon: "окт", wd: "пт", time: "19:30", f: "script", title: "Разбор ваших сцен", host: "Ведёт сценарист Ирина Белова", left: 0, total: 16 },
-    { id: 15, day: 4, mon: "окт", wd: "вс", time: "12:00", f: "art", title: "Импрессионисты: как нарисовать воздух", host: "Ведёт художница Вера Ким · 2 часа", left: 9, total: 12 },
-    { id: 99, day: 24, mon: "окт", wd: "сб", time: "", f: "guest", title: "Павел Глоба", host: "Специальный гость. Время объявим позже", left: 22, total: 30, special: true }
+    { id: 1, day: 25, mon: "сент", wd: "пт", time: "19:30", f: "script", title: "Первая сцена: как зацепить зрителя", host: "Ведёт сценарист Ирина Белова", left: 8, total: 40 },
+    { id: 2, day: 26, mon: "сент", wd: "сб", time: "12:00", f: "lit", title: "Читаем вслух: Чехов, «Дама с собачкой»", host: "Ведёт филолог Анна Лебедева", left: 11, total: 40 },
+    { id: 3, day: 26, mon: "сент", wd: "сб", time: "16:00", f: "guest", title: "Как строят мир фильма", host: "Гость — художник-постановщик Олег Сафронов", left: 14, total: 40 },
+    { id: 4, day: 26, mon: "сент", wd: "сб", time: "19:30", f: "film", title: "«Июльский дождь», 1966", host: "Показ и обсуждение", left: 9, total: 40 },
+    { id: 14, day: 27, mon: "сент", wd: "вс", time: "12:00", f: "art", title: "Натюрморт: свет и тень", host: "Ведёт художница Вера Ким · 2 часа", left: 4, total: 40 },
+    { id: 5, day: 27, mon: "сент", wd: "вс", time: "16:00", f: "guest", title: "От дневника к роману", host: "Гость — писательница Мария Лис", left: 20, total: 40 },
+    { id: 6, day: 27, mon: "сент", wd: "вс", time: "19:30", f: "film", title: "«Короткие встречи», 1967", host: "Показ и обсуждение", left: 6, total: 40 },
+    { id: 7, day: 28, mon: "сент", wd: "пн", time: "18:00", f: "lit", title: "«Лавр» Евгения Водолазкина", host: "Ведёт филолог Анна Лебедева", left: 9, total: 40 },
+    { id: 8, day: 28, mon: "сент", wd: "пн", time: "20:15", f: "script", title: "Диалоги без лишних слов", host: "Ведёт сценарист Ирина Белова", left: 5, total: 40 },
+    { id: 9, day: 30, mon: "сент", wd: "ср", time: "18:00", f: "lit", title: "«Стоунер» Джона Уильямса", host: "Ведёт филолог Анна Лебедева", left: 12, total: 40 },
+    { id: 10, day: 30, mon: "сент", wd: "ср", time: "20:15", f: "script", title: "Питчинг: рассказать идею за минуту", host: "Ведёт сценарист Ирина Белова", left: 10, total: 40 },
+    { id: 13, day: 1, mon: "окт", wd: "чт", time: "12:00", f: "costume", title: "Костюм 1920-х: свобода и новый силуэт", host: "Ведёт историк моды Софья Нарышкина", left: 7, total: 40 },
+    { id: 12, day: 2, mon: "окт", wd: "пт", time: "19:30", f: "script", title: "Разбор ваших сцен", host: "Ведёт сценарист Ирина Белова", left: 0, total: 40 },
+    { id: 15, day: 4, mon: "окт", wd: "вс", time: "12:00", f: "art", title: "Импрессионисты: как нарисовать воздух", host: "Ведёт художница Вера Ким · 2 часа", left: 9, total: 40 },
+    { id: 99, day: 24, mon: "окт", wd: "сб", time: "", f: "guest", title: "Павел Глоба", host: "Специальный гость. Время объявим позже", left: 22, total: 40, special: true }
   ];
 
   function plural(n, a, b, c) { var m = n % 10, h = n % 100; if (m === 1 && h !== 11) return a; if (m >= 2 && m <= 4 && (h < 12 || h > 14)) return b; return c; }
@@ -996,13 +952,15 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
   function renderEvents() {
     eventsEl.innerHTML = EVENTS.filter(function (e) { return current === "all" || e.f === current; }).map(function (e) {
       var taken = Math.round((1 - e.left / e.total) * 100), low = e.left <= 5;
-      var seats = e.left === 0 ? "<b>Мест нет</b>, можно в лист ожидания" : "Осталось <b>" + e.left + " " + plural(e.left, "место", "места", "мест") + "</b> из " + e.total;
+      var seats = e.left === 0 ? "<b>Мест нет</b>, можно в лист ожидания"
+        : e.left === e.total ? "Свободно <b>" + e.left + " " + plural(e.left, "место", "места", "мест") + "</b>"
+        : "Осталось <b>" + e.left + " " + plural(e.left, "место", "места", "мест") + "</b> из " + e.total;
       var btn = e.left === 0
         ? '<button class="pill pill--ghost pill--sm" type="button" data-book="' + e.id + '">В лист ожидания</button>'
         : '<button class="pill pill--ink pill--sm" type="button" data-book="' + e.id + '">Записаться</button>';
       return '<li class="ev' + (e.special ? " ev--special" : "") + '" data-f="' + e.f + '">' +
         '<div class="ev__date"><b>' + e.day + "</b><span>" + e.mon + ", " + e.wd + (e.time ? " · " + e.time : "") + "</span></div>" +
-        '<div class="ev__main"><span class="ev__tag">' + FORMATS[e.f].one + "</span>" +
+        '<div class="ev__main">' + (FORMATS[e.f].one !== e.title ? '<span class="ev__tag">' + FORMATS[e.f].one + "</span>" : "") +
         '<h3 class="ev__title">' + esc(e.title) + "</h3>" +
         '<p class="ev__host">' + esc(e.host) + "</p></div>" +
         '<div class="ev__seats' + (low ? " is-low" : "") + '"><span>' + seats + '</span><div class="meter"><i style="width:' + taken + '%"></i></div></div>' +
@@ -1018,63 +976,48 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
   setFilter("all");
 
   // нижняя кнопка на телефоне ведёт на ближайшую встречу с местами
-  var nextEv = EVENTS.filter(function (e) { return e.left > 0 && !e.special; })[0];
-  if (nextEv) {
+  function setNextBar() {
+    var nextEv = EVENTS.filter(function (e) { return e.left > 0 && !e.special; })[0];
+    if (!nextEv) return;
     document.getElementById("barTitle").textContent = nextEv.day + " " + nextEv.mon + ", " + nextEv.time + " · " + FORMATS[nextEv.f].one;
     document.getElementById("barBtn").setAttribute("data-book", nextEv.id);
   }
+  setNextBar();
 
-  /* ---------------- запись ---------------- */
+  // Настоящая афиша: если сайт открыт вместе с сервером кабинета, показываем реальные встречи и места.
+  var live = false;
+  var MON = ["янв", "фев", "мар", "апр", "мая", "июня", "июля", "авг", "сент", "окт", "нояб", "дек"], WDS = ["вс", "пн", "вт", "ср", "чт", "пт", "сб"];
+  function ymd(x) { return x.getFullYear() + "-" + ("0" + (x.getMonth() + 1)).slice(-2) + "-" + ("0" + x.getDate()).slice(-2); }
+  function hours(min) {
+    if (min % 60 === 0) return min / 60 + " " + plural(min / 60, "час", "часа", "часов");
+    if (min % 30 === 0) return String(min / 60).replace(".", ",") + " часа";
+    return Math.floor(min / 60) + " ч " + (min % 60) + " мин";
+  }
+  if (window.fetch && /^https?:$/.test(location.protocol)) {
+    fetch("api/index.php?r=events&from=" + ymd(new Date()) + "&to=" + ymd(new Date(Date.now() + 14 * 864e5)))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.events || !data.events.length) return;
+        EVENTS = data.events.slice(0, 24).map(function (e) {
+          var p = e.starts_at.split(/[- :]/), d = new Date(+p[0], p[1] - 1, +p[2], +p[3], +p[4]);
+          return { id: e.id, day: d.getDate(), mon: MON[d.getMonth()], wd: WDS[d.getDay()], time: p[3] + ":" + p[4], f: FORMATS[e.format] ? e.format : "guest",
+            title: e.title, host: e.host ? e.host + " · " + hours(e.duration_min) : hours(e.duration_min), left: e.left, total: e.capacity };
+        });
+        live = true;
+        setFilter("all");
+        setNextBar();
+      })
+      .catch(function () { /* сервера нет — остаются примеры */ });
+  }
+
+  /* ---------------- запись: в личном кабинете ---------------- */
   var lenis = null;
-  var modal = document.getElementById("modal"), form = document.getElementById("form"), done = document.getElementById("done"), lastFocus = null, item = null;
-  function openModal(it) {
-    item = it; lastFocus = document.activeElement;
-    document.getElementById("modal-kicker").textContent = it.kicker;
-    document.getElementById("modal-title").textContent = it.title;
-    document.getElementById("f-pay").hidden = !it.pay;
-    if (it.pay) document.getElementById("pay-abon").checked = true;
-    document.getElementById("f-submit").textContent = it.submit;
-    form.hidden = false; done.hidden = true; modal.hidden = false;
-    if (lenis) lenis.stop();
-    if (window.matchMedia("(min-width: 601px)").matches) setTimeout(function () { document.getElementById("f-name").focus(); }, 40);
-  }
-  function closeModal() {
-    modal.hidden = true;
-    if (lenis) lenis.start();
-    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
-  }
+  var APP = "app/";
+  function goApp(screen) { location.href = APP + "?go=" + encodeURIComponent(screen); }
   document.addEventListener("click", function (ev) {
     var b = ev.target.closest("[data-book]");
-    if (b) {
-      var e = EVENTS.filter(function (x) { return String(x.id) === b.getAttribute("data-book"); })[0];
-      if (!e) return;
-      var wait = e.left === 0;
-      var when = e.day + " " + e.mon + (e.time ? ", " + e.time : "");
-      openModal({
-        kicker: FORMATS[e.f].one + " · " + when, title: e.title, pay: !wait,
-        submit: wait ? "Встать в лист ожидания" : "Записаться",
-        doneTitle: wait ? "Вы в листе ожидания" : "Вы записаны",
-        doneText: wait ? "Если место освободится, напишем вам в СМС." : "Ждём вас " + when + ". Напомним о встрече за день."
-      });
-      return;
-    }
-    var p = ev.target.closest("[data-plan]");
-    if (p) openModal({ kicker: "Абонемент", title: p.getAttribute("data-plan"), pay: false, submit: "Оформить", doneTitle: "Заявка принята", doneText: "Мы свяжемся с вами, чтобы оформить абонемент." });
-  });
-  modal.addEventListener("click", function (ev) { if (ev.target === modal) closeModal(); });
-  document.getElementById("modal-close").addEventListener("click", closeModal);
-  document.getElementById("done-close").addEventListener("click", closeModal);
-  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !modal.hidden) closeModal(); });
-  form.addEventListener("submit", function (ev) {
-    ev.preventDefault();
-    var name = document.getElementById("f-name"), phone = document.getElementById("f-phone");
-    if (!name.value.trim()) { name.setAttribute("aria-invalid", "true"); name.focus(); return; }
-    if (phone.value.replace(/\D/g, "").length < 10) { phone.setAttribute("aria-invalid", "true"); phone.focus(); return; }
-    name.removeAttribute("aria-invalid"); phone.removeAttribute("aria-invalid");
-    document.getElementById("done-title").textContent = item.doneTitle + ", " + name.value.trim();
-    document.getElementById("done-text").textContent = item.doneText;
-    form.hidden = true; done.hidden = false;
-    document.getElementById("done-close").focus();
+    if (b) { goApp(live ? "event-" + b.getAttribute("data-book") : "schedule"); return; }
+    if (ev.target.closest("[data-plan]")) goApp("plans");
   });
 
   /* ---------------- движение ---------------- */

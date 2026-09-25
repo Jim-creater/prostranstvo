@@ -1,0 +1,13 @@
+# Закрываем служебные файлы от чтения из браузера.
+Options -Indexes
+
+<FilesMatch "^(config\.php|config\.sample\.php|.*\.sql|.*\.log|.*\.sqlite)$">
+  Require all denied
+</FilesMatch>
+
+# Передаём заголовок Authorization в PHP (нужно на некоторых хостингах).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP:Authorization} .
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
