@@ -7,6 +7,7 @@ require __DIR__ . '/lib/rules.php';
 require __DIR__ . '/lib/auth.php';
 require __DIR__ . '/lib/notify.php';
 require __DIR__ . '/lib/payments.php';
+require __DIR__ . '/lib/achievements.php';
 
 $route = (string) ($_GET['r'] ?? '');
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -217,10 +218,15 @@ try {
             json_out(['upcoming' => $upcoming, 'past' => array_reverse($past)]);
         }
 
+        case 'achievements': {
+            $c = require_client();
+            json_out(['achievements' => client_achievements((int) $c['id'])]);
+        }
+
         // ---------- абонементы ----------
         case 'plans': {
             $plans = [];
-            foreach (PLANS as $key => $p) {
+            foreach (plans() as $key => $p) {
                 $plans[] = ['key' => $key] + $p;
             }
             json_out([
@@ -237,14 +243,14 @@ try {
             $b = body();
             $planKey = (string) ($b['plan'] ?? '');
             $month = (string) ($b['month'] ?? '');
-            if (!isset(PLANS[$planKey])) {
+            if (!isset(plans()[$planKey])) {
                 fail('Выберите абонемент');
             }
             if (!in_array($month, [current_month(), next_month()], true)) {
                 fail('Абонемент можно купить на текущий или следующий месяц');
             }
             $club = null;
-            if (PLANS[$planKey]['clubs'] === 1) {
+            if (plans()[$planKey]['clubs'] === 1) {
                 $club = (string) ($b['club'] ?? '');
                 if (!in_array($club, ['lit', 'script'], true)) {
                     fail('Выберите клуб: литературный или сценарный');
@@ -256,7 +262,7 @@ try {
             if (!$c['phone']) {
                 fail('Укажите телефон в профиле: на него придёт чек', 409);
             }
-            $plan = PLANS[$planKey];
+            $plan = plans()[$planKey];
             $pid = insert('purchases', [
                 'client_id' => (int) $c['id'], 'kind' => 'membership', 'amount' => $plan['price'], 'status' => 'pending',
                 'provider' => (string) cfg('payments.provider'),
@@ -353,6 +359,65 @@ try {
             }
             json_out(['ok' => true, 'ids' => $ids]);
         }
+        case 'staff/event_update': {
+            // Правка встречи. apply = one (только эта) или series (эта и все следующие того же формата в тот же день недели и время).
+            require_staff();
+            $b = body();
+            $ev = row('SELECT * FROM events WHERE id = ? AND cancelled = 0', [(int) ($b['event_id'] ?? 0)]);
+            if (!$ev) {
+                fail('Встреча не найдена');
+            }
+            if (!isset(FORMATS[$b['format'] ?? ''])) {
+                fail('Выберите формат');
+            }
+            $title = trim((string) ($b['title'] ?? ''));
+            if ($title === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($b['date'] ?? '')) || !preg_match('/^\d{2}:\d{2}$/', (string) ($b['time'] ?? ''))) {
+                fail('Заполните название, дату и время');
+            }
+            $new = [
+                'format' => $b['format'], 'title' => $title, 'host' => trim((string) ($b['host'] ?? '')),
+                'description' => trim((string) ($b['description'] ?? '')),
+                'duration_min' => max(30, (int) ($b['duration_min'] ?? $ev['duration_min'])),
+                'capacity' => max(1, (int) ($b['capacity'] ?? $ev['capacity'])),
+                'price' => ($b['price'] ?? '') !== '' && $b['price'] !== null ? (int) $b['price'] : null,
+                'included' => isset($b['included']) ? (int) (bool) $b['included'] : (int) $ev['included'],
+            ];
+            // Меняем только то, что действительно поправили: у каждой встречи серии остаются свои темы и описания.
+            $changes = [];
+            foreach ($new as $k => $v) {
+                if ((string) $v !== (string) ($ev[$k] ?? '')) {
+                    $changes[$k] = $v;
+                }
+            }
+            $shift = strtotime($b['date'] . ' ' . $b['time']) - strtotime($ev['starts_at']);
+            $targets = [$ev];
+            if (($b['apply'] ?? 'one') === 'series') {
+                $slot = date('N H:i', strtotime($ev['starts_at']));
+                $targets = array_values(array_filter(
+                    rows('SELECT * FROM events WHERE cancelled = 0 AND format = ? AND starts_at >= ? ORDER BY starts_at', [$ev['format'], $ev['starts_at']]),
+                    fn ($x) => date('N H:i', strtotime($x['starts_at'])) === $slot
+                ));
+            }
+            $moved = 0;
+            foreach ($targets as $t) {
+                $upd = $changes;
+                if ($shift !== 0) {
+                    $upd['starts_at'] = date('Y-m-d H:i:s', strtotime($t['starts_at']) + $shift);
+                }
+                if (!$upd) {
+                    continue;
+                }
+                update('events', (int) $t['id'], $upd);
+                if ($shift !== 0) {
+                    $moved++;
+                    $name = $upd['title'] ?? $t['title'];
+                    foreach (rows("SELECT c.* FROM bookings b JOIN clients c ON c.id = b.client_id WHERE b.event_id = ? AND b.status IN ('booked','waitlist','pending_payment')", [$t['id']]) as $cl) {
+                        notify_client($cl, '<b>Встреча перенесена:</b> ' . e($name) . "\nБыло: " . human_date($t['starts_at']) . "\nТеперь: " . human_date($upd['starts_at']) . "\n\nЕсли новое время не подходит, отмените запись в кабинете.", [['text' => 'Мои записи', 'app' => '#bookings']]);
+                    }
+                }
+            }
+            json_out(['ok' => true, 'count' => count($targets), 'moved' => $moved]);
+        }
         case 'staff/event_cancel': {
             require_staff();
             $id = (int) (body()['event_id'] ?? 0);
@@ -379,7 +444,7 @@ try {
             );
             foreach ($list as &$r) {
                 $m = active_membership((int) $r['id'], current_month());
-                $r['membership'] = $m ? PLANS[$m['plan']]['name'] : null;
+                $r['membership'] = $m ? plans()[$m['plan']]['name'] : null;
             }
             json_out(['clients' => $list]);
         }
@@ -392,7 +457,12 @@ try {
             $ms = rows("SELECT * FROM memberships WHERE client_id = ? AND status = 'active' ORDER BY month DESC LIMIT 6", [$c['id']]);
             $bookings = rows('SELECT b.status, e.title, e.starts_at FROM bookings b JOIN events e ON e.id = b.event_id WHERE b.client_id = ? ORDER BY e.starts_at DESC LIMIT 20', [$c['id']]);
             $purchases = rows("SELECT kind, amount, status, provider, description, paid_at FROM purchases WHERE client_id = ? ORDER BY id DESC LIMIT 20", [$c['id']]);
-            json_out(['client' => client_public($c) + ['note' => $c['note'], 'created_at' => $c['created_at']], 'memberships' => array_map('membership_usage', $ms), 'bookings' => $bookings, 'purchases' => $purchases]);
+            $ach = client_achievements((int) $c['id']);
+            json_out([
+                'client' => client_public($c) + ['note' => $c['note'], 'created_at' => $c['created_at']],
+                'memberships' => array_map('membership_usage', $ms), 'bookings' => $bookings, 'purchases' => $purchases,
+                'achievements' => ['done' => count(array_filter($ach, fn ($a) => $a['done'])), 'total' => count($ach)],
+            ]);
         }
         case 'staff/sell': {
             // Продажа абонемента на месте (наличные или терминал).
@@ -401,10 +471,10 @@ try {
             $client = row('SELECT * FROM clients WHERE id = ?', [(int) ($b['client_id'] ?? 0)]);
             $planKey = (string) ($b['plan'] ?? '');
             $month = (string) ($b['month'] ?? current_month());
-            if (!$client || !isset(PLANS[$planKey]) || !in_array($month, [current_month(), next_month()], true)) {
+            if (!$client || !isset(plans()[$planKey]) || !in_array($month, [current_month(), next_month()], true)) {
                 fail('Проверьте клиента, абонемент и месяц');
             }
-            $club = PLANS[$planKey]['clubs'] === 1 ? (string) ($b['club'] ?? '') : null;
+            $club = plans()[$planKey]['clubs'] === 1 ? (string) ($b['club'] ?? '') : null;
             if ($club !== null && !in_array($club, ['lit', 'script'], true)) {
                 fail('Выберите клуб');
             }
@@ -412,10 +482,10 @@ try {
                 fail('На этот месяц у клиента уже есть абонемент');
             }
             $pid = insert('purchases', [
-                'client_id' => (int) $client['id'], 'kind' => 'membership', 'amount' => PLANS[$planKey]['price'], 'status' => 'pending',
-                'provider' => 'cash', 'description' => 'Абонемент «' . PLANS[$planKey]['name'] . '» на ' . month_label($month) . ' (на месте)', 'created_at' => now(),
+                'client_id' => (int) $client['id'], 'kind' => 'membership', 'amount' => plans()[$planKey]['price'], 'status' => 'pending',
+                'provider' => 'cash', 'description' => 'Абонемент «' . plans()[$planKey]['name'] . '» на ' . month_label($month) . ' (на месте)', 'created_at' => now(),
             ]);
-            insert('memberships', ['client_id' => (int) $client['id'], 'plan' => $planKey, 'month' => $month, 'club' => $club, 'status' => 'pending', 'price' => PLANS[$planKey]['price'], 'purchase_id' => $pid, 'created_at' => now()]);
+            insert('memberships', ['client_id' => (int) $client['id'], 'plan' => $planKey, 'month' => $month, 'club' => $club, 'status' => 'pending', 'price' => plans()[$planKey]['price'], 'purchase_id' => $pid, 'created_at' => now()]);
             mark_paid($pid);
             json_out(['ok' => true]);
         }

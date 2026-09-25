@@ -200,5 +200,42 @@ $cB = (int) val('SELECT id FROM clients WHERE telegram_id = 222');
 $r = api('staff/sell', ['client_id' => $cB, 'plan' => 'club1', 'club' => 'lit', 'month' => next_month()], $tA);
 check('продажа абонемента на месте', ($r['data']['ok'] ?? false) === true, $r);
 
+echo "Правка расписания\n";
+$date = date('Y-m-d', strtotime('+15 days'));
+$r = api('staff/event', ['format' => 'lit', 'title' => 'Литературный клуб', 'date' => $date, 'time' => '18:00', 'repeat_weeks' => 3], $tA);
+$ids = $r['data']['ids'] ?? [];
+check('серия из трёх встреч создана', count($ids) === 3, $r);
+api('book', ['event_id' => $ids[1]], $tB);
+@unlink(cfg('notify_log'));
+$ev0 = row('SELECT * FROM events WHERE id = ?', [$ids[0]]);
+update('events', $ids[2], ['title' => 'Лавр, обсуждение']);
+$r = api('staff/event_update', ['event_id' => $ids[0], 'apply' => 'series', 'format' => 'lit', 'title' => 'Литературный клуб', 'date' => $date, 'time' => '18:30', 'duration_min' => 120, 'capacity' => 40, 'included' => true], $tA);
+check('время серии сдвинуто для всех трёх', ($r['data']['moved'] ?? 0) === 3 && substr(row('SELECT starts_at FROM events WHERE id = ?', [$ids[2]])['starts_at'], 11, 5) === '18:30', $r);
+check('темы встреч серии не перезаписаны', row('SELECT title FROM events WHERE id = ?', [$ids[2]])['title'] === 'Лавр, обсуждение');
+$moved = array_filter(notify_lines(), fn ($n) => str_contains($n['text'] ?? '', 'Встреча перенесена'));
+check('записанному гостю пришло сообщение о переносе', count($moved) === 1, notify_lines());
+$r = api('staff/event_update', ['event_id' => $ids[1], 'apply' => 'one', 'format' => 'lit', 'title' => 'Стоунер', 'host' => 'Анна Лебедева', 'date' => date('Y-m-d', strtotime($date . ' +7 days')), 'time' => '18:30', 'duration_min' => 120, 'capacity' => 40, 'included' => true], $tA);
+check('тема одной встречи поменялась только у неё', row('SELECT title FROM events WHERE id = ?', [$ids[1]])['title'] === 'Стоунер' && row('SELECT title FROM events WHERE id = ?', [$ids[0]])['title'] === 'Литературный клуб', $r);
+$r = api('staff/event_update', ['event_id' => $ids[0], 'format' => 'lit', 'title' => 'x', 'date' => $date, 'time' => '18:30'], $tB);
+check('гость не может менять расписание', $r['code'] === 403, $r);
+
+echo "Достижения\n";
+$cA = (int) val('SELECT id FROM clients WHERE telegram_id = 111');
+foreach ([-28, -20, -8] as $i => $h) {
+    $pid = add_event(['lit', 'film', 'guest'][$i], $h);
+    insert('bookings', ['client_id' => $cA, 'event_id' => $pid, 'status' => 'booked', 'paid_by' => 'single', 'created_at' => now(), 'updated_at' => now()]);
+}
+$r = api('achievements', null, $tA);
+$ach = array_column($r['data']['achievements'] ?? [], null, 'code');
+check('после первой встречи получена «Первая глава»', ($ach['first']['done'] ?? false) === true, $r);
+check('прогресс считается по форматам', ($ach['formats']['progress'] ?? 0) === 3 && ($ach['formats']['done'] ?? true) === false, $ach['formats'] ?? null);
+@unlink(cfg('notify_log'));
+$rep = json_decode((string) shell_exec('PR_CONFIG=' . escapeshellarg(__DIR__ . '/config.test.php') . ' php ' . escapeshellarg(__DIR__ . '/../site/api/cron.php')), true);
+// Несколько новых достижений приходят одним сообщением.
+$congrats = array_filter(notify_lines(), fn ($n) => str_contains($n['text'] ?? '', 'Первая глава'));
+check('бот поздравляет с достижением одним сообщением', ($rep['achievements'] ?? 0) >= 1 && count($congrats) === 1 && count(notify_lines()) === 1, [$rep, notify_lines()]);
+$rep = json_decode((string) shell_exec('PR_CONFIG=' . escapeshellarg(__DIR__ . '/config.test.php') . ' php ' . escapeshellarg(__DIR__ . '/../site/api/cron.php')), true);
+check('поздравление не повторяется', ($rep['achievements'] ?? 1) === 0, $rep);
+
 echo "\nИтого: $passes прошло, $fails не прошло\n";
 exit($fails ? 1 : 0);

@@ -12,11 +12,30 @@ const FORMATS = [
 ];
 
 // Абонемент действует календарный месяц, неиспользованные посещения сгорают, заморозки нет.
-const PLANS = [
+// Это значения по умолчанию: цены и состав меняются в config.php, раздел plans.
+const PLANS_DEFAULT = [
     'club1' => ['name' => 'Один клуб',        'price' => 3500,  'clubs' => 1, 'weekend' => 2, 'costume' => 0, 'art' => 0],
     'clubs' => ['name' => 'Клубы и гости',    'price' => 6500,  'clubs' => 2, 'weekend' => 4, 'costume' => 0, 'art' => 0],
     'all'   => ['name' => 'Всё Пространство', 'price' => 12000, 'clubs' => 2, 'weekend' => 6, 'costume' => 2, 'art' => 4],
 ];
+
+// Абонементы с учётом config.php.
+function plans(): array
+{
+    static $plans = null;
+    if ($plans === null) {
+        $plans = PLANS_DEFAULT;
+        foreach ((array) cfg('plans') as $key => $p) {
+            if (isset($plans[$key]) && is_array($p)) {
+                $plans[$key] = array_merge($plans[$key], array_intersect_key($p, $plans[$key]));
+                foreach (['price', 'clubs', 'weekend', 'costume', 'art'] as $n) {
+                    $plans[$key][$n] = (int) $plans[$key][$n];
+                }
+            }
+        }
+    }
+    return $plans;
+}
 
 const GROUP_LABELS = [
     'weekend' => 'Выходные: гости и кино',
@@ -103,7 +122,7 @@ function used_count(int $membershipId, string $group, int $excludeBookingId = 0)
 
 function plan_clubs(array $membership): array
 {
-    $plan = PLANS[$membership['plan']];
+    $plan = plans()[$membership['plan']];
     return $plan['clubs'] >= 2 ? ['lit', 'script'] : [$membership['club']];
 }
 
@@ -120,7 +139,7 @@ function coverage(int $clientId, array $event, int $excludeBookingId = 0): array
         return $single;
     }
     $group = format_group($event['format']);
-    $plan = PLANS[$m['plan']];
+    $plan = plans()[$m['plan']];
     if ($group === 'club') {
         if (in_array($event['format'], plan_clubs($m), true)) {
             return ['type' => 'membership', 'membership_id' => (int) $m['id'], 'note' => 'Входит в ваш абонемент'];
@@ -155,7 +174,7 @@ function seats_taken(int $eventId): int
 // Использование абонемента для кабинета: «Выходные: 1 из 4» и т. д.
 function membership_usage(array $m): array
 {
-    $plan = PLANS[$m['plan']];
+    $plan = plans()[$m['plan']];
     $items = [];
     $clubs = plan_clubs($m);
     $items[] = [
@@ -183,6 +202,7 @@ function event_public(array $e, ?int $clientId = null): array
         'starts_at' => $e['starts_at'], 'duration_min' => (int) $e['duration_min'],
         'capacity' => (int) $e['capacity'], 'left' => max(0, (int) $e['capacity'] - $taken),
         'included' => (bool) (int) $e['included'], 'price' => single_price($e),
+        'custom_price' => isset($e['price']) && $e['price'] !== '' ? (int) $e['price'] : null,
         // До этого момента запись можно отменить без списания.
         'free_cancel_until' => human_date(date('Y-m-d H:i:s', strtotime($e['starts_at']) - FREE_CANCEL_HOURS * 3600)),
         'free_cancel' => time() <= strtotime($e['starts_at']) - FREE_CANCEL_HOURS * 3600,
