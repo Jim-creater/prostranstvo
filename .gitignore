@@ -1,0 +1,4 @@
+site/api/config.php
+*.sqlite
+*.log
+tests/tmp/
