@@ -29,15 +29,24 @@
     ['art', 'Рисунок', ['art'], 'var(--c-art)'],
   ];
   const WD = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+  const WD_DAT = ['воскресеньям', 'понедельникам', 'вторникам', 'средам', 'четвергам', 'пятницам', 'субботам'];
   const WD_FULL = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
   const MON_GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
   const MON_SHORT = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
   const MON_NOM = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'];
   const SCREENS = ['home', 'schedule', 'bookings', 'plans', 'staff'];
-  const NEEDS = { home: ['me', 'events'], schedule: ['me', 'events'], bookings: ['me', 'bookings'], plans: ['me', 'plans'], staff: ['me'] };
+  const NEEDS = { home: ['me', 'events', 'ach'], schedule: ['me', 'events'], bookings: ['me', 'bookings'], plans: ['me', 'plans'], staff: ['me'] };
+
+  // Значок и цвет каждого достижения.
+  const ACH = {
+    first: ['a-door', 'var(--accent)'], lit: ['a-book', 'var(--c-lit)'], script: ['a-pen', 'var(--c-script)'],
+    film: ['a-film', 'var(--c-film)'], guest: ['a-mic', 'var(--c-guest)'], costume: ['a-hanger', 'var(--c-costume)'],
+    art: ['a-brush', 'var(--c-art)'], formats: ['a-star', 'var(--accent)'], week: ['a-spark', 'var(--accent)'],
+    regular: ['a-key', 'var(--fg)'], season: ['a-leaf', 'var(--c-lit)'], halfyear: ['a-heart', 'var(--c-guest)'],
+  };
 
   const S = {
-    token: null, me: null, events: null, bookings: null, plans: null,
+    token: null, me: null, events: null, bookings: null, plans: null, ach: null,
     screen: 'home', day: null, filter: 'all', planMonth: null, club: 'lit',
     staff: { tab: 'day', date: null, q: '', sell: { plan: 'clubs', month: null, club: 'lit' } },
   };
@@ -119,6 +128,7 @@
     },
     bookings: () => api('bookings').then((d) => { S.bookings = d; paintBadge(); }),
     plans: () => api('plans').then((d) => { S.plans = d; }),
+    ach: () => api('achievements').then((d) => { S.ach = d.achievements; }),
   };
   const refresh = (...keys) => Promise.all(keys.map((k) => loaders[k]()));
 
@@ -185,7 +195,7 @@
     setTimeout(() => { el.hidden = true; el.classList.remove('is-closing'); $('#sheetBody').innerHTML = ''; }, 260);
     document.documentElement.style.overflow = '';
     if (inTG) TG.BackButton.hide();
-    if (/^#(event-\d+|profile)$/.test(location.hash)) history.replaceState(null, '', '#' + S.screen);
+    if (/^#(event-\d+|profile|achievements)$/.test(location.hash)) history.replaceState(null, '', '#' + S.screen);
     const cb = sheetOnClose;
     sheetOnClose = null;
     if (cb) cb();
@@ -211,7 +221,12 @@
       openEvent(Number(m[1]));
       return;
     }
-    if (h === 'profile') { openProfile(); return; }
+    if (h === 'profile' || h === 'achievements') {
+      // Шторка открывается поверх экрана; если экран ещё не нарисован (открыли по ссылке), рисуем главную.
+      if (!$('#s-' + S.screen).innerHTML.trim()) showScreen(S.screen);
+      if (h === 'profile') openProfile(); else openAchievements();
+      return;
+    }
     let name = h;
     if (!SCREENS.includes(name) || (name === 'staff' && !isStaff())) name = 'home';
     if (sheetOpen()) closeSheet();
@@ -249,7 +264,7 @@
 
   // Данные поменялись (запись, отмена, оплата): обновляем всё, что видно.
   async function reloadAll() {
-    await refresh('me', 'events', 'bookings');
+    await refresh('me', 'events', 'bookings', 'ach');
     if (S.plans == null) await refresh('plans').catch(() => {});
     render();
   }
@@ -386,6 +401,46 @@
     </article>`;
   }
 
+  // ---------- достижения ----------
+  function medal(a, cls = '') {
+    const [ic, c] = ACH[a.code] || ['a-star', 'var(--accent)'];
+    return `<span class="medal${a.done ? ' is-done' : ''}${cls}" style="--c:${c};--p:${Math.round((a.progress / a.goal) * 100)}" aria-hidden="true">${icon(ic)}</span>`;
+  }
+  const pbar = (a) => `<span class="pbar"><i style="width:${Math.round((a.progress / a.goal) * 100)}%"></i></span>`;
+
+  function achCard() {
+    const list = S.ach || [];
+    if (!list.length) return '';
+    const done = list.filter((a) => a.done);
+    const next = list.filter((a) => !a.done)
+      .sort((x, y) => (y.progress / y.goal) - (x.progress / x.goal) || (x.goal - x.progress) - (y.goal - y.progress))[0];
+    return `<article class="card">
+      <div class="card__head"><p class="eyebrow">Достижения</p><button class="link" type="button" data-act="ach">${done.length} из ${list.length}${icon('arrow')}</button></div>
+      ${done.length ? `<div class="ach-row">${done.map((a) => medal(a, ' medal--sm')).join('')}</div>` : ''}
+      ${next ? `<button class="ach-next" type="button" data-act="ach" style="--c:${(ACH[next.code] || [])[1] || 'var(--accent)'}">${medal(next, ' medal--sm')}<span><span class="ach-next__t">Дальше: «${esc(next.title)}»</span><span class="ach-next__s">${esc(next.text)} · ${next.progress} из ${next.goal}</span>${pbar(next)}</span></button>` : ''}
+    </article>`;
+  }
+
+  async function openAchievements() {
+    if (!S.ach) {
+      try { await refresh('ach'); } catch (e) { toast(e.message); return; }
+    }
+    const list = S.ach;
+    const done = list.filter((a) => a.done).length;
+    openSheet(`
+      <p class="eyebrow">Достижения</p>
+      <h2 class="sheet__title" id="sheetTitle">Получено ${done} из ${list.length}</h2>
+      <p class="muted">Считаем встречи, на которых вы были, и месяцы с абонементом. О новом достижении напишет бот.</p>
+      <div class="ach-grid">${list.map((a) => `<div class="ach${a.done ? ' is-done' : ''}" style="--c:${(ACH[a.code] || [])[1] || 'var(--accent)'}">
+        ${medal(a)}
+        <p class="ach__t">${esc(a.title)}</p>
+        <p class="ach__s">${esc(a.text)}</p>
+        ${a.done ? `<p class="ach__d">${icon('check')}${a.earned_at ? 'Получено ' + esc(a.earned_at) : 'Получено'}</p>` : `${pbar(a)}<p class="ach__d">${a.progress} из ${a.goal}</p>`}
+      </div>`).join('')}</div>
+    `);
+    if (location.hash !== '#achievements') history.replaceState(null, '', '#achievements');
+  }
+
   function renderHome(box) {
     const c = S.me.client;
     const now = new Date();
@@ -399,6 +454,7 @@
       </div>
       ${membershipCard()}
       ${nextCard()}
+      ${achCard()}
       ${soon.length ? `
         <div class="section-title"><h2>Скоро в Пространстве</h2><a class="link" href="#schedule">Всё${icon('arrow')}</a></div>
         <div class="evlist">${soon.map((e) => evCard(e, true)).join('')}</div>` : ''}
@@ -978,6 +1034,7 @@
     let data;
     try { data = await api('staff/day', null, { date: S.staff.date }); } catch (e) { body.lastElementChild.outerHTML = errorBlock(e.message); return; }
     if (S.screen !== 'staff' || S.staff.tab !== 'day' || data.date !== S.staff.date) return;
+    S.staff.dayEvents = data.events;
     const list = data.events.map((e) => {
       const going = e.people.filter((p) => p.status !== 'waitlist');
       const wait = e.people.filter((p) => p.status === 'waitlist');
@@ -993,7 +1050,10 @@
         <p class="small muted">Пришли: ${here} из ${going.length}${wait.length ? ` · в листе ожидания: ${wait.length}` : ''}</p>
         <div class="people">${going.map((p) => row(p, true)).join('') || '<p class="muted small">Пока никто не записан</p>'}</div>
         ${wait.length ? `<p class="eyebrow" style="padding-top:6px">Лист ожидания</p><div class="people">${wait.map((p) => row(p, false)).join('')}</div>` : ''}
-        <button class="pill pill--danger pill--sm" data-act="ev-cancel" data-id="${e.id}" data-title="${esc(e.title)}">Отменить встречу</button>
+        <div class="btn-row">
+          <button class="pill pill--ghost pill--sm" data-act="ev-edit" data-id="${e.id}">Изменить</button>
+          <button class="pill pill--danger pill--sm" data-act="ev-cancel" data-id="${e.id}" data-title="${esc(e.title)}">Отменить</button>
+        </div>
       </article>`;
     }).join('');
     body.lastElementChild.outerHTML = list || '<div class="empty"><p>В этот день встреч нет.</p><button class="pill pill--ghost pill--sm" data-act="stab" data-t="new">Добавить встречу</button></div>';
@@ -1031,6 +1091,7 @@
           <dt>Telegram</dt><dd>${c.tg_username ? `<a href="https://t.me/${esc(c.tg_username)}" target="_blank" rel="noopener">@${esc(c.tg_username)}</a>` : c.telegram ? 'есть' : '—'}</dd>
           <dt>С нами с</dt><dd>${esc(longDate(dt(c.created_at)))} ${dt(c.created_at).getFullYear()}</dd>
           <dt>Абонемент</dt><dd>${m ? `${esc(m.name)}, ${esc(m.month_label)}` : 'нет'}</dd>
+          ${d.achievements ? `<dt>Достижения</dt><dd>${d.achievements.done} из ${d.achievements.total}</dd>` : ''}
         </dl>
         ${m ? `<ul class="mini">${m.items.filter((i) => !i.unlimited).map((i) => `<li><span>${esc(i.label)}</span><span>использовано ${i.used} из ${i.limit}</span></li>`).join('')}</ul>` : ''}
       </div>
@@ -1051,39 +1112,53 @@
     S.staff.clientId = c.id;
   }
 
+  // Поля встречи. p — приставка id: nf (новая) или ef (правка).
+  function eventFields(p, e) {
+    const d = e ? dt(e.starts_at) : null;
+    const v = (x) => esc(x == null ? '' : x);
+    const durs = [60, 90, 105, 120, 150, 180];
+    if (e && !durs.includes(e.duration_min)) durs.push(e.duration_min);
+    const price = `<label class="field"><span>Цена разово, ₽</span><input class="input" id="${p}Price" type="number" inputmode="numeric" placeholder="обычная: 2 500" value="${e && e.custom_price != null ? e.custom_price : ''}"></label>`;
+    return `
+      <label class="field"><span>Формат</span><select class="select" id="${p}Format">${Object.entries(FORMAT).map(([k, f]) => `<option value="${k}"${e && e.format === k ? ' selected' : ''}>${f.name}</option>`).join('')}</select></label>
+      <label class="field"><span>Название или тема</span><input class="input" id="${p}Title" value="${v(e && e.title)}" placeholder="Например: «Лавр» Водолазкина"></label>
+      <label class="field"><span>Ведущий или гость</span><input class="input" id="${p}Host" value="${v(e && e.host)}" placeholder="Необязательно"></label>
+      <div class="field__row">
+        <label class="field"><span>Дата</span><input class="input" id="${p}Date" type="date" value="${e ? ymd(d) : ymd(addDays(new Date(), 1))}"></label>
+        <label class="field"><span>Начало</span><input class="input" id="${p}Time" type="time" value="${e ? hm(d) : '19:30'}"></label>
+      </div>
+      <div class="field__row">
+        <label class="field"><span>Длительность</span><select class="select" id="${p}Dur">${durs.map((m) => `<option value="${m}"${m === (e ? e.duration_min : 120) ? ' selected' : ''}>${dur(m)}</option>`).join('')}</select></label>
+        <label class="field"><span>Мест</span><input class="input" id="${p}Cap" type="number" inputmode="numeric" min="1" value="${e ? e.capacity : 40}"></label>
+      </div>
+      ${p === 'nf' ? `<div class="field__row">
+        <label class="field"><span>Повторять</span><select class="select" id="nfRepeat"><option value="1">Один раз</option><option value="2">2 недели</option><option value="4">4 недели</option><option value="8">8 недель</option><option value="12">12 недель</option><option value="26">Полгода</option></select></label>
+        ${price}</div>` : price}
+      <label class="check"><input type="checkbox" id="${p}Incl"${!e || e.included ? ' checked' : ''}><span>Входит в абонементы</span></label>
+      <label class="field"><span>Описание</span><textarea class="textarea" id="${p}Desc" placeholder="Пара предложений о встрече: их увидят гости">${v(e && e.description)}</textarea></label>`;
+  }
+
+  function readEventFields(p) {
+    const v = (id) => $('#' + p + id).value.trim();
+    return {
+      format: v('Format'), title: v('Title') || FORMAT[v('Format')].name, host: v('Host'),
+      date: v('Date'), time: v('Time'), duration_min: Number(v('Dur')), capacity: Number(v('Cap')) || 40,
+      price: v('Price'), included: $('#' + p + 'Incl').checked, description: v('Desc'),
+    };
+  }
+
   function staffNew(body) {
-    const today = ymd(addDays(new Date(), 1));
     body.innerHTML = `
+      <div class="notice">${icon('cal')}<span>Регулярный клуб: выберите «Повторять», и встречи появятся на несколько недель вперёд. Тему каждой встречи потом можно поменять кнопкой «Изменить» во вкладке «Встречи».</span></div>
       <div class="card">
-        <label class="field"><span>Формат</span><select class="select" id="nfFormat">${Object.entries(FORMAT).map(([k, f]) => `<option value="${k}">${f.name}</option>`).join('')}</select></label>
-        <label class="field"><span>Название</span><input class="input" id="nfTitle" placeholder="Например: «Лавр» Водолазкина"></label>
-        <label class="field"><span>Ведущий или гость</span><input class="input" id="nfHost" placeholder="Необязательно"></label>
-        <div class="field__row">
-          <label class="field"><span>Дата</span><input class="input" id="nfDate" type="date" value="${today}"></label>
-          <label class="field"><span>Начало</span><input class="input" id="nfTime" type="time" value="19:30"></label>
-        </div>
-        <div class="field__row">
-          <label class="field"><span>Длительность</span><select class="select" id="nfDur">${[60, 90, 105, 120, 150, 180].map((m) => `<option value="${m}"${m === 120 ? ' selected' : ''}>${dur(m)}</option>`).join('')}</select></label>
-          <label class="field"><span>Мест</span><input class="input" id="nfCap" type="number" inputmode="numeric" min="1" value="40"></label>
-        </div>
-        <div class="field__row">
-          <label class="field"><span>Повторять</span><select class="select" id="nfRepeat"><option value="1">Один раз</option><option value="2">2 недели</option><option value="4">4 недели</option><option value="8">8 недель</option><option value="12">12 недель</option></select></label>
-          <label class="field"><span>Цена разово, ₽</span><input class="input" id="nfPrice" type="number" inputmode="numeric" placeholder="2 500"></label>
-        </div>
-        <label class="check"><input type="checkbox" id="nfIncl" checked><span>Входит в абонементы</span></label>
-        <label class="field"><span>Описание</span><textarea class="textarea" id="nfDesc" placeholder="Пара предложений о встрече"></textarea></label>
+        ${eventFields('nf', null)}
         <p class="form-error" id="nfErr" hidden></p>
         <button class="pill pill--ink pill--wide" data-act="nf-save">Добавить в расписание</button>
       </div>`;
   }
 
   async function saveNewEvent(btn) {
-    const v = (id) => $('#' + id).value.trim();
-    const payload = {
-      format: v('nfFormat'), title: v('nfTitle') || FORMAT[v('nfFormat')].name, host: v('nfHost'),
-      date: v('nfDate'), time: v('nfTime'), duration_min: Number(v('nfDur')), capacity: Number(v('nfCap')) || 40,
-      repeat_weeks: Number(v('nfRepeat')), price: v('nfPrice'), included: $('#nfIncl').checked, description: v('nfDesc'),
-    };
+    const payload = Object.assign(readEventFields('nf'), { repeat_weeks: Number($('#nfRepeat').value) });
     busy(btn);
     try {
       const r = await api('staff/event', payload);
@@ -1095,6 +1170,48 @@
       render();
     } catch (e) {
       const err = $('#nfErr'); err.textContent = e.message; err.hidden = false;
+    } finally { busy(btn, false); }
+  }
+
+  function openEditEvent(id) {
+    const e = (S.staff.dayEvents || []).find((x) => x.id === id);
+    if (!e) return;
+    const d = dt(e.starts_at);
+    S.staff.apply = 'one';
+    S.staff.editing = e;
+    openSheet(`
+      <p class="eyebrow">Изменить встречу</p>
+      <h2 class="sheet__title" id="sheetTitle">${esc(e.title)}</h2>
+      <div class="card">
+        ${eventFields('ef', e)}
+        <div class="field"><span>Что изменить</span>
+          <div class="seg" role="group" aria-label="Что изменить">
+            <button type="button" data-act="ef-apply" data-v="one" aria-pressed="true">Только эту</button>
+            <button type="button" data-act="ef-apply" data-v="series" aria-pressed="false">Эту и следующие</button>
+          </div>
+          <span class="field__hint" id="efHint">Поменяется только встреча ${longDate(d)}.</span>
+        </div>
+        <p class="form-error" id="efErr" hidden></p>
+        <button class="pill pill--ink pill--wide" data-act="ef-save" data-id="${e.id}">Сохранить</button>
+      </div>
+      <p class="small muted">Если поменять дату или время, записанным гостям придёт сообщение о переносе.</p>
+    `);
+  }
+
+  async function saveEditEvent(btn) {
+    const e = S.staff.editing;
+    const payload = Object.assign(readEventFields('ef'), { event_id: e.id, apply: S.staff.apply });
+    busy(btn);
+    try {
+      const r = await api('staff/event_update', payload);
+      S.events = null;
+      haptic('ok');
+      closeSheet();
+      toast(r.moved ? `Сохранено. Перенесено встреч: ${r.moved}, гостям отправлены сообщения` : r.count > 1 ? `Сохранено для ${r.count} встреч` : 'Сохранено', true, 4500);
+      if (payload.date !== ymd(dt(e.starts_at))) S.staff.date = payload.date;
+      render('staff');
+    } catch (err) {
+      const box = $('#efErr'); box.textContent = err.message; box.hidden = false;
     } finally { busy(btn, false); }
   }
 
@@ -1169,6 +1286,17 @@
       catch (e) { toast(e.message); } finally { busy(el, false); }
     },
     'nf-save': (el) => saveNewEvent(el),
+    'ev-edit': (el) => openEditEvent(Number(el.dataset.id)),
+    'ef-apply': (el) => {
+      S.staff.apply = el.dataset.v;
+      $$('[data-act="ef-apply"]').forEach((b) => b.setAttribute('aria-pressed', b === el));
+      const d = dt(S.staff.editing.starts_at);
+      $('#efHint').textContent = el.dataset.v === 'series'
+        ? `Поменяются все следующие встречи «${fmtName(S.staff.editing)}» по ${WD_DAT[d.getDay()]} в ${hm(d)}: время и то, что вы исправили. Темы других встреч останутся прежними.`
+        : `Поменяется только встреча ${longDate(d)}.`;
+    },
+    'ef-save': (el) => saveEditEvent(el),
+    ach: () => openAchievements(),
   };
 
   document.addEventListener('click', (ev) => {

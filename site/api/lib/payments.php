@@ -86,7 +86,7 @@ function mark_paid(int $purchaseId): void
         $m = row('SELECT * FROM memberships WHERE purchase_id = ?', [$purchaseId]);
         if ($m) {
             update('memberships', (int) $m['id'], ['status' => 'active']);
-            $plan = PLANS[$m['plan']];
+            $plan = plans()[$m['plan']];
             $text = '<b>Абонемент «' . e($plan['name']) . '» оплачен.</b>' . "\n" .
                 'Действует до ' . human_date(month_last_day($m['month']), false) . '. Записывайтесь на встречи в кабинете.';
             $buttons = [['text' => 'Открыть расписание', 'app' => '#schedule']];

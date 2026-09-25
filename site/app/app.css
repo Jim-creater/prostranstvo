@@ -324,6 +324,35 @@ details.past[open] > summary .ico { transform: rotate(90deg); }
 .rules li:first-child { border-top: 0; }
 .rules b { font: 400 22px/1 var(--f-serif); color: var(--accent); }
 
+/* ---------- достижения ---------- */
+.medal {
+  position: relative; flex: none; width: 60px; height: 60px; border-radius: 50%;
+  display: grid; place-items: center; color: rgba(26, 23, 20, .38);
+  background: conic-gradient(var(--c) calc(var(--p) * 1%), rgba(26, 23, 20, .09) 0);
+}
+.medal::before { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--card); }
+.medal .ico { position: relative; width: 26px; height: 26px; }
+.medal.is-done { background: var(--c); color: #fff; box-shadow: 0 10px 20px -12px var(--c); }
+.medal.is-done::before { inset: 3px; background: transparent; border: 1.5px solid rgba(255, 255, 255, .5); }
+.medal--sm { width: 44px; height: 44px; }
+.medal--sm::before { inset: 3px; }
+.medal--sm .ico { width: 20px; height: 20px; }
+.ach-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.ach-next { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; width: 100%; padding: 12px; border: 0; border-radius: 14px; background: var(--bg); text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.ach-next__t { display: block; font-weight: 500; }
+.ach-next__s { display: block; margin: 2px 0 8px; font-size: 13.5px; color: var(--muted); }
+.pbar { display: block; width: 100%; height: 6px; border-radius: 3px; background: rgba(26, 23, 20, .08); overflow: hidden; }
+.pbar i { display: block; height: 100%; border-radius: 3px; background: var(--c, var(--accent)); }
+.ach-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.ach { display: grid; gap: 6px; align-content: start; justify-items: start; padding: 16px 14px; border-radius: 16px; background: var(--card); box-shadow: var(--shadow); }
+.ach__t { margin-top: 4px; font-weight: 500; line-height: 1.25; }
+.ach:not(.is-done) .ach__t { color: rgba(26, 23, 20, .72); }
+.ach__s { font-size: 13px; line-height: 1.35; color: var(--muted); }
+.ach__d { display: flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ach__d .ico { width: 14px; height: 14px; }
+.ach.is-done .ach__d { color: var(--ok); font-weight: 500; }
+@media (min-width: 700px) { .ach-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
 /* ---------- шторка ---------- */
 .sheet { position: fixed; inset: 0; z-index: 40; display: grid; align-items: end; }
 .sheet__backdrop { position: absolute; inset: 0; background: rgba(26, 23, 20, .42); animation: fade .3s both; }

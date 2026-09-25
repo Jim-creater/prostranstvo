@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Как запустить сайт и личный кабинет · Пространство</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Onest:wght@400;600&family=JetBrains+Mono&display=swap">
+<style>
+:root { --fg: #1A1714; --muted: rgba(26,23,20,.62); --line: rgba(26,23,20,.12); --accent: #C2531E; --soft: #F6F3EE; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #fff; color: var(--fg); font: 400 17px/1.65 "Onest", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+main { max-width: 820px; margin: 0 auto; padding: 32px 16px 96px; }
+h1 { font: 300 clamp(38px, 7vw, 60px)/1.02 "Cormorant Garamond", Georgia, serif; margin: 12px 0 18px; text-wrap: balance; }
+h2 { font: 400 clamp(28px, 5vw, 36px)/1.1 "Cormorant Garamond", Georgia, serif; margin: 44px 0 10px; text-wrap: balance; }
+h3 { font: 600 19px/1.3 "Onest", system-ui, sans-serif; margin: 30px 0 8px; }
+p, li { max-width: 68ch; }
+a { color: var(--accent); }
+hr { border: 0; border-top: 1px solid var(--line); margin: 44px 0; }
+code { font: 400 .88em/1.4 "JetBrains Mono", ui-monospace, Menlo, monospace; background: var(--soft); padding: 2px 5px; border-radius: 5px; }
+pre { background: var(--soft); padding: 14px 16px; border-radius: 10px; overflow-x: auto; }
+pre code { background: none; padding: 0; font-size: 14px; }
+.table { overflow-x: auto; margin: 14px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 15.5px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); }
+th { font-weight: 600; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+strong { font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+<h1>Как запустить сайт и личный кабинет</h1>
+<p>Нужен хостинг с PHP 8 и базой MySQL и планировщик задач (cron). Отдельный сервер не нужен. Сайт и кабинет занимают меньше 100 МБ.</p>
+<p>Что получится:</p>
+<ul>
+<li>сайт <code>https://ваш-сайт.ru</code>;</li>
+<li>личный кабинет <code>https://ваш-сайт.ru/app/</code>. Он же открывается как мини-приложение в Telegram;</li>
+<li>Telegram-бот: вход в кабинет, напоминания о встречах и об окончании абонемента, доступ в чат держателей карты;</li>
+<li>уведомления в MAX, если получится зарегистрировать бота (см. шаг 9).</li>
+</ul>
+<p>Как вести расписание и менять тексты после запуска, написано в <a href="ИНСТРУКЦИЯ.html">ИНСТРУКЦИЯ.md</a>.</p>
+<h2>1. Хостинг: нужен тариф с PHP и MySQL</h2>
+<p>Сейчас у вас в Руцентре тариф <strong>«Сайт 1»</strong>. В нём нет PHP и баз MySQL (в характеристиках: «PHP, Perl, Python — нет», «Базы MySQL — нет»). На таком тарифе откроется только сам сайт, <code>index.html</code>. Кабинет, бот и оплата работать не будут.</p>
+<p>Что сделать:</p>
+<ol>
+<li>В панели Руцентра откройте услугу хостинга и выберите <strong>смену тарифа</strong> на <strong>«Сайт 2»</strong> или старше. В них есть PHP и MySQL. Обычно сайты, которые уже лежат на хостинге, при смене тарифа остаются на месте, но перед сменой уточните это у поддержки. Цена «Сайт 2» по обзорам — около 1 000 ₽ в месяц; точную цену и разницу к доплате покажет панель.</li>
+<li>Для Пространства нужен свой домен, например <code>prostranstvo-club.ru</code>: купленный <code>kod-chempiona.ru</code> занят другим сайтом. Домен добавляется в тот же хостинг, тариф позволяет держать несколько сайтов.</li>
+<li>Нужен SSL-сертификат (адрес с <code>https://</code>) <strong>для нового домена</strong>. Сертификат GlobalSign, купленный для <code>kod-chempiona.ru</code>, на другой домен не переносится. Спросите поддержку Руцентра про бесплатный сертификат Let's Encrypt для нового домена. Без HTTPS Telegram не откроет кабинет.</li>
+</ol>
+<p>После смены тарифа проверьте в панели:</p>
+<ol>
+<li><strong>Версия PHP — 8.1 или новее.</strong> Меняется в настройках сайта.</li>
+<li><strong>Создана база MySQL.</strong> Запишите имя базы, пользователя и пароль.</li>
+<li><strong>Есть планировщик задач (cron).</strong></li>
+</ol>
+<p>Если чего-то не найдёте, напишите в поддержку Руцентра: «Нужны PHP 8, MySQL, cron и SSL для сайта такого-то».</p>
+<p>Другой вариант — арендовать небольшой VPS в России. Он бывает дешевле, но его нужно настраивать самому или с программистом.</p>
+<h2>2. Загрузить файлы</h2>
+<p>Загрузите содержимое папки <code>site/</code> в корень сайта (обычно это <code>docs/</code> или <code>public_html/</code>) через файловый менеджер панели или по FTP. Получится так:</p>
+<pre><code>index.html        — сайт
+img/              — картинки
+app/              — личный кабинет
+api/              — сервер кабинета
+privacy.html      — политика обработки персональных данных
+consent.html      — согласие на обработку данных
+</code></pre>
+<h2>3. Создать бота в Telegram</h2>
+<ol>
+<li>Откройте <a href="https://t.me/BotFather">@BotFather</a> и отправьте <code>/newbot</code>. Придумайте имя, например «Пространство», и адрес бота, например <code>prostranstvo_club_bot</code>. BotFather пришлёт <strong>токен</strong>. Сохраните его.</li>
+<li>Отправьте <code>/setdomain</code>, выберите бота и укажите домен сайта <code>ваш-сайт.ru</code>. Это нужно для кнопки «Войти через Telegram» на сайте.</li>
+<li>Отправьте <code>/newapp</code>, выберите бота, укажите название «Кабинет», описание и картинку 640×360, ссылку <code>https://ваш-сайт.ru/app/</code> и короткое имя <code>app</code>. Получится ссылка вида <code>https://t.me/prostranstvo_club_bot/app</code>: её удобно давать гостям.</li>
+</ol>
+<h2>4. Заполнить настройки</h2>
+<ol>
+<li>В папке <code>api/</code> скопируйте <code>config.sample.php</code> в <code>config.php</code>.</li>
+<li>Заполните в <code>config.php</code>:</li>
+<li>данные базы из шага 1;</li>
+<li>адреса сайта (<code>site_url</code>, <code>app_url</code>, <code>api_url</code>) с <code>https://</code>;</li>
+<li><code>telegram.token</code> и <code>telegram.bot_username</code> из шага 3;</li>
+<li><code>telegram.webhook_secret</code> и <code>cron_key</code> — две разные длинные случайные строки, например из генератора паролей.</li>
+<li>В <code>app/config.js</code> впишите <code>bot</code> (адрес бота без @) и <code>miniapp</code> (ссылка из шага 3).</li>
+</ol>
+<p><code>config.php</code> закрыт от чтения из браузера файлом <code>api/.htaccess</code>. Не отправляйте его никому и не выкладывайте в репозиторий.</p>
+<h2>5. Создать таблицы и расписание</h2>
+<p>Откройте в браузере по очереди (вместо <code>КЛЮЧ</code> — ваш <code>cron_key</code>):</p>
+<ol>
+<li><code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=init</code> — создаёт таблицы.</li>
+<li><code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=seed&amp;a=2026-10-05&amp;b=8</code> — добавляет расписание на 8 недель с понедельника 5 октября по шаблону из <code>api/setup.php</code>.</li>
+</ol>
+<p>Шаблон:
+   - пн и ср: литературный клуб в 18:00, сценарный в 20:15;
+   - пт: сценарный клуб в 19:30;
+   - сб: литературный клуб в 12:00, гость в 16:00, кино в 19:30;
+   - вс: рисунок в 12:00, гость в 16:00, кино в 19:30;
+   - история костюма: 1-й и 3-й четверг месяца в 12:00.</p>
+<p>Шаблон — это быстрый старт. Потом всё меняется в кабинете, без файлов: «Команда» → «Изменить» или «Добавить». Можно и не запускать <code>seed</code>, а сразу завести расписание в кабинете (см. <a href="ИНСТРУКЦИЯ.html">ИНСТРУКЦИЯ.md</a>).
+3. <code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=webhook</code> — подключает бота: он начнёт отвечать, а в меню появится кнопка «Кабинет».</p>
+<h2>6. Настроить cron</h2>
+<p>В панели nic.ru → «Планировщик задач» добавьте задачу <strong>каждые 15 минут</strong>:</p>
+<pre><code>php ~/ваш-сайт.ru/docs/api/cron.php
+</code></pre>
+<p>Путь к папке сайта посмотрите в файловом менеджере. Если в панели можно указать только адрес страницы, используйте <code>https://ваш-сайт.ru/api/cron.php?key=КЛЮЧ</code>.</p>
+<p>Cron отвечает за всё, что происходит само:</p>
+<ul>
+<li>снимает бронь, если разовое посещение не оплатили за 30 минут, и пишет первому в листе ожидания;</li>
+<li>присылает напоминания: примерно за сутки (пока ещё можно отменить без списания) и за 2 часа до начала;</li>
+<li>за 3 дня до конца месяца и в последний день напоминает продлить абонемент тем, кто ещё не купил следующий месяц;</li>
+<li>1-го числа убирает из чата держателей карты тех, у кого нет абонемента на новый месяц.</li>
+</ul>
+<h2>7. Подключить оплату (ЮKassa)</h2>
+<p>Кабинет сейчас умеет принимать оплату через ЮKassa. Если у вас договор с другой платёжной системой, скажите: подключим её вместо ЮKassa.</p>
+<ol>
+<li>В личном кабинете ЮKassa возьмите <code>shopId</code> и секретный ключ («Интеграция» → «Ключи API»).</li>
+<li>Там же, в «HTTP-уведомлениях», укажите адрес <code>https://ваш-сайт.ru/api/pay-webhook.php</code> и отметьте события <code>payment.succeeded</code> и <code>payment.canceled</code>.</li>
+<li>Подключите отправку чеков по 54-ФЗ: «Чеки от ЮKassa» или свою онлайн-кассу. Чек уходит на телефон клиента.</li>
+<li>В <code>config.php</code> впишите <code>shop_id</code>, <code>secret_key</code> и поменяйте <code>provider</code> с <code>test</code> на <code>yookassa</code>. Ставку НДС (<code>vat_code</code>) уточните у бухгалтера: <code>1</code> — без НДС.</li>
+</ol>
+<p>Пока стоит <code>provider =&gt; 'test'</code>, оплата условная: кнопка «Оплатить» сразу засчитывает платёж. Так удобно проверить всё до подключения денег.</p>
+<h2>8. Назначить сотрудников и чат держателей карты</h2>
+<ol>
+<li>Каждый сотрудник один раз открывает кабинет через бота и указывает телефон.</li>
+<li>Потом откройте <code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=staff&amp;a=79001234567</code> с его номером. В кабинете у него появится вкладка «Команда»: отметки гостей, клиенты, продажа абонемента на месте и добавление встреч.</li>
+</ol>
+<p>Чат держателей карты:</p>
+<ol>
+<li>Создайте закрытую группу в Telegram и добавьте бота администратором с правами «Добавление участников» и «Блокировка участников».</li>
+<li>Создайте пригласительную ссылку с включёнными «Заявками на вступление».</li>
+<li>Впишите ссылку в <code>telegram.members_chat_invite</code>, а ID чата — в <code>telegram.members_chat_id</code>. Узнать ID можно, переслав сообщение из чата боту <a href="https://t.me/getidsbot">@getidsbot</a>; он начинается с <code>-100</code>.</li>
+</ol>
+<p>После этого бот сам одобряет заявки тех, у кого есть действующий абонемент, и отклоняет остальных с подсказкой, где купить абонемент.</p>
+<h2>9. MAX (по желанию)</h2>
+<p>Чтобы бот появился в MAX, его регистрируют на платформе для бизнеса MAX. Условия для ИП меняются, поэтому уточните их при регистрации. Если бот создан:</p>
+<ol>
+<li>Впишите в <code>config.php</code> → <code>max</code> токен, ссылку на бота, <code>webhook_secret</code> и поставьте <code>enabled =&gt; true</code>.</li>
+<li>Откройте <code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=max-webhook</code>.</li>
+</ol>
+<p>В профиле кабинета у гостей появится кнопка «Подключить MAX». После неё напоминания будут приходить и туда. Входить в кабинет по-прежнему нужно через Telegram.</p>
+<h2>10. Персональные данные (152-ФЗ)</h2>
+<p>До запуска:</p>
+<ol>
+<li><strong>Заполните шаблоны</strong> <code>privacy.html</code> и <code>consent.html</code>: ФИО, ИНН, ОГРНИП, адрес, почта, хостинг и платёжная система. Согласие — отдельный документ, как требует закон с 1 сентября 2025 года. В кабинете галочка согласия не стоит заранее, а согласие на рассылку дают отдельно.</li>
+<li><strong>Подайте уведомление в Роскомнадзор</strong> об обработке персональных данных на <a href="https://pd.rkn.gov.ru/">pd.rkn.gov.ru</a>. Для компаний и ИП штраф за работу без уведомления — до 300 тыс. ₽.</li>
+<li><strong>Храните данные в России</strong>: база на хостинге nic.ru это требование выполняет.</li>
+<li>Напоминания идут через Telegram, а это иностранный сервис. Спросите юриста, нужно ли уведомлять Роскомнадзор о трансграничной передаче.</li>
+</ol>
+<p>Документы — шаблоны. Их стоит показать юристу.</p>
+<h2>Проверка перед запуском</h2>
+<ul>
+<li>Откройте бота, нажмите «Кабинет», пройдите знакомство и запишитесь на встречу.</li>
+<li>Купите абонемент в тестовом режиме: должно прийти сообщение от бота.</li>
+<li>Отмените запись больше чем за сутки: посещение вернётся на абонемент.</li>
+<li>В разделе «Команда» отметьте, что гость пришёл.</li>
+<li>Переключите оплату на ЮKassa и проведите один настоящий платёж на небольшую сумму: например, временно поставьте встречу с ценой 10 ₽.</li>
+</ul>
+<h2>Для разработчика</h2>
+<ul>
+<li><code>site/api/</code> — PHP 8 без фреймворков: <code>index.php</code> (API кабинета), <code>bot.php</code> (Telegram), <code>max-bot.php</code>, <code>pay-webhook.php</code>, <code>cron.php</code>, <code>setup.php</code>; правила абонементов — в <code>lib/rules.php</code>.</li>
+<li><code>site/app/</code> — кабинет на чистом JS: <code>app.js</code>, <code>app.css</code>, <code>config.js</code>. <code>demo.js</code> нужен только для показа без сервера (<code>demo: true</code> в <code>config.js</code>).</li>
+<li>Достижения — <code>lib/achievements.php</code>; поздравления рассылает <code>cron.php</code>.</li>
+<li>Цены и состав абонементов — <code>config.php</code>, раздел <code>plans</code>.</li>
+<li>Автотесты API на SQLite: <code>bash tests/run.sh</code>.</li>
+</ul>
+</main>
+</body>
+</html>
