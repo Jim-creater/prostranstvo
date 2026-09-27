@@ -80,7 +80,21 @@ function add_event(string $format, int $hoursFromNow, int $capacity = 40, string
 function notify_lines(): array
 {
     $f = cfg('notify_log');
-    return is_file($f) ? array_map(fn ($l) => json_decode($l, true), array_filter(explode("\n", (string) file_get_contents($f)))) : [];
+    // Только сообщения клиентам; служебные запросы к Telegram записаны с ключом tg.
+    $all = is_file($f) ? array_map(fn ($l) => json_decode($l, true), array_filter(explode("\n", (string) file_get_contents($f)))) : [];
+    return array_values(array_filter($all, fn ($n) => isset($n['client'])));
+}
+
+// Отправляем боту обновление так же, как это делает Telegram.
+function bot_update(array $update): int
+{
+    $ch = curl_init(BASE . 'bot.php');
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($update, JSON_UNESCAPED_UNICODE),
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'X-Telegram-Bot-Api-Secret-Token: hook-secret']]);
+    curl_exec($ch);
+    $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return $code;
 }
 
 echo "Вход\n";
@@ -199,6 +213,64 @@ check('сотрудник добавляет встречу', !empty($r['data'][
 $cB = (int) val('SELECT id FROM clients WHERE telegram_id = 222');
 $r = api('staff/sell', ['client_id' => $cB, 'plan' => 'club1', 'club' => 'lit', 'month' => next_month()], $tA);
 check('продажа абонемента на месте', ($r['data']['ok'] ?? false) === true, $r);
+
+echo "Правка расписания\n";
+$date = date('Y-m-d', strtotime('+15 days'));
+$r = api('staff/event', ['format' => 'lit', 'title' => 'Литературный клуб', 'date' => $date, 'time' => '18:00', 'repeat_weeks' => 3], $tA);
+$ids = $r['data']['ids'] ?? [];
+check('серия из трёх встреч создана', count($ids) === 3, $r);
+api('book', ['event_id' => $ids[1]], $tB);
+@unlink(cfg('notify_log'));
+$ev0 = row('SELECT * FROM events WHERE id = ?', [$ids[0]]);
+update('events', $ids[2], ['title' => 'Лавр, обсуждение']);
+$r = api('staff/event_update', ['event_id' => $ids[0], 'apply' => 'series', 'format' => 'lit', 'title' => 'Литературный клуб', 'date' => $date, 'time' => '18:30', 'duration_min' => 120, 'capacity' => 40, 'included' => true], $tA);
+check('время серии сдвинуто для всех трёх', ($r['data']['moved'] ?? 0) === 3 && substr(row('SELECT starts_at FROM events WHERE id = ?', [$ids[2]])['starts_at'], 11, 5) === '18:30', $r);
+check('темы встреч серии не перезаписаны', row('SELECT title FROM events WHERE id = ?', [$ids[2]])['title'] === 'Лавр, обсуждение');
+$moved = array_filter(notify_lines(), fn ($n) => str_contains($n['text'] ?? '', 'Встреча перенесена'));
+check('записанному гостю пришло сообщение о переносе', count($moved) === 1, notify_lines());
+$r = api('staff/event_update', ['event_id' => $ids[1], 'apply' => 'one', 'format' => 'lit', 'title' => 'Стоунер', 'host' => 'Анна Лебедева', 'date' => date('Y-m-d', strtotime($date . ' +7 days')), 'time' => '18:30', 'duration_min' => 120, 'capacity' => 40, 'included' => true], $tA);
+check('тема одной встречи поменялась только у неё', row('SELECT title FROM events WHERE id = ?', [$ids[1]])['title'] === 'Стоунер' && row('SELECT title FROM events WHERE id = ?', [$ids[0]])['title'] === 'Литературный клуб', $r);
+$r = api('staff/event_update', ['event_id' => $ids[0], 'format' => 'lit', 'title' => 'x', 'date' => $date, 'time' => '18:30'], $tB);
+check('гость не может менять расписание', $r['code'] === 403, $r);
+
+echo "Достижения\n";
+$cA = (int) val('SELECT id FROM clients WHERE telegram_id = 111');
+foreach ([-28, -20, -8] as $i => $h) {
+    $pid = add_event(['lit', 'film', 'guest'][$i], $h);
+    insert('bookings', ['client_id' => $cA, 'event_id' => $pid, 'status' => 'booked', 'paid_by' => 'single', 'created_at' => now(), 'updated_at' => now()]);
+}
+$r = api('achievements', null, $tA);
+$ach = array_column($r['data']['achievements'] ?? [], null, 'code');
+check('после первой встречи получена «Первая глава»', ($ach['first']['done'] ?? false) === true, $r);
+check('прогресс считается по форматам', ($ach['formats']['progress'] ?? 0) === 3 && ($ach['formats']['done'] ?? true) === false, $ach['formats'] ?? null);
+@unlink(cfg('notify_log'));
+$rep = json_decode((string) shell_exec('PR_CONFIG=' . escapeshellarg(__DIR__ . '/config.test.php') . ' php ' . escapeshellarg(__DIR__ . '/../site/api/cron.php')), true);
+// Несколько новых достижений приходят одним сообщением.
+$congrats = array_filter(notify_lines(), fn ($n) => str_contains($n['text'] ?? '', 'Первая глава'));
+check('бот поздравляет с достижением одним сообщением', ($rep['achievements'] ?? 0) >= 1 && count($congrats) === 1 && count(notify_lines()) === 1, [$rep, notify_lines()]);
+$rep = json_decode((string) shell_exec('PR_CONFIG=' . escapeshellarg(__DIR__ . '/config.test.php') . ' php ' . escapeshellarg(__DIR__ . '/../site/api/cron.php')), true);
+check('поздравление не повторяется', ($rep['achievements'] ?? 1) === 0, $rep);
+
+echo "Гость без кабинета\n";
+$r = api('staff/client_new', ['name' => 'Вера Павлова', 'phone' => '+7 925 111-22-33'], $tA);
+$offline = (int) ($r['data']['id'] ?? 0);
+check('команда заводит гостя по имени и телефону', $offline > 0 && ($r['data']['existing'] ?? true) === false, $r);
+$r = api('staff/client_new', ['name' => 'Вера', 'phone' => '89251112233'], $tA);
+check('тот же телефон не создаёт второго гостя', ($r['data']['id'] ?? 0) === $offline && ($r['data']['existing'] ?? false) === true, $r);
+$r = api('staff/client_new', ['name' => 'Икс', 'phone' => '79250000000'], $tB);
+check('гость не может заводить клиентов', $r['code'] === 403, $r);
+$r = api('staff/sell', ['client_id' => $offline, 'plan' => 'clubs', 'month' => current_month()], $tA);
+check('абонемент продан гостю без кабинета', ($r['data']['ok'] ?? false) === true, $r);
+$x = api('auth/telegram', ['initData' => init_data(333, 'Чужой')]);
+api('me', ['phone' => '+7 925 111-22-33'], $x['data']['token']);
+$me = api('me', null, $x['data']['token'])['data'];
+check('номер, вписанный вручную, не даёт чужой абонемент', array_key_exists('membership', $me) && $me['membership'] === null, $me);
+$v = api('auth/telegram', ['initData' => init_data(444, 'Вера')]);
+$code = bot_update(['update_id' => 1, 'message' => ['message_id' => 1, 'date' => time(), 'chat' => ['id' => 444, 'type' => 'private'], 'from' => ['id' => 444, 'first_name' => 'Вера'],
+    'contact' => ['phone_number' => '+79251112233', 'user_id' => 444, 'first_name' => 'Вера']]]);
+$me = api('me', null, $v['data']['token'])['data'];
+check('после «Поделиться номером» в боте абонемент появился в кабинете', $code === 200 && ($me['membership']['plan'] ?? '') === 'clubs', [$code, $me]);
+check('запись, заведённая на месте, объединена с кабинетом', !val('SELECT id FROM clients WHERE id = ?', [$offline]));
 
 echo "\nИтого: $passes прошло, $fails не прошло\n";
 exit($fails ? 1 : 0);

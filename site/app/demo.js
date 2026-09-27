@@ -44,7 +44,7 @@ window.PRDemo = (() => {
   const NAMES = ['Мария Кузнецова', 'Екатерина Орлова', 'Дмитрий Волков', 'Ольга Лебедева', 'Сергей Морозов', 'Наталья Соколова', 'Алексей Павлов', 'Ирина Фёдорова', 'Татьяна Николаева', 'Михаил Егоров', 'Юлия Семёнова', 'Андрей Васильев', 'Елена Зайцева', 'Павел Голубев', 'Светлана Виноградова', 'Артём Богданов', 'Ксения Воробьёва', 'Никита Тарасов', 'Анастасия Белова', 'Григорий Комаров', 'Вера Киселёва', 'Илья Макаров', 'Дарья Андреева', 'Максим Ковалёв', 'Полина Ильина', 'Роман Гусев', 'Алина Титова', 'Виктор Кудрявцев', 'Софья Баранова', 'Олег Куликов', 'Людмила Алексеева', 'Степан Степанов', 'Варвара Яковлева', 'Константин Сорокин', 'Евгения Романова', 'Фёдор Захаров', 'Александра Борисова', 'Тимофей Королёв', 'Надежда Герасимова', 'Игорь Пономарёв', 'Валерия Григорьева', 'Борис Лазарев', 'Маргарита Медведева', 'Кирилл Ершов', 'Лариса Никитина'];
 
   function seed() {
-    db.clients.push({ id: ME, name: 'Анна Смирнова', phone: '79001234567', telegram: true, tg_username: 'anna_reads', max: false, is_staff: true, consent_pd: true, consent_news: true, notify_tg: true, notify_max: false, notify_24h: true, notify_2h: true, note: '', created_at: '2026-09-02 12:00:00' });
+    db.clients.push({ id: ME, name: 'Анна Смирнова', phone: '79001234567', telegram: true, tg_username: 'anna_reads', max: false, is_staff: false, consent_pd: true, consent_news: true, notify_tg: true, notify_max: false, notify_24h: true, notify_2h: true, note: '', created_at: '2026-09-02 12:00:00' });
     NAMES.forEach((name, i) => db.clients.push({ id: i + 2, name, phone: '7916' + String(1000000 + i * 7919).slice(-7), telegram: true, tg_username: i % 3 ? null : 'guest' + (i + 2), max: false, is_staff: false, consent_pd: true, consent_news: i % 2 === 0, notify_tg: true, notify_max: false, notify_24h: true, notify_2h: true, note: '', created_at: '2026-08-' + pad(1 + (i % 28)) + ' 18:00:00' }));
 
     // Темы встреч — те же, что в афише на сайте.
@@ -67,8 +67,8 @@ window.PRDemo = (() => {
       [6, '12:00', 'lit', 120], [6, '16:00', 'guest', 120], [6, '19:30', 'film', 150],
       [0, '12:00', 'art', 120], [0, '16:00', 'guest', 120], [0, '19:30', 'film', 150],
     ];
-    const start = new Date(); start.setHours(0, 0, 0, 0); start.setDate(start.getDate() - 10);
-    for (let i = 0; i < 56; i++) {
+    const start = new Date(); start.setHours(0, 0, 0, 0); start.setDate(start.getDate() - 70);
+    for (let i = 0; i < 116; i++) {
       const day = new Date(start); day.setDate(start.getDate() + i);
       const week = Math.floor((day.getDate() - 1) / 7) + 1;
       template.forEach(([wd, time, format, dur, weeks]) => {
@@ -88,6 +88,8 @@ window.PRDemo = (() => {
     // Абонемент Анны на текущий месяц.
     const m = { id: seq++, client_id: ME, plan: 'clubs', month: curMonth(), club: null, status: 'active', price: 6500 };
     db.memberships.push(m);
+    // …и два прошлых месяца: так видно достижение «Сезон».
+    [2, 1].forEach((k) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - k); db.memberships.push({ id: seq++, client_id: ME, plan: 'clubs', month: ym(d), club: null, status: 'active', price: 6500 }); });
     db.purchases.push({ id: seq++, client_id: ME, kind: 'membership', amount: 6500, status: 'paid', provider: 'yookassa', description: 'Абонемент «Клубы и гости» на ' + monthLabel(curMonth()), paid_at: '2026-09-02 12:10:00' });
     // Абонементы у части гостей.
     db.clients.slice(1).forEach((c, i) => {
@@ -108,6 +110,11 @@ window.PRDemo = (() => {
     if (pastGuest) add(ME, pastGuest, 'attended');
     const pastLit = [...past].reverse().find((e) => e.format === 'lit');
     if (pastLit) add(ME, pastLit, 'attended');
+    // История Анны в прошлых месяцах — для достижений.
+    const before = past.filter((e) => e.starts_at.slice(0, 7) < curMonth()).reverse();
+    Object.entries({ lit: 3, script: 2, film: 3, guest: 2, art: 1 }).forEach(([f, n]) => {
+      before.filter((e) => e.format === f).slice(0, n).forEach((e) => add(ME, e, 'attended', f === 'art' ? 'single' : 'membership'));
+    });
     const film = future.find((e) => e.format === 'film');
     if (film) add(ME, film, 'booked');
     const lit = future.find((e) => e.format === 'lit' && parse(e.starts_at) - now > 30 * 3600e3);
@@ -174,7 +181,7 @@ window.PRDemo = (() => {
     const out = {
       id: e.id, format: e.format, format_name: FORMATS[e.format].name, title: e.title, host: e.host, description: e.description,
       starts_at: e.starts_at, duration_min: e.duration_min, capacity: e.capacity, left: Math.max(0, e.capacity - seatsTaken(e.id)),
-      included: !!e.included, price: e.price || SINGLE, free_cancel_until: human(freeUntil), free_cancel: new Date() <= freeUntil,
+      included: !!e.included, price: e.price || SINGLE, custom_price: e.price || null, free_cancel_until: human(freeUntil), free_cancel: new Date() <= freeUntil,
     };
     if (cid) {
       const b = db.bookings.find((x) => x.client_id === cid && x.event_id === e.id);
@@ -186,6 +193,55 @@ window.PRDemo = (() => {
     return out;
   }
   const me = () => db.clients.find((c) => c.id === ME);
+
+  // ---------- достижения (как в api/lib/achievements.php) ----------
+  const ACH = [
+    ['first', 'Первая глава', 'Первая встреча в Пространстве', 'visits', 1],
+    ['lit', 'Книжный червь', '5 встреч литературного клуба', 'lit', 5],
+    ['script', 'Автор сценария', '5 встреч сценарного клуба', 'script', 5],
+    ['film', 'Киноман', '5 кинопоказов', 'film', 5],
+    ['guest', 'Собеседник', '3 встречи со специальными гостями', 'guest', 3],
+    ['costume', 'Свой стиль', '2 занятия по истории костюма', 'costume', 2],
+    ['art', 'С натуры', '4 занятия рисунком', 'art', 4],
+    ['formats', 'Полный круг', 'Побывать на всех шести форматах', 'formats', 6],
+    ['week', 'Насыщенная неделя', '3 встречи за одну неделю', 'week', 3],
+    ['regular', 'Завсегдатай', '20 встреч в Пространстве', 'visits', 20],
+    ['season', 'Сезон', 'Абонемент три месяца подряд', 'streak', 3],
+    ['halfyear', 'Полгода вместе', 'Абонемент шесть месяцев', 'months', 6],
+  ];
+  function isoWeek(d) {
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const day = t.getUTCDay() || 7;
+    t.setUTCDate(t.getUTCDate() + 4 - day);
+    const y = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+    return t.getUTCFullYear() + '-' + Math.ceil(((t - y) / 864e5 + 1) / 7);
+  }
+  function achievements(cid) {
+    const st = { visits: 0, formats: 0, week: 0, months: 0, streak: 0, lit: 0, script: 0, guest: 0, film: 0, costume: 0, art: 0 };
+    const formats = new Set(), weeks = {};
+    db.bookings.filter((b) => b.client_id === cid && ['attended', 'booked'].includes(b.status)).forEach((b) => {
+      const e = eventOf(b.event_id);
+      const start = parse(e.starts_at);
+      if (e.cancelled || start.getTime() + e.duration_min * 60000 > Date.now()) return;
+      st.visits++; st[e.format]++; formats.add(e.format);
+      const w = isoWeek(start); weeks[w] = (weeks[w] || 0) + 1;
+    });
+    st.formats = formats.size;
+    st.week = Math.max(0, ...Object.values(weeks));
+    const months = [...new Set(db.memberships.filter((m) => m.client_id === cid && m.status === 'active' && m.month <= curMonth()).map((m) => m.month))].sort();
+    st.months = months.length;
+    let run = 0, prev = null;
+    months.forEach((k) => {
+      const p = prev ? new Date(Number(prev.slice(0, 4)), Number(prev.slice(5, 7)), 1) : null;
+      run = p && ym(p) === k ? run + 1 : 1;
+      st.streak = Math.max(st.streak, run);
+      prev = k;
+    });
+    return ACH.map(([code, title, text, metric, goal]) => {
+      const progress = Math.min(goal, st[metric] || 0);
+      return { code, title, text, progress, goal, done: progress >= goal, earned_at: null };
+    });
+  }
 
   // ---------- маршруты API ----------
   const routes = {
@@ -219,7 +275,7 @@ window.PRDemo = (() => {
         next_membership: nxt ? usage(nxt) : null,
         month: { current: curMonth(), current_label: monthLabel(curMonth()), next: nextMonth(), next_label: monthLabel(nextMonth()), ends: human(lastDay(curMonth()), false) },
         next_booking: nb ? pub(nb, ME) : null,
-        links: { telegram_bot: 'https://t.me/', max_bot: null, members_chat: cur ? 'https://t.me/' : null },
+        links: { telegram_bot: 'https://t.me/prostranstvo_bot', max_bot: null, members_chat: cur ? 'https://t.me/' : null },
       };
     },
     events(_, q) {
@@ -330,6 +386,26 @@ window.PRDemo = (() => {
       }
       return { ok: true, ids };
     },
+    achievements: () => ({ achievements: achievements(ME) }),
+    'staff/event_update'(body) {
+      const ev = db.events.find((x) => x.id === body.event_id && !x.cancelled);
+      if (!ev) fail('Встреча не найдена');
+      if (!body.title || !/^\d{4}-\d{2}-\d{2}$/.test(body.date) || !/^\d{2}:\d{2}$/.test(body.time)) fail('Заполните название, дату и время');
+      const next = { format: body.format, title: body.title, host: body.host || '', description: body.description || '', duration_min: Number(body.duration_min) || ev.duration_min, capacity: Number(body.capacity) || ev.capacity, price: body.price ? Number(body.price) : null, included: body.included ? 1 : 0 };
+      const changes = {};
+      Object.keys(next).forEach((k) => { if (String(next[k] ?? '') !== String(ev[k] ?? '')) changes[k] = next[k]; });
+      const shift = parse(body.date + ' ' + body.time) - parse(ev.starts_at);
+      const slot = (x) => { const d = parse(x.starts_at); return d.getDay() + ' ' + x.starts_at.slice(11, 16); };
+      const targets = body.apply === 'series'
+        ? db.events.filter((x) => !x.cancelled && x.format === ev.format && x.starts_at >= ev.starts_at && slot(x) === slot(ev))
+        : [ev];
+      let moved = 0;
+      targets.forEach((t) => {
+        Object.assign(t, changes);
+        if (shift) { t.starts_at = toS(new Date(parse(t.starts_at).getTime() + shift)); moved++; }
+      });
+      return { ok: true, count: targets.length, moved };
+    },
     'staff/event_cancel'(body) {
       const e = eventOf(body.event_id);
       if (!e) fail('Встреча не найдена');
@@ -345,6 +421,18 @@ window.PRDemo = (() => {
           .slice(0, 30).map((c) => { const m = activeMembership(c.id, curMonth()); return { id: c.id, name: c.name, phone: c.phone, tg_username: c.tg_username, membership: m ? PLANS[m.plan].name : null }; }),
       };
     },
+    'staff/client_new'(body) {
+      let d = String(body.phone || '').replace(/\D+/g, '');
+      if (d.length === 11 && (d[0] === '8' || d[0] === '7')) d = '7' + d.slice(1);
+      else if (d.length === 10 && d[0] === '9') d = '7' + d;
+      else d = '';
+      if (!String(body.name || '').trim() || !d) fail('Укажите имя и телефон, например +7 900 000-00-00');
+      const found = db.clients.find((c) => c.phone === d);
+      if (found) return { id: found.id, existing: true };
+      const id = seq++;
+      db.clients.push({ id, name: String(body.name).trim(), phone: d, telegram: false, tg_username: null, max: false, is_staff: false, consent_pd: false, consent_news: false, notify_tg: true, notify_max: false, notify_24h: true, notify_2h: true, note: '', created_at: nowS() });
+      return { id, existing: false };
+    },
     'staff/client'(_, q) {
       const c = db.clients.find((x) => x.id === Number(q.id));
       if (!c) fail('Клиент не найден', 404);
@@ -353,6 +441,7 @@ window.PRDemo = (() => {
         memberships: db.memberships.filter((m) => m.client_id === c.id && m.status === 'active').sort((a, b) => b.month.localeCompare(a.month)).map(usage),
         bookings: db.bookings.filter((b) => b.client_id === c.id).map((b) => { const e = eventOf(b.event_id); return { status: b.status, title: e.title, starts_at: e.starts_at }; }).sort((a, b) => b.starts_at.localeCompare(a.starts_at)).slice(0, 20),
         purchases: db.purchases.filter((p) => p.client_id === c.id).reverse().slice(0, 20),
+        achievements: { done: achievements(c.id).filter((a) => a.done).length, total: ACH.length },
       };
     },
     'staff/sell'(body) {
@@ -394,6 +483,8 @@ window.PRDemo = (() => {
         try {
           const fn = routes[route];
           if (!fn) fail('Неизвестный запрос', 404);
+          // Как на сервере: раздел команды только для сотрудников.
+          if (route.startsWith('staff/') && !me().is_staff) fail('Раздел только для команды Пространства', 403);
           resolve(clone(fn(body ? clone(body) : null, query || {})));
         } catch (e) { reject(e); }
       }, 160);
@@ -432,12 +523,20 @@ window.PRDemo = (() => {
     setTimeout(() => ui.checkPurchase(pid), 320);
   });
 
+  // В демо можно посмотреть кабинет глазами гостя и глазами команды.
   function init(hooks) {
     ui = hooks;
     const logo = document.querySelector('.top__logo');
-    if (logo && !document.querySelector('.demo-flag')) {
-      logo.insertAdjacentHTML('afterend', '<span class="badge badge--wait demo-flag" title="Данные ненастоящие: можно нажимать всё">демо</span>');
-    }
+    if (!logo || document.querySelector('.demo-flag')) return;
+    logo.insertAdjacentHTML('afterend', '<button class="demo-flag" type="button" title="Данные ненастоящие. Нажмите, чтобы посмотреть кабинет как гость или как команда">Демо · гость</button>');
+    const btn = document.querySelector('.demo-flag');
+    btn.addEventListener('click', async () => {
+      const c = me();
+      c.is_staff = !c.is_staff;
+      btn.textContent = c.is_staff ? 'Демо · команда' : 'Демо · гость';
+      await ui.reload();
+      ui.toast(c.is_staff ? 'Вы смотрите как сотрудник: появилась вкладка «Команда»' : 'Вы смотрите как гость: вкладки «Команда» нет', true, 4000);
+    });
   }
 
   seed();

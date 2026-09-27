@@ -7,10 +7,11 @@ declare(strict_types=1);
 require __DIR__ . '/lib/bootstrap.php';
 require __DIR__ . '/lib/rules.php';
 require __DIR__ . '/lib/notify.php';
+require __DIR__ . '/lib/achievements.php';
 
 require_cli_or_key();
 
-$report = ['expired' => 0, 'r24' => 0, 'r2' => 0, 'ending' => 0, 'chat_removed' => 0];
+$report = ['expired' => 0, 'r24' => 0, 'r2' => 0, 'ending' => 0, 'chat_removed' => 0, 'achievements' => 0];
 $nowTs = time();
 
 // 1. Не оплатили разовое посещение за 30 минут — освобождаем место.
@@ -71,7 +72,7 @@ if ($hour >= 11 && $hour < 21 && ($daysLeft === 3 || $daysLeft === 0)) {
     );
     foreach ($members as $c) {
         $text = $daysLeft === 3
-            ? 'Ваш абонемент «' . e(PLANS[$c['plan']]['name']) . '» действует до ' . human_date(month_last_day(current_month()), false) . '. Продлите его на ' . month_label(next_month()) . ', чтобы не пропустить встречи.'
+            ? 'Ваш абонемент «' . e(plans()[$c['plan']]['name']) . '» действует до ' . human_date(month_last_day(current_month()), false) . '. Продлите его на ' . month_label(next_month()) . ', чтобы не пропустить встречи.'
             : 'Сегодня последний день абонемента. Продлите его на ' . month_label(next_month()) . ', и записи на новый месяц будут по абонементу.';
         if (notify_once($c, $kind, current_month(), $text, [['text' => 'Продлить абонемент', 'app' => '#plans']])) {
             $report['ending']++;
@@ -95,6 +96,24 @@ if ($chat !== '' && (int) date('j') === 1 && $hour >= 10 && !val("SELECT id FROM
         notify_client($c, 'Абонемент закончился, поэтому доступ в чат держателей карты закрыт. Оформите абонемент, и бот снова пустит вас в чат.', [['text' => 'Абонементы', 'app' => '#plans']]);
         $report['chat_removed']++;
     }
+}
+
+// 5. Достижения: проверяем тех, у кого за последние сутки закончилась встреча, а 1-го числа — держателей абонемента.
+$candidates = rows(
+    "SELECT DISTINCT c.* FROM bookings b JOIN events e ON e.id = b.event_id JOIN clients c ON c.id = b.client_id
+     WHERE b.status IN ('booked', 'attended') AND e.cancelled = 0 AND e.starts_at >= ? AND e.starts_at < ?",
+    [date('Y-m-d H:i:s', $nowTs - 30 * 3600), date('Y-m-d H:i:s', $nowTs)]
+);
+if ((int) date('j') === 1) {
+    $candidates = array_merge($candidates, rows("SELECT DISTINCT c.* FROM memberships m JOIN clients c ON c.id = m.client_id WHERE m.month = ? AND m.status = 'active'", [current_month()]));
+}
+$seen = [];
+foreach ($candidates as $c) {
+    if (isset($seen[$c['id']])) {
+        continue;
+    }
+    $seen[$c['id']] = true;
+    $report['achievements'] += announce_achievements($c);
 }
 
 if (PHP_SAPI === 'cli') {

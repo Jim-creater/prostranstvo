@@ -44,6 +44,13 @@ try {
             $phone = normalize_phone((string) $msg['contact']['phone_number']);
             if ($phone) {
                 update('clients', (int) $c['id'], ['phone' => $phone]);
+                $c['phone'] = $phone;
+                if (adopt_offline_client($c)) {
+                    $m = active_membership((int) $c['id'], current_month()) ?: active_membership((int) $c['id'], next_month());
+                    tg('sendMessage', ['chat_id' => $chatId, 'text' => 'Спасибо! Нашли вас по номеру телефона.' . ($m ? ' Абонемент «' . plans()[$m['plan']]['name'] . '», оформленный в Пространстве, теперь в вашем кабинете.' : ' Ваши записи теперь в кабинете.'), 'reply_markup' => ['remove_keyboard' => true]]);
+                    send_telegram($chatId, 'Можно записываться на встречи.', [['text' => 'Открыть кабинет', 'app' => '']]);
+                    exit;
+                }
             }
         }
         tg('sendMessage', ['chat_id' => $chatId, 'text' => 'Спасибо, номер сохранили.', 'reply_markup' => ['remove_keyboard' => true]]);
