@@ -80,7 +80,21 @@ function add_event(string $format, int $hoursFromNow, int $capacity = 40, string
 function notify_lines(): array
 {
     $f = cfg('notify_log');
-    return is_file($f) ? array_map(fn ($l) => json_decode($l, true), array_filter(explode("\n", (string) file_get_contents($f)))) : [];
+    // Только сообщения клиентам; служебные запросы к Telegram записаны с ключом tg.
+    $all = is_file($f) ? array_map(fn ($l) => json_decode($l, true), array_filter(explode("\n", (string) file_get_contents($f)))) : [];
+    return array_values(array_filter($all, fn ($n) => isset($n['client'])));
+}
+
+// Отправляем боту обновление так же, как это делает Telegram.
+function bot_update(array $update): int
+{
+    $ch = curl_init(BASE . 'bot.php');
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_POST => true, CURLOPT_POSTFIELDS => json_encode($update, JSON_UNESCAPED_UNICODE),
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'X-Telegram-Bot-Api-Secret-Token: hook-secret']]);
+    curl_exec($ch);
+    $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return $code;
 }
 
 echo "Вход\n";
@@ -236,6 +250,27 @@ $congrats = array_filter(notify_lines(), fn ($n) => str_contains($n['text'] ?? '
 check('бот поздравляет с достижением одним сообщением', ($rep['achievements'] ?? 0) >= 1 && count($congrats) === 1 && count(notify_lines()) === 1, [$rep, notify_lines()]);
 $rep = json_decode((string) shell_exec('PR_CONFIG=' . escapeshellarg(__DIR__ . '/config.test.php') . ' php ' . escapeshellarg(__DIR__ . '/../site/api/cron.php')), true);
 check('поздравление не повторяется', ($rep['achievements'] ?? 1) === 0, $rep);
+
+echo "Гость без кабинета\n";
+$r = api('staff/client_new', ['name' => 'Вера Павлова', 'phone' => '+7 925 111-22-33'], $tA);
+$offline = (int) ($r['data']['id'] ?? 0);
+check('команда заводит гостя по имени и телефону', $offline > 0 && ($r['data']['existing'] ?? true) === false, $r);
+$r = api('staff/client_new', ['name' => 'Вера', 'phone' => '89251112233'], $tA);
+check('тот же телефон не создаёт второго гостя', ($r['data']['id'] ?? 0) === $offline && ($r['data']['existing'] ?? false) === true, $r);
+$r = api('staff/client_new', ['name' => 'Икс', 'phone' => '79250000000'], $tB);
+check('гость не может заводить клиентов', $r['code'] === 403, $r);
+$r = api('staff/sell', ['client_id' => $offline, 'plan' => 'clubs', 'month' => current_month()], $tA);
+check('абонемент продан гостю без кабинета', ($r['data']['ok'] ?? false) === true, $r);
+$x = api('auth/telegram', ['initData' => init_data(333, 'Чужой')]);
+api('me', ['phone' => '+7 925 111-22-33'], $x['data']['token']);
+$me = api('me', null, $x['data']['token'])['data'];
+check('номер, вписанный вручную, не даёт чужой абонемент', array_key_exists('membership', $me) && $me['membership'] === null, $me);
+$v = api('auth/telegram', ['initData' => init_data(444, 'Вера')]);
+$code = bot_update(['update_id' => 1, 'message' => ['message_id' => 1, 'date' => time(), 'chat' => ['id' => 444, 'type' => 'private'], 'from' => ['id' => 444, 'first_name' => 'Вера'],
+    'contact' => ['phone_number' => '+79251112233', 'user_id' => 444, 'first_name' => 'Вера']]]);
+$me = api('me', null, $v['data']['token'])['data'];
+check('после «Поделиться номером» в боте абонемент появился в кабинете', $code === 200 && ($me['membership']['plan'] ?? '') === 'clubs', [$code, $me]);
+check('запись, заведённая на месте, объединена с кабинетом', !val('SELECT id FROM clients WHERE id = ?', [$offline]));
 
 echo "\nИтого: $passes прошло, $fails не прошло\n";
 exit($fails ? 1 : 0);

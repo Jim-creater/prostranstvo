@@ -38,6 +38,18 @@ strong { font-weight: 600; }
 <li>уведомления в MAX, если получится зарегистрировать бота (см. шаг 9).</li>
 </ul>
 <p>Как вести расписание и менять тексты после запуска, написано в <a href="ИНСТРУКЦИЯ.html">ИНСТРУКЦИЯ.md</a>.</p>
+<h2>0. Посмотреть на телефоне до запуска (GitHub Pages)</h2>
+<p>Пока хостинг не готов, сайт и кабинет с примерными данными можно открыть по обычной ссылке с любого телефона. Настраивается один раз:</p>
+<ol>
+<li>На GitHub откройте репозиторий <code>Jim-creater/prostranstvo</code> → <strong>Settings</strong> → <strong>Pages</strong>.</li>
+<li>В поле <strong>Source</strong> выберите <strong>GitHub Actions</strong>.</li>
+<li>Примите изменения в ветку <code>main</code> (кнопка <strong>Merge pull request</strong> в запросе на слияние). Через 1–2 минуты страницы появятся:</li>
+<li>сайт — <code>https://jim-creater.github.io/prostranstvo/</code></li>
+<li>кабинет — <code>https://jim-creater.github.io/prostranstvo/app/</code></li>
+<li>инструкции — <code>https://jim-creater.github.io/prostranstvo/docs/ИНСТРУКЦИЯ.html</code></li>
+</ol>
+<p>Публикацию делает файл <code>.github/workflows/pages.yml</code>: он копирует папку <code>site/</code> и включает в кабинете демо-режим. Сервер на GitHub Pages не работает, поэтому записи и оплаты там ненастоящие.</p>
+<p>Ссылку на кабинет с GitHub Pages можно поставить и в Telegram-бота (шаг 3, <code>/newapp</code>), чтобы посмотреть, как кабинет открывается внутри Telegram. Перед запуском замените её на адрес своего сайта.</p>
 <h2>1. Хостинг: нужен тариф с PHP и MySQL</h2>
 <p>Сейчас у вас в Руцентре тариф <strong>«Сайт 1»</strong>. В нём нет PHP и баз MySQL (в характеристиках: «PHP, Perl, Python — нет», «Базы MySQL — нет»). На таком тарифе откроется только сам сайт, <code>index.html</code>. Кабинет, бот и оплата работать не будут.</p>
 <p>Что сделать:</p>

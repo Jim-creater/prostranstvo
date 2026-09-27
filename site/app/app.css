@@ -437,3 +437,4 @@ details.past[open] > summary .ico { transform: rotate(90deg); }
   border: 1px dashed rgba(160, 104, 12, .55); background: rgba(160, 104, 12, .1); color: var(--warn);
   font: 500 12.5px/1.2 var(--f-sans); white-space: nowrap;
 }
+.selectable { -webkit-user-select: all; user-select: all; }

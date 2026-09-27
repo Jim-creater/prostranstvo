@@ -1065,7 +1065,9 @@
   let searchTimer;
   async function staffClients(body, keepInput) {
     if (!keepInput) {
-      body.innerHTML = `<input class="input" id="cq" type="search" placeholder="Имя, телефон или @ник" value="${esc(S.staff.q)}" autocomplete="off"><div class="card" id="clist"><div class="skel" style="height:120px"></div></div>`;
+      body.innerHTML = `<input class="input" id="cq" type="search" placeholder="Имя, телефон или @ник" value="${esc(S.staff.q)}" autocomplete="off">
+        <button class="pill pill--ghost pill--wide" type="button" data-act="client-new">${icon('plus')}Новый гость без кабинета</button>
+        <div class="card" id="clist"><div class="skel" style="height:120px"></div></div>`;
     }
     let data;
     try { data = await api('staff/clients', null, { q: S.staff.q }); } catch (e) { $('#clist').innerHTML = esc(e.message); return; }
@@ -1091,13 +1093,15 @@
       <div class="card">
         <dl class="kv">
           <dt>Телефон</dt><dd>${c.phone ? `<a href="tel:+${esc(c.phone)}">+${esc(c.phone)}</a>` : '—'}</dd>
-          <dt>Telegram</dt><dd>${c.tg_username ? `<a href="https://t.me/${esc(c.tg_username)}" target="_blank" rel="noopener">@${esc(c.tg_username)}</a>` : c.telegram ? 'есть' : '—'}</dd>
+          <dt>Кабинет</dt><dd>${c.telegram ? 'подключён' : 'ещё не открывал'}</dd>
+          ${c.tg_username ? `<dt>Telegram</dt><dd><a href="https://t.me/${esc(c.tg_username)}" target="_blank" rel="noopener">@${esc(c.tg_username)}</a></dd>` : ''}
           <dt>С нами с</dt><dd>${esc(longDate(dt(c.created_at)))} ${dt(c.created_at).getFullYear()}</dd>
           <dt>Абонемент</dt><dd>${m ? `${esc(m.name)}, ${esc(m.month_label)}` : 'нет'}</dd>
           ${d.achievements ? `<dt>Достижения</dt><dd>${d.achievements.done} из ${d.achievements.total}</dd>` : ''}
         </dl>
         ${m ? `<ul class="mini">${m.items.filter((i) => !i.unlimited).map((i) => `<li><span>${esc(i.label)}</span><span>использовано ${i.used} из ${i.limit}</span></li>`).join('')}</ul>` : ''}
       </div>
+      ${!c.telegram ? `<div class="notice">${icon('tg')}<span>Попросите гостя открыть бота Пространства${S.me.links.telegram_bot ? ` (<span class="selectable">${esc(S.me.links.telegram_bot.replace('https://', ''))}</span>)` : ''} и нажать «Поделиться номером». Абонемент и записи появятся у него в кабинете сами.</span></div>` : ''}
       <div class="card">
         <p class="eyebrow">Продать абонемент на месте</p>
         <div class="seg" role="group">${plans.map((p) => `<button type="button" data-act="sell-plan" data-v="${p.key}" aria-pressed="${sell.plan === p.key}">${esc(p.name)}<small>${rub(p.price)}</small></button>`).join('')}</div>
@@ -1148,6 +1152,32 @@
       date: v('Date'), time: v('Time'), duration_min: Number(v('Dur')), capacity: Number(v('Cap')) || 40,
       price: v('Price'), included: $('#' + p + 'Incl').checked, description: v('Desc'),
     };
+  }
+
+  function openNewClient() {
+    openSheet(`
+      <p class="eyebrow">Новый гость</p>
+      <h2 class="sheet__title" id="sheetTitle">Гость без кабинета</h2>
+      <p class="muted">Например, человек платит на месте и ещё не открывал бота. Заведите его по телефону и оформите абонемент. Когда он откроет бота Пространства и нажмёт «Поделиться номером», абонемент и записи появятся у него в кабинете сами.</p>
+      <div class="card">
+        <label class="field"><span>Имя</span><input class="input" id="ncName" autocomplete="off"></label>
+        <label class="field"><span>Телефон</span><input class="input" id="ncPhone" type="tel" inputmode="tel" placeholder="+7 900 000-00-00" autocomplete="off"></label>
+        <p class="form-error" id="ncErr" hidden></p>
+        <button class="pill pill--ink pill--wide" data-act="client-new-save">Сохранить и открыть карточку</button>
+      </div>`);
+  }
+
+  async function saveNewClient(btn) {
+    busy(btn);
+    try {
+      const r = await api('staff/client_new', { name: $('#ncName').value.trim(), phone: $('#ncPhone').value.trim() });
+      haptic('ok');
+      toast(r.existing ? 'Гость с этим телефоном уже есть — открыли его карточку' : 'Гость добавлен', true);
+      S.staff.q = '';
+      openClient(r.id);
+    } catch (e) {
+      const err = $('#ncErr'); err.textContent = e.message; err.hidden = false;
+    } finally { busy(btn, false); }
   }
 
   function staffNew(body) {
@@ -1289,6 +1319,8 @@
       catch (e) { toast(e.message); } finally { busy(el, false); }
     },
     'nf-save': (el) => saveNewEvent(el),
+    'client-new': () => openNewClient(),
+    'client-new-save': (el) => saveNewClient(el),
     'ev-edit': (el) => openEditEvent(Number(el.dataset.id)),
     'ef-apply': (el) => {
       S.staff.apply = el.dataset.v;

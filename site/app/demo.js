@@ -275,7 +275,7 @@ window.PRDemo = (() => {
         next_membership: nxt ? usage(nxt) : null,
         month: { current: curMonth(), current_label: monthLabel(curMonth()), next: nextMonth(), next_label: monthLabel(nextMonth()), ends: human(lastDay(curMonth()), false) },
         next_booking: nb ? pub(nb, ME) : null,
-        links: { telegram_bot: 'https://t.me/', max_bot: null, members_chat: cur ? 'https://t.me/' : null },
+        links: { telegram_bot: 'https://t.me/prostranstvo_bot', max_bot: null, members_chat: cur ? 'https://t.me/' : null },
       };
     },
     events(_, q) {
@@ -420,6 +420,18 @@ window.PRDemo = (() => {
         clients: db.clients.filter((c) => !s || c.name.toLowerCase().includes(s) || (c.tg_username || '').includes(s.replace('@', '')) || (digits && c.phone.includes(digits)))
           .slice(0, 30).map((c) => { const m = activeMembership(c.id, curMonth()); return { id: c.id, name: c.name, phone: c.phone, tg_username: c.tg_username, membership: m ? PLANS[m.plan].name : null }; }),
       };
+    },
+    'staff/client_new'(body) {
+      let d = String(body.phone || '').replace(/\D+/g, '');
+      if (d.length === 11 && (d[0] === '8' || d[0] === '7')) d = '7' + d.slice(1);
+      else if (d.length === 10 && d[0] === '9') d = '7' + d;
+      else d = '';
+      if (!String(body.name || '').trim() || !d) fail('Укажите имя и телефон, например +7 900 000-00-00');
+      const found = db.clients.find((c) => c.phone === d);
+      if (found) return { id: found.id, existing: true };
+      const id = seq++;
+      db.clients.push({ id, name: String(body.name).trim(), phone: d, telegram: false, tg_username: null, max: false, is_staff: false, consent_pd: false, consent_news: false, notify_tg: true, notify_max: false, notify_24h: true, notify_2h: true, note: '', created_at: nowS() });
+      return { id, existing: false };
     },
     'staff/client'(_, q) {
       const c = db.clients.find((x) => x.id === Number(q.id));

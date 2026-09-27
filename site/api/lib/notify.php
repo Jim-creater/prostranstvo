@@ -8,6 +8,12 @@ function tg(string $method, array $params = []): ?array
     if ($token === '') {
         return null;
     }
+    // Проверочный режим (notify_log): ничего не отправляем, а записываем в файл.
+    $log = (string) cfg('notify_log');
+    if ($log !== '') {
+        file_put_contents($log, json_encode(['tg' => $method, 'params' => $params], JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND);
+        return [];
+    }
     [$code, $resp] = http_json('POST', "https://api.telegram.org/bot$token/$method", $params);
     if ($code !== 200 || empty($resp['ok'])) {
         log_msg("Telegram $method: HTTP $code " . json_encode($resp, JSON_UNESCAPED_UNICODE));

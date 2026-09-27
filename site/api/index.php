@@ -448,6 +448,21 @@ try {
             }
             json_out(['clients' => $list]);
         }
+        case 'staff/client_new': {
+            // Гость пришёл без кабинета (например, платит наличными): заводим по имени и телефону.
+            require_staff();
+            $b = body();
+            $name = trim((string) ($b['name'] ?? ''));
+            $phone = normalize_phone((string) ($b['phone'] ?? ''));
+            if ($name === '' || !$phone) {
+                fail('Укажите имя и телефон, например +7 900 000-00-00');
+            }
+            $found = row('SELECT id FROM clients WHERE phone = ? ORDER BY id LIMIT 1', [$phone]);
+            if ($found) {
+                json_out(['id' => (int) $found['id'], 'existing' => true]);
+            }
+            json_out(['id' => insert('clients', ['name' => $name, 'phone' => $phone, 'created_at' => now()]), 'existing' => false]);
+        }
         case 'staff/client': {
             require_staff();
             $c = row('SELECT * FROM clients WHERE id = ?', [(int) ($_GET['id'] ?? 0)]);

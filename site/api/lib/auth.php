@@ -72,6 +72,52 @@ function client_from_telegram(array $user): array
     return $c;
 }
 
+// Гостя, которого команда завела на месте (без Telegram), привязываем к его Telegram,
+// когда он подтвердит тот же номер кнопкой «Поделиться номером». Номер из Telegram проверенный,
+// поэтому чужой абонемент так не забрать. Возвращает запись без Telegram, если нашлась и перенесена.
+function adopt_offline_client(array $c): ?array
+{
+    if (!$c['phone']) {
+        return null;
+    }
+    $old = row('SELECT * FROM clients WHERE phone = ? AND id <> ? AND telegram_id IS NULL AND max_user_id IS NULL ORDER BY id LIMIT 1', [$c['phone'], $c['id']]);
+    if (!$old) {
+        return null;
+    }
+    $from = (int) $old['id'];
+    $to = (int) $c['id'];
+    // Если на одну встречу записаны обе записи, оставляем текущую.
+    $taken = array_column(rows('SELECT event_id FROM bookings WHERE client_id = ?', [$to]), 'event_id');
+    foreach (rows('SELECT id, event_id FROM bookings WHERE client_id = ?', [$from]) as $b) {
+        in_array($b['event_id'], $taken)
+            ? q('DELETE FROM bookings WHERE id = ?', [$b['id']])
+            : q('UPDATE bookings SET client_id = ? WHERE id = ?', [$to, $b['id']]);
+    }
+    q('UPDATE memberships SET client_id = ? WHERE client_id = ?', [$to, $from]);
+    q('UPDATE purchases SET client_id = ? WHERE client_id = ?', [$to, $from]);
+    foreach (rows('SELECT id, kind, ref_id FROM notifications WHERE client_id = ?', [$from]) as $n) {
+        val('SELECT id FROM notifications WHERE client_id = ? AND kind = ? AND ref_id = ?', [$to, $n['kind'], $n['ref_id']])
+            ? q('DELETE FROM notifications WHERE id = ?', [$n['id']])
+            : q('UPDATE notifications SET client_id = ? WHERE id = ?', [$to, $n['id']]);
+    }
+    $upd = [];
+    if (!$c['note'] && $old['note']) {
+        $upd['note'] = $old['note'];
+    }
+    if ((int) $old['is_staff']) {
+        $upd['is_staff'] = 1;
+    }
+    if (trim((string) $c['name']) === '' && $old['name']) {
+        $upd['name'] = $old['name'];
+    }
+    if ($upd) {
+        update('clients', $to, $upd);
+    }
+    q('DELETE FROM sessions WHERE client_id = ?', [$from]);
+    q('DELETE FROM clients WHERE id = ?', [$from]);
+    return $old;
+}
+
 function create_session(int $clientId): string
 {
     $token = random_token(32);
