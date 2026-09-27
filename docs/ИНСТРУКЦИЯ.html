@@ -18,18 +18,27 @@ a { color: var(--accent); }
 hr { border: 0; border-top: 1px solid var(--line); margin: 44px 0; }
 code { font: 400 .88em/1.4 "JetBrains Mono", ui-monospace, Menlo, monospace; background: var(--soft); padding: 2px 5px; border-radius: 5px; }
 pre { background: var(--soft); padding: 14px 16px; border-radius: 10px; overflow-x: auto; }
-pre code { background: none; padding: 0; font-size: 14px; }
+pre code { background: none; padding: 0; font-size: 14px; overflow-wrap: normal; }
+main, td, li, p { overflow-wrap: anywhere; }
+code { overflow-wrap: anywhere; }
+a { overflow-wrap: anywhere; }
 .table { overflow-x: auto; margin: 14px 0; }
 table { border-collapse: collapse; width: 100%; font-size: 15.5px; }
 th, td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); }
 th { font-weight: 600; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
 strong { font-weight: 600; }
+.code { position: relative; }
+.code pre { padding-top: 46px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.code pre code { overflow-wrap: anywhere; }
+.copy { position: absolute; top: 8px; right: 8px; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 10px; font: 500 13px/1 "Onest", system-ui, sans-serif; color: var(--fg); cursor: pointer; }
+.copy.done { color: #3F7A34; border-color: #3F7A34; }
 </style>
 </head>
 <body>
 <main>
 <h1>Как вести расписание и менять сайт</h1>
 <p>Инструкция для тех, кто не программирует. Почти всё делается в личном кабинете, кнопками. Файлы открывать нужно только для цен и текстов на сайте.</p>
+<p><strong>Потренироваться без риска</strong> можно в демо-кабинете: <a href="https://jim-creater.github.io/prostranstvo/app/">https://jim-creater.github.io/prostranstvo/app/</a> — нажмите наверху «Демо · гость», станет «Демо · команда», и появится вкладка «Команда». Там всё как в настоящем кабинете, но данные примерные и ничего не сохраняется.</p>
 <h2>Что где меняется</h2>
 <div class="table"><table>
 <thead>
@@ -92,9 +101,9 @@ strong { font-weight: 600; }
 <h2>Часть 1. Расписание — в кабинете</h2>
 <h3>Как попасть в раздел «Команда»</h3>
 <ol>
-<li>Откройте бота Пространства в Telegram и нажмите кнопку «Кабинет» внизу.</li>
-<li>Один раз попросите того, кто настраивал сайт, сделать вас сотрудником (шаг 8 в <a href="SETUP.html">SETUP.md</a>).</li>
-<li>В нижнем меню появится вкладка «Команда». Гости её не видят.</li>
+<li>Откройте бота Пространства в Telegram и нажмите кнопку «Кабинет». На компьютере кабинет открывается по адресу <code>https://ВАШ-ДОМЕН.ru/app/</code>.</li>
+<li>Один раз попросите того, кто настраивал сайт, сделать вас сотрудником (шаг 9 в <a href="SETUP.html">SETUP.md</a>).</li>
+<li>Закройте и снова откройте кабинет. Внизу появится вкладка «Команда». Гости её не видят.</li>
 </ol>
 <p>В «Команде» три вкладки:</p>
 <ul>
@@ -103,6 +112,7 @@ strong { font-weight: 600; }
 <li><strong>Добавить</strong> — новая встреча или сразу серия встреч.</li>
 </ul>
 <h3>Как завести расписание с нуля</h3>
+<p><strong>Если при запуске расписание уже добавили</strong> (шаг 6 в <a href="SETUP.html">SETUP.md</a>), этот раздел пропустите, иначе встречи задвоятся. Проверьте: «Команда» → «Встречи», полистайте дни стрелками.</p>
 <p>Каждый регулярный клуб добавляется один раз с повтором на полгода. Пример для литературного клуба по понедельникам:</p>
 <ol>
 <li>«Команда» → «Добавить».</li>
@@ -196,7 +206,7 @@ strong { font-weight: 600; }
 </table></div>
 <p><strong>История костюма</strong> идёт 2 раза в месяц по четвергам в 12:00. Повтор «каждую неделю» тут не подходит, поэтому добавляйте каждую встречу отдельно («Повторять: Один раз»). На месяц это две записи.</p>
 <h3>Как задать тему встречи</h3>
-<p>Например, «"Лавр" Евгения Водолазкина» для литературного клуба 28 сентября.</p>
+<p>Например, «&quot;Лавр&quot; Евгения Водолазкина» для литературного клуба 28 сентября.</p>
 <ol>
 <li>«Команда» → «Встречи», стрелками выберите 28 сентября.</li>
 <li>У нужной встречи нажмите «Изменить».</li>
@@ -323,11 +333,12 @@ strong { font-weight: 600; }
 <h2>Посмотреть на телефоне до запуска</h2>
 <p>Сайт и кабинет с примерными данными публикуются на GitHub Pages:</p>
 <ul>
-<li>сайт — https://jim-creater.github.io/prostranstvo/</li>
-<li>кабинет — https://jim-creater.github.io/prostranstvo/app/ (кнопка «Демо · гость» наверху переключает вид гостя и команды)</li>
-<li>эта инструкция — https://jim-creater.github.io/prostranstvo/docs/ИНСТРУКЦИЯ.html</li>
+<li>сайт — <a href="https://jim-creater.github.io/prostranstvo/">https://jim-creater.github.io/prostranstvo/</a></li>
+<li>кабинет — <a href="https://jim-creater.github.io/prostranstvo/app/">https://jim-creater.github.io/prostranstvo/app/</a> (кнопка «Демо · гость» наверху переключает вид гостя и команды)</li>
+<li>кабинет внутри Telegram — <a href="https://t.me/prostranstvo_msk_club_bot/prostranstvo_msk">https://t.me/prostranstvo_msk_club_bot/prostranstvo_msk</a> (как настроить — <a href="%D0%91%D0%9E%D0%A2.html">БОТ.md</a>, часть 1)</li>
+<li>все инструкции — <a href="https://jim-creater.github.io/prostranstvo/docs/">https://jim-creater.github.io/prostranstvo/docs/</a></li>
 </ul>
-<p>Ссылки заработают, когда вы один раз включите публикацию (шаг 0 в <a href="SETUP.html">SETUP.md</a>) и примете изменения в ветку main. Дальше страницы обновляются сами после каждого принятого изменения.</p>
+<p>Страницы обновляются сами каждый раз, когда вы принимаете изменения в ветку main на GitHub (кнопка <strong>Merge pull request</strong>).</p>
 <p>Это показ: записи и покупки там ненастоящие и нигде не сохраняются. Настоящий кабинет работает только на хостинге с PHP.</p>
 <hr />
 <h2>Часть 2. Цены абонементов — файл <code>api/config.php</code></h2>
@@ -340,12 +351,12 @@ strong { font-weight: 600; }
 </ol>
 <h3>Что менять</h3>
 <p>Найдите блок <code>plans</code> (в браузере — клавиши <code>Ctrl + F</code>, слово <code>plans</code>):</p>
-<pre><code class="language-php">'plans' =&gt; [
+<div class="code"><button class="copy" type="button">Скопировать</button><pre><code class="language-php">'plans' =&gt; [
     'club1' =&gt; ['name' =&gt; 'Один клуб',        'price' =&gt; 3500,  'clubs' =&gt; 1, 'weekend' =&gt; 2, 'costume' =&gt; 0, 'art' =&gt; 0],
     'clubs' =&gt; ['name' =&gt; 'Клубы и гости',    'price' =&gt; 6500,  'clubs' =&gt; 2, 'weekend' =&gt; 4, 'costume' =&gt; 0, 'art' =&gt; 0],
     'all'   =&gt; ['name' =&gt; 'Всё Пространство', 'price' =&gt; 12000, 'clubs' =&gt; 2, 'weekend' =&gt; 6, 'costume' =&gt; 2, 'art' =&gt; 4],
 ],
-</code></pre>
+</code></pre></div>
 <ul>
 <li><code>price</code> — цена в рублях, без пробелов: <code>7000</code>, а не <code>7 000</code>.</li>
 <li><code>weekend</code> — сколько выходных встреч (гости и кино) входит.</li>
@@ -375,11 +386,11 @@ strong { font-weight: 600; }
 <li>Поменяйте <strong>только слова между значками</strong> <code>&gt;</code> и <code>&lt;</code>.</li>
 </ol>
 <p>Пример. Было:</p>
-<pre><code class="language-html">&lt;li&gt;Москва, ул. Садовая, 12, отдельный вход&lt;/li&gt;
-</code></pre>
+<div class="code"><button class="copy" type="button">Скопировать</button><pre><code class="language-html">&lt;li&gt;Москва, ул. Садовая, 12, отдельный вход&lt;/li&gt;
+</code></pre></div>
 <p>Стало:</p>
-<pre><code class="language-html">&lt;li&gt;Москва, ул. Большая Никитская, 5, отдельный вход&lt;/li&gt;
-</code></pre>
+<div class="code"><button class="copy" type="button">Скопировать</button><pre><code class="language-html">&lt;li&gt;Москва, ул. Большая Никитская, 5, отдельный вход&lt;/li&gt;
+</code></pre></div>
 <p>Значки <code>&lt;li&gt;</code> и <code>&lt;/li&gt;</code> остались на месте, поменялся только адрес.</p>
 <h3>Что искать</h3>
 <div class="table"><table>
@@ -458,11 +469,11 @@ strong { font-weight: 600; }
 </tr>
 </tbody>
 </table></div>
-<p>У цен в карточках абонементов есть второе место — надпись на кнопке, например <code>data-plan="Один клуб · 3 500 ₽ в месяц"</code>. Поменяйте цену и там, это внутри кавычек.</p>
+<p>У цен в карточках абонементов есть второе место — надпись на кнопке, например <code>data-plan=&quot;Один клуб · 3 500 ₽ в месяц&quot;</code>. Поменяйте цену и там, это внутри кавычек.</p>
 <h3>Что не трогать</h3>
 <ul>
 <li>всё, что внутри <code>&lt;script&gt;</code> … <code>&lt;/script&gt;</code> и <code>&lt;style&gt;</code> … <code>&lt;/style&gt;</code>;</li>
-<li>слова на латинице вроде <code>class="…"</code>, <code>href="…"</code>;</li>
+<li>слова на латинице вроде <code>class=&quot;…&quot;</code>, <code>href=&quot;…&quot;</code>;</li>
 <li>файлы в папках <code>api/lib</code> и <code>app</code> — это программа.</li>
 </ul>
 <p>Если после правки страница выглядит сломанной, загрузите обратно скачанную копию <code>index.html</code>.</p>
@@ -516,9 +527,20 @@ strong { font-weight: 600; }
 <ul>
 <li><strong>Кабинет пишет «Что-то пошло не так».</strong> Скорее всего, опечатка в <code>config.php</code>. Верните скачанную копию.</li>
 <li><strong>Сайт выглядит сломанным.</strong> Верните копию <code>index.html</code>.</li>
-<li><strong>Гостям не приходят напоминания.</strong> Проверьте, что в панели Руцентра работает планировщик задач (cron) — шаг 6 в <a href="SETUP.html">SETUP.md</a>.</li>
+<li><strong>Гостям не приходят напоминания.</strong> Проверьте, что в панели Руцентра работает планировщик задач (cron) — шаг 8 в <a href="SETUP.html">SETUP.md</a>.</li>
 <li><strong>Гость не видит встречу.</strong> Проверьте в «Команде», что она не отменена и дата верная. Прошедшие встречи в расписании не показываются.</li>
 </ul>
+
 </main>
+<script>
+document.querySelectorAll('.copy').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var text = b.parentNode.querySelector('code').innerText.trim();
+    function ok() { b.textContent = 'Скопировано'; b.classList.add('done'); setTimeout(function () { b.textContent = 'Скопировать'; b.classList.remove('done'); }, 2000); }
+    function pick() { var r = document.createRange(); r.selectNodeContents(b.parentNode.querySelector('code')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok, pick); else pick();
+  });
+});
+</script>
 </body>
 </html>

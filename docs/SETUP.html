@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Как запустить сайт и личный кабинет · Пространство</title>
+<title>Как запустить сайт и кабинет по-настоящему · Пространство</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Onest:wght@400;600&family=JetBrains+Mono&display=swap">
 <style>
 :root { --fg: #1A1714; --muted: rgba(26,23,20,.62); --line: rgba(26,23,20,.12); --accent: #C2531E; --soft: #F6F3EE; }
@@ -18,159 +18,286 @@ a { color: var(--accent); }
 hr { border: 0; border-top: 1px solid var(--line); margin: 44px 0; }
 code { font: 400 .88em/1.4 "JetBrains Mono", ui-monospace, Menlo, monospace; background: var(--soft); padding: 2px 5px; border-radius: 5px; }
 pre { background: var(--soft); padding: 14px 16px; border-radius: 10px; overflow-x: auto; }
-pre code { background: none; padding: 0; font-size: 14px; }
+pre code { background: none; padding: 0; font-size: 14px; overflow-wrap: normal; }
+main, td, li, p { overflow-wrap: anywhere; }
+code { overflow-wrap: anywhere; }
+a { overflow-wrap: anywhere; }
 .table { overflow-x: auto; margin: 14px 0; }
 table { border-collapse: collapse; width: 100%; font-size: 15.5px; }
 th, td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); }
 th { font-weight: 600; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
 strong { font-weight: 600; }
+.code { position: relative; }
+.code pre { padding-top: 46px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.code pre code { overflow-wrap: anywhere; }
+.copy { position: absolute; top: 8px; right: 8px; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 10px; font: 500 13px/1 "Onest", system-ui, sans-serif; color: var(--fg); cursor: pointer; }
+.copy.done { color: #3F7A34; border-color: #3F7A34; }
 </style>
 </head>
 <body>
 <main>
-<h1>Как запустить сайт и личный кабинет</h1>
-<p>Нужен хостинг с PHP 8 и базой MySQL и планировщик задач (cron). Отдельный сервер не нужен. Сайт и кабинет занимают меньше 100 МБ.</p>
-<p>Что получится:</p>
+<h1>Как запустить сайт и кабинет по-настоящему</h1>
+<p>Инструкция для того, кто будет запускать: для вас или для помощника. Программировать не нужно, но придётся поработать в панели хостинга Руцентра и поправить один файл настроек.</p>
+<p>Каждый шаг устроен одинаково: <strong>что сделать → что должно получиться</strong>. Делайте по порядку и не переходите дальше, пока не получилось.</p>
+<p>Везде ниже <code>ВАШ-ДОМЕН.ru</code> — это адрес сайта Пространства, например <code>prostranstvo-club.ru</code>. Подставляйте свой.</p>
+<p><strong>Другие инструкции:</strong></p>
 <ul>
-<li>сайт <code>https://ваш-сайт.ru</code>;</li>
-<li>личный кабинет <code>https://ваш-сайт.ru/app/</code>. Он же открывается как мини-приложение в Telegram;</li>
-<li>Telegram-бот: вход в кабинет, напоминания о встречах и об окончании абонемента, доступ в чат держателей карты;</li>
-<li>уведомления в MAX, если получится зарегистрировать бота (см. шаг 9).</li>
+<li><a href="%D0%91%D0%9E%D0%A2.html">БОТ.md</a> — бот в Telegram: проверка на телефоне сейчас и подключение при запуске;</li>
+<li><a href="%D0%98%D0%9D%D0%A1%D0%A2%D0%A0%D0%A3%D0%9A%D0%A6%D0%98%D0%AF.html">ИНСТРУКЦИЯ.md</a> — как вести расписание, менять цены, тексты и фото после запуска.</li>
 </ul>
-<p>Как вести расписание и менять тексты после запуска, написано в <a href="ИНСТРУКЦИЯ.html">ИНСТРУКЦИЯ.md</a>.</p>
-<h2>0. Посмотреть на телефоне до запуска (GitHub Pages)</h2>
-<p>Пока хостинг не готов, сайт и кабинет с примерными данными можно открыть по обычной ссылке с любого телефона. Настраивается один раз:</p>
+<h2>Что понадобится</h2>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Что</th>
+<th>Зачем</th>
+<th>Есть?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Хостинг с <strong>PHP 8</strong> и <strong>MySQL</strong></td>
+<td>Без этого не работают кабинет, бот и оплата</td>
+<td>❌ Сейчас тариф «Сайт 1» — в нём этого нет</td>
+</tr>
+<tr>
+<td><strong>Домен</strong> для Пространства</td>
+<td>Адрес сайта, например <code>prostranstvo-club.ru</code></td>
+<td>❌ <code>kod-chempiona.ru</code> занят другим сайтом</td>
+</tr>
+<tr>
+<td><strong>SSL-сертификат</strong> для этого домена</td>
+<td>Адрес с <code>https://</code>. Без него Telegram не откроет кабинет</td>
+<td>❌ Сертификат GlobalSign привязан к <code>kod-chempiona.ru</code></td>
+</tr>
+<tr>
+<td><strong>Бот в Telegram</strong></td>
+<td>Вход в кабинет, напоминания</td>
+<td>✅ @prostranstvo_msk_club_bot</td>
+</tr>
+<tr>
+<td><strong>Платёжная система</strong></td>
+<td>Оплата абонементов на сайте</td>
+<td>⏳ Выберем позже; пока оплата тестовая</td>
+</tr>
+<tr>
+<td><strong>Реквизиты ИП</strong></td>
+<td>Для документов о персональных данных</td>
+<td>Есть у вас</td>
+</tr>
+</tbody>
+</table></div>
+<p>Пока хостинга нет, всё можно посмотреть на телефоне: <a href="%D0%91%D0%9E%D0%A2.html">БОТ.md</a>, часть 1.</p>
+<hr />
+<h2>Шаг 1. Хостинг с PHP и MySQL</h2>
+<p><strong>Что сделать:</strong></p>
 <ol>
-<li>На GitHub откройте репозиторий <code>Jim-creater/prostranstvo</code> → <strong>Settings</strong> → <strong>Pages</strong>.</li>
-<li>В поле <strong>Source</strong> выберите <strong>GitHub Actions</strong>.</li>
-<li>Примите изменения в ветку <code>main</code> (кнопка <strong>Merge pull request</strong> в запросе на слияние). Через 1–2 минуты страницы появятся:</li>
-<li>сайт — <code>https://jim-creater.github.io/prostranstvo/</code></li>
-<li>кабинет — <code>https://jim-creater.github.io/prostranstvo/app/</code></li>
-<li>инструкции — <code>https://jim-creater.github.io/prostranstvo/docs/ИНСТРУКЦИЯ.html</code></li>
+<li>Зайдите в панель Руцентра → <strong>Хостинг</strong> → ваша услуга → <strong>Сменить тариф</strong>.</li>
+<li>Выберите <strong>«Сайт 2»</strong> или старше. В них есть PHP и MySQL. По обзорам «Сайт 2» стоит около 1 000 ₽ в месяц, точную доплату покажет панель.</li>
+<li><strong>Перед сменой</strong> напишите в поддержку Руцентра: «Останутся ли на месте сайты, которые уже лежат на хостинге, если перейти с тарифа &quot;Сайт 1&quot; на &quot;Сайт 2&quot;?». Обычно остаются, но лучше уточнить.</li>
 </ol>
-<p>Публикацию делает файл <code>.github/workflows/pages.yml</code>: он копирует папку <code>site/</code> и включает в кабинете демо-режим. Сервер на GitHub Pages не работает, поэтому записи и оплаты там ненастоящие.</p>
-<p>Ссылку на кабинет с GitHub Pages можно поставить и в Telegram-бота (шаг 3, <code>/newapp</code>), чтобы посмотреть, как кабинет открывается внутри Telegram. Перед запуском замените её на адрес своего сайта.</p>
-<h2>1. Хостинг: нужен тариф с PHP и MySQL</h2>
-<p>Сейчас у вас в Руцентре тариф <strong>«Сайт 1»</strong>. В нём нет PHP и баз MySQL (в характеристиках: «PHP, Perl, Python — нет», «Базы MySQL — нет»). На таком тарифе откроется только сам сайт, <code>index.html</code>. Кабинет, бот и оплата работать не будут.</p>
-<p>Что сделать:</p>
+<p><strong>Что должно получиться:</strong> в характеристиках тарифа у PHP и баз MySQL стоит не «Нет», а число или галочка.</p>
+<h2>Шаг 2. Домен и сертификат</h2>
+<p><strong>Что сделать:</strong></p>
 <ol>
-<li>В панели Руцентра откройте услугу хостинга и выберите <strong>смену тарифа</strong> на <strong>«Сайт 2»</strong> или старше. В них есть PHP и MySQL. Обычно сайты, которые уже лежат на хостинге, при смене тарифа остаются на месте, но перед сменой уточните это у поддержки. Цена «Сайт 2» по обзорам — около 1 000 ₽ в месяц; точную цену и разницу к доплате покажет панель.</li>
-<li>Для Пространства нужен свой домен, например <code>prostranstvo-club.ru</code>: купленный <code>kod-chempiona.ru</code> занят другим сайтом. Домен добавляется в тот же хостинг, тариф позволяет держать несколько сайтов.</li>
-<li>Нужен SSL-сертификат (адрес с <code>https://</code>) <strong>для нового домена</strong>. Сертификат GlobalSign, купленный для <code>kod-chempiona.ru</code>, на другой домен не переносится. Спросите поддержку Руцентра про бесплатный сертификат Let's Encrypt для нового домена. Без HTTPS Telegram не откроет кабинет.</li>
+<li>Купите домен для Пространства в Руцентре (раздел «Домены»), например <code>prostranstvo-club.ru</code>.</li>
+<li>Привяжите домен к хостингу: <strong>Хостинг → Сайты → Добавить сайт</strong>, укажите домен.</li>
+<li>Подключите SSL-сертификат для нового домена. Спросите поддержку: «Как подключить бесплатный сертификат Let's Encrypt для сайта ВАШ-ДОМЕН.ru?»</li>
 </ol>
-<p>После смены тарифа проверьте в панели:</p>
+<p><strong>Что должно получиться:</strong> адрес <code>https://ВАШ-ДОМЕН.ru</code> открывается в браузере, и рядом с адресом — значок замка.</p>
+<h2>Шаг 3. Настройки сайта в панели</h2>
+<p>В панели Руцентра, в настройках нового сайта:</p>
 <ol>
-<li><strong>Версия PHP — 8.1 или новее.</strong> Меняется в настройках сайта.</li>
-<li><strong>Создана база MySQL.</strong> Запишите имя базы, пользователя и пароль.</li>
-<li><strong>Есть планировщик задач (cron).</strong></li>
+<li><strong>Версия PHP</strong> — поставьте 8.1 или новее.</li>
+<li><strong>Базы данных → Создать базу.</strong> Запишите на бумагу три вещи: имя базы, имя пользователя, пароль.</li>
 </ol>
-<p>Если чего-то не найдёте, напишите в поддержку Руцентра: «Нужны PHP 8, MySQL, cron и SSL для сайта такого-то».</p>
-<p>Другой вариант — арендовать небольшой VPS в России. Он бывает дешевле, но его нужно настраивать самому или с программистом.</p>
-<h2>2. Загрузить файлы</h2>
-<p>Загрузите содержимое папки <code>site/</code> в корень сайта (обычно это <code>docs/</code> или <code>public_html/</code>) через файловый менеджер панели или по FTP. Получится так:</p>
-<pre><code>index.html        — сайт
-img/              — картинки
-app/              — личный кабинет
-api/              — сервер кабинета
-privacy.html      — политика обработки персональных данных
-consent.html      — согласие на обработку данных
-</code></pre>
-<h2>3. Создать бота в Telegram</h2>
+<p><strong>Что должно получиться:</strong> у вас на руках имя базы, пользователь и пароль.</p>
+<h2>Шаг 4. Загрузить файлы</h2>
+<p><strong>Что сделать:</strong></p>
 <ol>
-<li>Откройте <a href="https://t.me/BotFather">@BotFather</a> и отправьте <code>/newbot</code>. Придумайте имя, например «Пространство», и адрес бота, например <code>prostranstvo_club_bot</code>. BotFather пришлёт <strong>токен</strong>. Сохраните его.</li>
-<li>Отправьте <code>/setdomain</code>, выберите бота и укажите домен сайта <code>ваш-сайт.ru</code>. Это нужно для кнопки «Войти через Telegram» на сайте.</li>
-<li>Отправьте <code>/newapp</code>, выберите бота, укажите название «Кабинет», описание и картинку 640×360, ссылку <code>https://ваш-сайт.ru/app/</code> и короткое имя <code>app</code>. Получится ссылка вида <code>https://t.me/prostranstvo_club_bot/app</code>: её удобно давать гостям.</li>
+<li>Откройте в панели <strong>Файловый менеджер</strong>, зайдите в папку нового сайта. Обычно это папка <code>docs</code> внутри папки с именем домена.</li>
+<li>Загрузите туда <strong>содержимое</strong> папки <code>site</code> из архива (не саму папку <code>site</code>, а то, что внутри).</li>
 </ol>
-<h2>4. Заполнить настройки</h2>
+<p><strong>Что должно получиться:</strong> в папке сайта лежат <code>index.html</code>, <code>privacy.html</code>, <code>consent.html</code> и папки <code>img</code>, <code>app</code>, <code>api</code>. Адрес <code>https://ВАШ-ДОМЕН.ru</code> показывает сайт Пространства.</p>
+<h2>Шаг 5. Файл настроек <code>config.php</code></h2>
+<p>Все пароли и ключи хранятся в одном файле. Он закрыт от посторонних: из браузера его не открыть.</p>
+<p><strong>Что сделать:</strong></p>
 <ol>
-<li>В папке <code>api/</code> скопируйте <code>config.sample.php</code> в <code>config.php</code>.</li>
-<li>Заполните в <code>config.php</code>:</li>
-<li>данные базы из шага 1;</li>
-<li>адреса сайта (<code>site_url</code>, <code>app_url</code>, <code>api_url</code>) с <code>https://</code>;</li>
-<li><code>telegram.token</code> и <code>telegram.bot_username</code> из шага 3;</li>
-<li><code>telegram.webhook_secret</code> и <code>cron_key</code> — две разные длинные случайные строки, например из генератора паролей.</li>
-<li>В <code>app/config.js</code> впишите <code>bot</code> (адрес бота без @) и <code>miniapp</code> (ссылка из шага 3).</li>
+<li>В файловом менеджере зайдите в папку <code>api</code>.</li>
+<li>Сделайте копию файла <code>config.sample.php</code> и назовите её <code>config.php</code>.</li>
+<li>Откройте <code>config.php</code> → «Редактировать» и заполните. Меняйте только то, что внутри кавычек <code>' '</code>:</li>
 </ol>
-<p><code>config.php</code> закрыт от чтения из браузера файлом <code>api/.htaccess</code>. Не отправляйте его никому и не выкладывайте в репозиторий.</p>
-<h2>5. Создать таблицы и расписание</h2>
-<p>Откройте в браузере по очереди (вместо <code>КЛЮЧ</code> — ваш <code>cron_key</code>):</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Строка в файле</th>
+<th>Что вписать</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>'dsn' =&gt; 'mysql:host=localhost;dbname=prostranstvo;...'</code></td>
+<td>вместо <code>prostranstvo</code> после <code>dbname=</code> — имя базы из шага 3</td>
+</tr>
+<tr>
+<td><code>'user' =&gt; 'prostranstvo'</code></td>
+<td>имя пользователя базы</td>
+</tr>
+<tr>
+<td><code>'pass' =&gt; 'пароль-от-базы'</code></td>
+<td>пароль базы</td>
+</tr>
+<tr>
+<td><code>'site_url'</code>, <code>'app_url'</code>, <code>'api_url'</code></td>
+<td>замените <code>prostranstvo.ru</code> на ваш домен. <code>app_url</code> заканчивается на <code>/app/</code>, <code>api_url</code> — на <code>/api/</code></td>
+</tr>
+<tr>
+<td><code>'token' =&gt; ''</code></td>
+<td>токен бота — см. <a href="%D0%91%D0%9E%D0%A2.html">БОТ.md</a>, часть 2, шаг 1</td>
+</tr>
+<tr>
+<td><code>'bot_username' =&gt; ''</code></td>
+<td><code>prostranstvo_msk_club_bot</code></td>
+</tr>
+<tr>
+<td><code>'webhook_secret' =&gt; ''</code></td>
+<td>любая длинная строка из латинских букв и цифр, 30–40 знаков. Придумайте или возьмите в генераторе паролей</td>
+</tr>
+<tr>
+<td><code>'cron_key' =&gt; '...'</code></td>
+<td>другая длинная строка, тоже 30–40 знаков. Запишите её: она понадобится в шагах 6, 7 и 9</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="4">
+<li>Сохраните.</li>
+</ol>
+<p><strong>Что должно получиться:</strong> файл <code>config.php</code> сохранён. Скачайте его копию к себе и храните в надёжном месте: в нём все пароли.</p>
+<p><strong>Если что-то пошло не так:</strong> после сохранения сайт и кабинет могут написать «Что-то пошло не так». Обычно это стёртая кавычка или запятая. Откройте файл и сравните строку с <code>config.sample.php</code>.</p>
+<h2>Шаг 6. Создать базу и расписание</h2>
+<p>Откройте в браузере по очереди. Вместо <code>КЛЮЧ</code> — ваш <code>cron_key</code> из шага 5.</p>
 <ol>
-<li><code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=init</code> — создаёт таблицы.</li>
-<li><code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=seed&amp;a=2026-10-05&amp;b=8</code> — добавляет расписание на 8 недель с понедельника 5 октября по шаблону из <code>api/setup.php</code>.</li>
+<li>
+<p>Создать таблицы:</p>
+<div class="code"><button class="copy" type="button">Скопировать</button><pre><code>https://ВАШ-ДОМЕН.ru/api/setup.php?key=КЛЮЧ&amp;cmd=init
+</code></pre></div>
+<p><strong>Должно появиться:</strong> «Таблицы созданы.»</p>
+</li>
+<li>
+<p>Добавить расписание на 8 недель вперёд, начиная с понедельника (дату поменяйте на ближайший понедельник):</p>
+<div class="code"><button class="copy" type="button">Скопировать</button><pre><code>https://ВАШ-ДОМЕН.ru/api/setup.php?key=КЛЮЧ&amp;cmd=seed&amp;a=2026-10-05&amp;b=8
+</code></pre></div>
+<p><strong>Должно появиться:</strong> «Добавлено встреч: …».</p>
+<p>Добавятся: пн и ср — литературный клуб в 18:00 и сценарный в 20:15; пт — сценарный в 19:30; сб — литературный в 12:00, гость в 16:00, кино в 19:30; вс — рисунок в 12:00, гость в 16:00, кино в 19:30; история костюма — 1-й и 3-й четверг в 12:00. Потом всё меняется в кабинете кнопками, см. <a href="%D0%98%D0%9D%D0%A1%D0%A2%D0%A0%D0%A3%D0%9A%D0%A6%D0%98%D0%AF.html">ИНСТРУКЦИЯ.md</a>.</p>
+</li>
 </ol>
-<p>Шаблон:
-   - пн и ср: литературный клуб в 18:00, сценарный в 20:15;
-   - пт: сценарный клуб в 19:30;
-   - сб: литературный клуб в 12:00, гость в 16:00, кино в 19:30;
-   - вс: рисунок в 12:00, гость в 16:00, кино в 19:30;
-   - история костюма: 1-й и 3-й четверг месяца в 12:00.</p>
-<p>Шаблон — это быстрый старт. Потом всё меняется в кабинете, без файлов: «Команда» → «Изменить» или «Добавить». Можно и не запускать <code>seed</code>, а сразу завести расписание в кабинете (см. <a href="ИНСТРУКЦИЯ.html">ИНСТРУКЦИЯ.md</a>).
-3. <code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=webhook</code> — подключает бота: он начнёт отвечать, а в меню появится кнопка «Кабинет».</p>
-<h2>6. Настроить cron</h2>
-<p>В панели nic.ru → «Планировщик задач» добавьте задачу <strong>каждые 15 минут</strong>:</p>
-<pre><code>php ~/ваш-сайт.ru/docs/api/cron.php
-</code></pre>
-<p>Путь к папке сайта посмотрите в файловом менеджере. Если в панели можно указать только адрес страницы, используйте <code>https://ваш-сайт.ru/api/cron.php?key=КЛЮЧ</code>.</p>
-<p>Cron отвечает за всё, что происходит само:</p>
+<h2>Шаг 7. Подключить бота</h2>
+<p>Сделайте часть 2 из <a href="%D0%91%D0%9E%D0%A2.html">БОТ.md</a>: токен, адрес кабинета, домен и включение бота.</p>
+<p><strong>Что должно получиться:</strong> бот отвечает на <code>/start</code>, кабинет открывается в Telegram.</p>
+<h2>Шаг 8. Планировщик задач (cron)</h2>
+<p>Планировщик раз в 15 минут запускает всё, что происходит само: напоминания о встречах, напоминание продлить абонемент, освобождение мест, поздравления с достижениями.</p>
+<p><strong>Что сделать:</strong></p>
+<ol>
+<li>В панели Руцентра найдите <strong>Планировщик задач</strong> (или «Cron»).</li>
+<li>Добавьте задачу с периодом <strong>каждые 15 минут</strong>.</li>
+<li>Что запускать — зависит от панели:
 <ul>
-<li>снимает бронь, если разовое посещение не оплатили за 30 минут, и пишет первому в листе ожидания;</li>
-<li>присылает напоминания: примерно за сутки (пока ещё можно отменить без списания) и за 2 часа до начала;</li>
-<li>за 3 дня до конца месяца и в последний день напоминает продлить абонемент тем, кто ещё не купил следующий месяц;</li>
-<li>1-го числа убирает из чата держателей карты тех, у кого нет абонемента на новый месяц.</li>
+<li>
+<p>если просит <strong>адрес страницы</strong>:</p>
+<div class="code"><button class="copy" type="button">Скопировать</button><pre><code>https://ВАШ-ДОМЕН.ru/api/cron.php?key=КЛЮЧ
+</code></pre></div>
+</li>
+<li>
+<p>если просит <strong>команду</strong>:</p>
+<div class="code"><button class="copy" type="button">Скопировать</button><pre><code>php ~/ВАШ-ДОМЕН.ru/docs/api/cron.php
+</code></pre></div>
+<p>Путь к папке сайта сверьте в файловом менеджере.</p>
+</li>
 </ul>
-<h2>7. Подключить оплату (ЮKassa)</h2>
-<p>Кабинет сейчас умеет принимать оплату через ЮKassa. Если у вас договор с другой платёжной системой, скажите: подключим её вместо ЮKassa.</p>
-<ol>
-<li>В личном кабинете ЮKassa возьмите <code>shopId</code> и секретный ключ («Интеграция» → «Ключи API»).</li>
-<li>Там же, в «HTTP-уведомлениях», укажите адрес <code>https://ваш-сайт.ru/api/pay-webhook.php</code> и отметьте события <code>payment.succeeded</code> и <code>payment.canceled</code>.</li>
-<li>Подключите отправку чеков по 54-ФЗ: «Чеки от ЮKassa» или свою онлайн-кассу. Чек уходит на телефон клиента.</li>
-<li>В <code>config.php</code> впишите <code>shop_id</code>, <code>secret_key</code> и поменяйте <code>provider</code> с <code>test</code> на <code>yookassa</code>. Ставку НДС (<code>vat_code</code>) уточните у бухгалтера: <code>1</code> — без НДС.</li>
+</li>
 </ol>
-<p>Пока стоит <code>provider =&gt; 'test'</code>, оплата условная: кнопка «Оплатить» сразу засчитывает платёж. Так удобно проверить всё до подключения денег.</p>
-<h2>8. Назначить сотрудников и чат держателей карты</h2>
+<p><strong>Что должно получиться:</strong> адрес <code>https://ВАШ-ДОМЕН.ru/api/cron.php?key=КЛЮЧ</code> в браузере показывает строку вида <code>{&quot;expired&quot;:0,&quot;r24&quot;:0,...}</code>. Это значит, что всё работает.</p>
+<h2>Шаг 9. Сотрудники</h2>
+<p><strong>Что сделать:</strong></p>
 <ol>
-<li>Каждый сотрудник один раз открывает кабинет через бота и указывает телефон.</li>
-<li>Потом откройте <code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=staff&amp;a=79001234567</code> с его номером. В кабинете у него появится вкладка «Команда»: отметки гостей, клиенты, продажа абонемента на месте и добавление встреч.</li>
+<li>
+<p>Каждый сотрудник один раз открывает бота, нажимает «Кабинет», проходит знакомство и указывает телефон.</p>
+</li>
+<li>
+<p>Откройте в браузере (в конце — телефон сотрудника, только цифры, начиная с 7):</p>
+<div class="code"><button class="copy" type="button">Скопировать</button><pre><code>https://ВАШ-ДОМЕН.ru/api/setup.php?key=КЛЮЧ&amp;cmd=staff&amp;a=79001234567
+</code></pre></div>
+<p><strong>Должно появиться:</strong> «Готово: … теперь сотрудник.»</p>
+</li>
+<li>
+<p>Сотрудник закрывает и снова открывает кабинет.</p>
+</li>
 </ol>
-<p>Чат держателей карты:</p>
+<p><strong>Что должно получиться:</strong> у сотрудника внизу появилась вкладка <strong>«Команда»</strong>. У гостей её нет.</p>
+<h2>Шаг 10. Чат держателей карты (по желанию)</h2>
 <ol>
-<li>Создайте закрытую группу в Telegram и добавьте бота администратором с правами «Добавление участников» и «Блокировка участников».</li>
-<li>Создайте пригласительную ссылку с включёнными «Заявками на вступление».</li>
-<li>Впишите ссылку в <code>telegram.members_chat_invite</code>, а ID чата — в <code>telegram.members_chat_id</code>. Узнать ID можно, переслав сообщение из чата боту <a href="https://t.me/getidsbot">@getidsbot</a>; он начинается с <code>-100</code>.</li>
+<li>Создайте в Telegram закрытую группу, например «Пространство — держатели карты».</li>
+<li>Добавьте в неё бота @prostranstvo_msk_club_bot и сделайте администратором с правами <strong>«Добавление участников»</strong> и <strong>«Блокировка участников»</strong>.</li>
+<li>В настройках группы создайте пригласительную ссылку с включёнными <strong>«Заявками на вступление»</strong>.</li>
+<li>Узнайте номер группы: перешлите любое сообщение из группы боту <a href="https://t.me/getidsbot">@getidsbot</a>. Номер начинается с <code>-100</code>.</li>
+<li>Впишите в <code>config.php</code>: ссылку — в <code>'members_chat_invite'</code>, номер — в <code>'members_chat_id'</code>.</li>
 </ol>
-<p>После этого бот сам одобряет заявки тех, у кого есть действующий абонемент, и отклоняет остальных с подсказкой, где купить абонемент.</p>
-<h2>9. MAX (по желанию)</h2>
-<p>Чтобы бот появился в MAX, его регистрируют на платформе для бизнеса MAX. Условия для ИП меняются, поэтому уточните их при регистрации. Если бот создан:</p>
+<p><strong>Что должно получиться:</strong> бот сам пускает в чат тех, у кого есть абонемент, а 1-го числа убирает тех, кто не продлил.</p>
+<h2>Шаг 11. Оплата</h2>
+<p>Пока в <code>config.php</code> стоит <code>'provider' =&gt; 'test'</code>, оплата условная: кнопка «Оплатить» сразу засчитывает платёж, деньги не списываются. Так можно всё проверить до подключения денег.</p>
+<p>Когда выберете платёжную систему, её подключат здесь. Сейчас готово подключение <strong>ЮKassa</strong>:</p>
 <ol>
-<li>Впишите в <code>config.php</code> → <code>max</code> токен, ссылку на бота, <code>webhook_secret</code> и поставьте <code>enabled =&gt; true</code>.</li>
-<li>Откройте <code>https://ваш-сайт.ru/api/setup.php?key=КЛЮЧ&amp;cmd=max-webhook</code>.</li>
+<li>В кабинете ЮKassa возьмите <strong>shopId</strong> и <strong>секретный ключ</strong> (раздел «Интеграция» → «Ключи API»).</li>
+<li>Там же в «HTTP-уведомлениях» укажите адрес <code>https://ВАШ-ДОМЕН.ru/api/pay-webhook.php</code> и отметьте события <code>payment.succeeded</code> и <code>payment.canceled</code>.</li>
+<li>Подключите отправку чеков: «Чеки от ЮKassa» или свою онлайн-кассу.</li>
+<li>В <code>config.php</code> впишите <code>shop_id</code>, <code>secret_key</code> и поменяйте <code>'provider' =&gt; 'test'</code> на <code>'provider' =&gt; 'yookassa'</code>. Ставку НДС (<code>vat_code</code>) уточните у бухгалтера: <code>1</code> — без НДС.</li>
 </ol>
-<p>В профиле кабинета у гостей появится кнопка «Подключить MAX». После неё напоминания будут приходить и туда. Входить в кабинет по-прежнему нужно через Telegram.</p>
-<h2>10. Персональные данные (152-ФЗ)</h2>
-<p>До запуска:</p>
+<p><strong>Проверка:</strong> временно поставьте встрече цену 10 ₽ и запишитесь с настоящей оплатой.</p>
+<h2>Шаг 12. Документы о персональных данных</h2>
+<p>Закон 152-ФЗ требует этого до того, как вы начнёте собирать имена и телефоны.</p>
 <ol>
-<li><strong>Заполните шаблоны</strong> <code>privacy.html</code> и <code>consent.html</code>: ФИО, ИНН, ОГРНИП, адрес, почта, хостинг и платёжная система. Согласие — отдельный документ, как требует закон с 1 сентября 2025 года. В кабинете галочка согласия не стоит заранее, а согласие на рассылку дают отдельно.</li>
-<li><strong>Подайте уведомление в Роскомнадзор</strong> об обработке персональных данных на <a href="https://pd.rkn.gov.ru/">pd.rkn.gov.ru</a>. Для компаний и ИП штраф за работу без уведомления — до 300 тыс. ₽.</li>
-<li><strong>Храните данные в России</strong>: база на хостинге nic.ru это требование выполняет.</li>
-<li>Напоминания идут через Telegram, а это иностранный сервис. Спросите юриста, нужно ли уведомлять Роскомнадзор о трансграничной передаче.</li>
+<li>Откройте <code>privacy.html</code> и <code>consent.html</code>, замените всё в квадратных скобках <code>[...]</code>: ФИО, ИНН, ОГРНИП, адрес, почта, хостинг (Руцентр) и платёжная система.</li>
+<li>Подайте уведомление в Роскомнадзор об обработке персональных данных: <a href="https://pd.rkn.gov.ru/">pd.rkn.gov.ru</a>. Для компаний и ИП штраф за работу без уведомления — до 300 тыс. ₽.</li>
+<li>Покажите документы юристу. Отдельно спросите про Telegram: это иностранный сервис, может понадобиться уведомление о трансграничной передаче данных.</li>
 </ol>
-<p>Документы — шаблоны. Их стоит показать юристу.</p>
-<h2>Проверка перед запуском</h2>
+<h2>Шаг 13. MAX (по желанию)</h2>
+<p>Пока выключено: неясно, можно ли зарегистрировать бота MAX на ИП. Если получится зарегистрировать на платформе MAX для бизнеса:</p>
+<ol>
+<li>Впишите в <code>config.php</code>, раздел <code>max</code>: токен, ссылку на бота, <code>webhook_secret</code> и поставьте <code>'enabled' =&gt; true</code>.</li>
+<li>Откройте <code>https://ВАШ-ДОМЕН.ru/api/setup.php?key=КЛЮЧ&amp;cmd=max-webhook</code>.</li>
+</ol>
+<p>В профиле кабинета у гостей появится кнопка «Подключить MAX». Входить в кабинет по-прежнему нужно через Telegram.</p>
+<hr />
+<h2>Последняя проверка перед открытием</h2>
 <ul>
-<li>Откройте бота, нажмите «Кабинет», пройдите знакомство и запишитесь на встречу.</li>
-<li>Купите абонемент в тестовом режиме: должно прийти сообщение от бота.</li>
-<li>Отмените запись больше чем за сутки: посещение вернётся на абонемент.</li>
-<li>В разделе «Команда» отметьте, что гость пришёл.</li>
-<li>Переключите оплату на ЮKassa и проведите один настоящий платёж на небольшую сумму: например, временно поставьте встречу с ценой 10 ₽.</li>
+<li>[ ] Сайт открывается по <code>https://ВАШ-ДОМЕН.ru</code>, внизу нет надписи «Прототип», адрес и телефон — настоящие.</li>
+<li>[ ] Бот отвечает на <code>/start</code>.</li>
+<li>[ ] Новый гость проходит знакомство, покупает абонемент (в тестовом режиме), записывается — бот присылает «Вы записаны».</li>
+<li>[ ] Отмена больше чем за сутки возвращает посещение на абонемент.</li>
+<li>[ ] У сотрудника есть вкладка «Команда», он может отметить гостя.</li>
+<li>[ ] Планировщик работает: <code>cron.php?key=КЛЮЧ</code> показывает строку с цифрами.</li>
+<li>[ ] Документы заполнены, уведомление в Роскомнадзор подано.</li>
+<li>[ ] Оплата переключена на настоящую, и прошёл пробный платёж.</li>
 </ul>
-<h2>Для разработчика</h2>
+<h2>Для программиста</h2>
 <ul>
-<li><code>site/api/</code> — PHP 8 без фреймворков: <code>index.php</code> (API кабинета), <code>bot.php</code> (Telegram), <code>max-bot.php</code>, <code>pay-webhook.php</code>, <code>cron.php</code>, <code>setup.php</code>; правила абонементов — в <code>lib/rules.php</code>.</li>
-<li><code>site/app/</code> — кабинет на чистом JS: <code>app.js</code>, <code>app.css</code>, <code>config.js</code>. <code>demo.js</code> нужен только для показа без сервера (<code>demo: true</code> в <code>config.js</code>).</li>
-<li>Достижения — <code>lib/achievements.php</code>; поздравления рассылает <code>cron.php</code>.</li>
+<li><code>site/api/</code> — PHP 8 без фреймворков: <code>index.php</code> (API кабинета), <code>bot.php</code> (Telegram), <code>max-bot.php</code>, <code>pay-webhook.php</code>, <code>cron.php</code>, <code>setup.php</code>. Правила абонементов — <code>lib/rules.php</code>, достижения — <code>lib/achievements.php</code>.</li>
+<li><code>site/app/</code> — кабинет на чистом JS: <code>app.js</code>, <code>app.css</code>, <code>config.js</code>; <code>demo.js</code> — показ без сервера (<code>demo: true</code>).</li>
 <li>Цены и состав абонементов — <code>config.php</code>, раздел <code>plans</code>.</li>
-<li>Автотесты API на SQLite: <code>bash tests/run.sh</code>.</li>
+<li>GitHub Pages: <code>.github/workflows/pages.yml</code> публикует <code>site/</code> в демо-режиме при обновлении ветки <code>main</code>.</li>
+<li>Автотесты: <code>bash tests/run.sh</code>.</li>
 </ul>
+
 </main>
+<script>
+document.querySelectorAll('.copy').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var text = b.parentNode.querySelector('code').innerText.trim();
+    function ok() { b.textContent = 'Скопировано'; b.classList.add('done'); setTimeout(function () { b.textContent = 'Скопировать'; b.classList.remove('done'); }, 2000); }
+    function pick() { var r = document.createRange(); r.selectNodeContents(b.parentNode.querySelector('code')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok, pick); else pick();
+  });
+});
+</script>
 </body>
 </html>

@@ -1,11 +1,11 @@
-# Делает из инструкций docs/*.md страницы .html, которые удобно открыть в браузере.
-# Запуск: pip install markdown-it-py && python tools/md2html.py docs/*.md
-import re, sys, pathlib
-from markdown_it import MarkdownIt
-
-# CommonMark: блоки кода внутри нумерованных списков не ломают нумерацию.
-MD = MarkdownIt('commonmark').enable('table')
-CSS = """
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Инструкции Пространства · Пространство</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Onest:wght@400;600&family=JetBrains+Mono&display=swap">
+<style>
 :root { --fg: #1A1714; --muted: rgba(26,23,20,.62); --line: rgba(26,23,20,.12); --accent: #C2531E; --soft: #F6F3EE; }
 * { box-sizing: border-box; }
 body { margin: 0; background: #fff; color: var(--fg); font: 400 17px/1.65 "Onest", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
@@ -32,8 +32,44 @@ strong { font-weight: 600; }
 .code pre code { overflow-wrap: anywhere; }
 .copy { position: absolute; top: 8px; right: 8px; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 6px 10px; font: 500 13px/1 "Onest", system-ui, sans-serif; color: var(--fg); cursor: pointer; }
 .copy.done { color: #3F7A34; border-color: #3F7A34; }
-"""
-COPY_JS = """
+</style>
+</head>
+<body>
+<main>
+<h1>Инструкции Пространства</h1>
+<p>Начните с той, что подходит под задачу.</p>
+<div class="table"><table>
+<thead>
+<tr>
+<th>Инструкция</th>
+<th>Когда нужна</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="%D0%91%D0%9E%D0%A2.html">Бот в Telegram</a></td>
+<td>Проверить кабинет на телефоне прямо сейчас и подключить бота при запуске</td>
+</tr>
+<tr>
+<td><a href="SETUP.html">Запуск сайта и кабинета</a></td>
+<td>Хостинг, домен, настройки, оплата, документы — всё, что нужно до открытия</td>
+</tr>
+<tr>
+<td><a href="%D0%98%D0%9D%D0%A1%D0%A2%D0%A0%D0%A3%D0%9A%D0%A6%D0%98%D0%AF.html">Как вести расписание и менять сайт</a></td>
+<td>Каждый день после запуска: встречи, гости, цены, тексты, фото</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Посмотреть</h2>
+<ul>
+<li>Сайт: <a href="https://jim-creater.github.io/prostranstvo/">https://jim-creater.github.io/prostranstvo/</a></li>
+<li>Кабинет (демо): <a href="https://jim-creater.github.io/prostranstvo/app/">https://jim-creater.github.io/prostranstvo/app/</a></li>
+<li>Кабинет в Telegram (демо): <a href="https://t.me/prostranstvo_msk_club_bot/prostranstvo_msk">https://t.me/prostranstvo_msk_club_bot/prostranstvo_msk</a></li>
+</ul>
+<p>В демо данные примерные и ничего не сохраняется. Бот начнёт отвечать на сообщения после запуска на хостинге.</p>
+
+</main>
+<script>
 document.querySelectorAll('.copy').forEach(function (b) {
   b.addEventListener('click', function () {
     var text = b.parentNode.querySelector('code').innerText.trim();
@@ -42,27 +78,6 @@ document.querySelectorAll('.copy').forEach(function (b) {
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok, pick); else pick();
   });
 });
-"""
-FONTS = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Onest:wght@400;600&family=JetBrains+Mono&display=swap">'
-# Голые адреса https://… делаем ссылками; в блоках кода и `коде` не трогаем.
-def autolink(text):
-    parts = re.split(r'(```.*?```)', text, flags=re.S)
-    for i in range(0, len(parts), 2):
-        spans = re.split(r'(`[^`]*`)', parts[i])
-        for j in range(0, len(spans), 2):
-            spans[j] = re.sub(r'(?<![(<"\[])(https://[^\s)<>|]+?)([.,;:]?(?=\s|$|\|))', r'<\1>\2', spans[j])
-        parts[i] = ''.join(spans)
-    return ''.join(parts)
-
-for src in sys.argv[1:]:
-    p = pathlib.Path(src)
-    text = p.read_text(encoding='utf-8')
-    title = re.search(r'^# (.+)$', text, re.M).group(1)
-    body = MD.render(autolink(text))
-    body = re.sub(r'href="([^"]+)\.md"', r'href="\1.html"', body)
-    body = body.replace('<table>', '<div class="table"><table>').replace('</table>', '</table></div>')
-    # У каждого блока с командой или адресом — кнопка «Скопировать».
-    body = body.replace('<pre>', '<div class="code"><button class="copy" type="button">Скопировать</button><pre>').replace('</pre>', '</pre></div>')
-    html = f'<!doctype html>\n<html lang="ru">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>{title} · Пространство</title>\n{FONTS}\n<style>{CSS}</style>\n</head>\n<body>\n<main>\n{body}\n</main>\n<script>{COPY_JS}</script>\n</body>\n</html>\n'
-    p.with_suffix('.html').write_text(html, encoding='utf-8')
-    print('ok', p.with_suffix('.html'))
+</script>
+</body>
+</html>

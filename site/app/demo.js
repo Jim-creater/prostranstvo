@@ -523,9 +523,23 @@ window.PRDemo = (() => {
     setTimeout(() => ui.checkPurchase(pid), 320);
   });
 
+  // Открыли в Telegram (или по ссылке с ?new): начинаем как новый гость — знакомство, покупка абонемента, запись.
+  // Проверяем сразу при загрузке: потом кабинет убирает параметры из адреса.
+  const TGU = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData ? window.Telegram.WebApp.initDataUnsafe.user : null;
+  const FRESH = !!TGU || /[?&]new\b/.test(location.search);
+
+  function startAsNewGuest(user) {
+    ['bookings', 'memberships', 'purchases'].forEach((t) => { db[t] = db[t].filter((x) => x.client_id !== ME); });
+    Object.assign(me(), {
+      name: user ? [user.first_name, user.last_name].filter(Boolean).join(' ') : 'Гость',
+      tg_username: (user && user.username) || null, phone: null, consent_pd: false, consent_news: false, created_at: nowS(),
+    });
+  }
+
   // В демо можно посмотреть кабинет глазами гостя и глазами команды.
   function init(hooks) {
     ui = hooks;
+    if (FRESH) startAsNewGuest(TGU);
     const logo = document.querySelector('.top__logo');
     if (!logo || document.querySelector('.demo-flag')) return;
     logo.insertAdjacentHTML('afterend', '<button class="demo-flag" type="button" title="Данные ненастоящие. Нажмите, чтобы посмотреть кабинет как гость или как команда">Демо · гость</button>');

@@ -9,7 +9,7 @@
   - `app/` — личный кабинет, чистый JS без сборки: `index.html`, `app.css`, `app.js`, `config.js`. Тот же код работает как Telegram Mini App. `demo.js` — демо без сервера (`demo: true` в `config.js`; `app.js` подгружает его сам).
   - `api/` — PHP 8 + MySQL без фреймворков. `index.php` (роутер `?r=`), `bot.php` (Telegram), `max-bot.php`, `pay-webhook.php` (ЮKassa), `cron.php` (каждые 15 минут), `setup.php` (init, seed, webhook, staff). Правила — `lib/rules.php`, достижения — `lib/achievements.php`.
   - `privacy.html`, `consent.html` — шаблоны документов по 152-ФЗ, поля `[в скобках]` не заполнены.
-- `docs/SETUP.md` — запуск на хостинге Руцентра; `docs/ИНСТРУКЦИЯ.md` — методичка для владельца. У обеих есть `.html`-копии: после правки `.md` пересобрать их — `pip install markdown && python tools/md2html.py docs/SETUP.md docs/ИНСТРУКЦИЯ.md`.
+- `docs/БОТ.md` — бот: проверка на телефоне через GitHub Pages и подключение при запуске; `docs/SETUP.md` — запуск на хостинге Руцентра по шагам; `docs/ИНСТРУКЦИЯ.md` — ежедневная работа владельца; `docs/index.md` — оглавление. У всех есть `.html`-копии: после правки `.md` пересобрать — `pip install markdown-it-py && python tools/md2html.py docs/*.md`. Пишем для человека без технических знаний: шаг = «что сделать → что должно получиться», точный текст для копирования, раздел частых ошибок.
 - `.github/workflows/pages.yml` — публикует `site/` в демо-режиме на GitHub Pages (https://jim-creater.github.io/prostranstvo/) при обновлении `main`. Нужно Settings → Pages → Source: GitHub Actions (владелец включает сам).
 - `tests/` — автотесты API на SQLite.
 
@@ -34,7 +34,7 @@
 
 1. **Хостинг.** У владельца тариф Руцентра «Сайт 1» — без PHP и MySQL. Для кабинета нужен «Сайт 2» или выше, свой домен для Пространства и SSL для него (сертификат GlobalSign куплен для kod-chempiona.ru).
 2. **Оплата.** Платёжная система не выбрана. Сейчас `provider => test`, реализована ЮKassa (`lib/payments.php`); при другой системе — добавить провайдера там же.
-3. **Telegram-бот** ещё не создан (BotFather: `/newbot`, `/setdomain`, `/newapp`).
+3. **Telegram-бот** создан: @prostranstvo_msk_club_bot, мини-приложение `prostranstvo_msk` (t.me/prostranstvo_msk_club_bot/prostranstvo_msk), `/setdomain` = jim-creater.github.io. Web App URL для проверки — `https://jim-creater.github.io/prostranstvo/app/` (владелец сначала вписал неверный адрес и получил 404). Токен нигде не хранится, при запуске — только в `config.php`. В демо внутри Telegram кабинет стартует как новый гость с именем из Telegram (`demo.js`, `FRESH`); в браузере — пример «Анна», `?new` — новый гость.
 4. **MAX** выключен: неясно, можно ли зарегистрировать бота на ИП.
 5. **152-ФЗ:** заполнить реквизиты ИП в `privacy.html` и `consent.html`, подать уведомление в Роскомнадзор.
 6. На сайте в подвале надпись «Прототип…», адрес и телефон — примеры.
